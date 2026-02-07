@@ -4,7 +4,7 @@
 
 @layer base {
     :root {
-        --radius: 0.625rem;
+        --radius: 0.5rem;
         --background: 0 0 0;
         --foreground: 1 0 0;
         --card: 0.1 0 0;
@@ -110,5 +110,27 @@
     
     .glow-icon {
         filter: drop-shadow(0 0 4px oklch(var(--neon-green) / 0.6));
+    }
+}
+
+@layer components {
+    /* Minimalist page container */
+    .page-container {
+        @apply p-3 space-y-4;
+    }
+    
+    /* Compact card padding */
+    .card-compact {
+        @apply pt-4 pb-4;
+    }
+    
+    /* Section title */
+    .section-title {
+        @apply text-base font-semibold;
+    }
+    
+    /* Page title */
+    .page-title {
+        @apply text-xl font-bold;
     }
 }

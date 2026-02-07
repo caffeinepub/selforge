@@ -60,14 +60,14 @@ export default function Nutrition() {
   const targetSugar = 20;
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="page-container">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Nutrition</h1>
+        <h1 className="page-title">Nutrition</h1>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-neon-green text-black hover:bg-neon-green/90">
-              <Plus className="w-4 h-4 mr-1" />
-              Add Food
+            <Button size="sm" className="bg-neon-green text-black hover:bg-neon-green/90 h-8">
+              <Plus className="w-3.5 h-3.5 mr-1" />
+              Add
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-card-dark border-border-subtle">
@@ -130,29 +130,29 @@ export default function Nutrition() {
 
       {/* Summary */}
       <Card className="bg-card-dark border-border-subtle">
-        <CardContent className="pt-6 space-y-4">
+        <CardContent className="card-compact space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Total calories eaten</span>
+            <span className="text-xs text-muted-foreground">Total calories eaten</span>
             <div className="text-right">
-              <span className="text-4xl font-bold text-neon-yellow glow-text">{totalCalories}</span>
-              <span className="text-sm text-muted-foreground ml-2">/ {targetCalories}</span>
+              <span className="text-3xl font-bold text-neon-yellow glow-text">{totalCalories}</span>
+              <span className="text-xs text-muted-foreground ml-2">/ {targetCalories}</span>
             </div>
           </div>
           <div className="h-px bg-border-subtle" />
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Total protein</span>
+            <span className="text-xs text-muted-foreground">Total protein</span>
             <div className="text-right">
-              <span className="text-2xl font-bold text-neon-green">{totalProtein.toFixed(1)}g</span>
-              <span className="text-sm text-muted-foreground ml-2">/ {targetProtein}g</span>
+              <span className="text-xl font-bold text-neon-green">{totalProtein.toFixed(1)}g</span>
+              <span className="text-xs text-muted-foreground ml-2">/ {targetProtein}g</span>
             </div>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Total sugar</span>
+            <span className="text-xs text-muted-foreground">Total sugar</span>
             <div className="text-right">
-              <span className={`text-2xl font-bold ${totalSugar > targetSugar ? 'text-destructive' : 'text-foreground'}`}>
+              <span className={`text-xl font-bold ${totalSugar > targetSugar ? 'text-destructive' : 'text-foreground'}`}>
                 {totalSugar.toFixed(1)}g
               </span>
-              <span className="text-sm text-muted-foreground ml-2">/ {targetSugar}g</span>
+              <span className="text-xs text-muted-foreground ml-2">/ {targetSugar}g</span>
             </div>
           </div>
         </CardContent>
@@ -160,26 +160,26 @@ export default function Nutrition() {
 
       {/* Net Calories */}
       <Card className="bg-card-dark border-border-subtle">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg">Net Calories</CardTitle>
+        <CardHeader className="pb-2 pt-4">
+          <CardTitle className="text-base">Net Calories</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
-          <div className="flex justify-between items-center text-sm">
+        <CardContent className="space-y-2 pb-4">
+          <div className="flex justify-between items-center text-xs">
             <span className="text-muted-foreground">Calories eaten</span>
             <span className="text-neon-yellow font-bold">{totalCalories}</span>
           </div>
-          <div className="flex justify-between items-center text-sm">
+          <div className="flex justify-between items-center text-xs">
             <span className="text-muted-foreground">Calories burned</span>
             <span className="text-neon-green font-bold">-{totalBurned}</span>
           </div>
           <div className="h-px bg-border-subtle" />
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Net</span>
-            <span className={`text-3xl font-bold glow-text ${netCalories < 0 ? 'text-neon-green' : 'text-neon-yellow'}`}>
+            <span className="text-xs text-muted-foreground">Net</span>
+            <span className={`text-2xl font-bold glow-text ${netCalories < 0 ? 'text-neon-green' : 'text-neon-yellow'}`}>
               {netCalories > 0 ? '+' : ''}{netCalories}
             </span>
           </div>
-          <div className="text-xs text-center text-muted-foreground">
+          <div className="text-[10px] text-center text-muted-foreground">
             {netCalories < 0 ? 'Calorie deficit' : 'Calorie surplus'}
           </div>
         </CardContent>
@@ -187,20 +187,20 @@ export default function Nutrition() {
 
       {/* Food List */}
       {todayData.foodEntries.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-semibold">Today's Foods</h2>
+        <div className="space-y-2">
+          <h2 className="section-title">Today's Foods</h2>
           {todayData.foodEntries.map((food) => (
             <Card key={food.id} className="bg-card-dark border-border-subtle">
-              <CardContent className="pt-4">
-                <div className="space-y-2">
+              <CardContent className="pt-3 pb-3">
+                <div className="space-y-1">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold">{food.name}</h3>
-                      {food.brand && <p className="text-xs text-muted-foreground">{food.brand}</p>}
+                      <h3 className="text-sm font-semibold">{food.name}</h3>
+                      {food.brand && <p className="text-[10px] text-muted-foreground">{food.brand}</p>}
                     </div>
                     <span className="text-lg font-bold text-neon-yellow">{food.calories} kcal</span>
                   </div>
-                  <div className="flex gap-4 text-sm text-muted-foreground">
+                  <div className="flex gap-3 text-xs text-muted-foreground">
                     <span>{food.quantity}g</span>
                     <span>Protein: {food.protein.toFixed(1)}g</span>
                     <span>Sugar: {food.sugar.toFixed(1)}g</span>
@@ -214,8 +214,8 @@ export default function Nutrition() {
 
       {todayData.foodEntries.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          <p>No foods logged yet.</p>
-          <p className="text-sm">Add your first food to track nutrition.</p>
+          <p className="text-sm">No foods logged yet.</p>
+          <p className="text-xs">Add your first food to track nutrition.</p>
         </div>
       )}
     </div>

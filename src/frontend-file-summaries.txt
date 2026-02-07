@@ -1,18 +1,19 @@
 {
-  "frontend/src/App.tsx": "Main app component with page navigation state and ThemeProvider wrapper, rendering the current page and bottom navigation.",
+  "frontend/src/App.tsx": "Main app component with adjusted bottom padding (pb-16 instead of pb-20) to match refined BottomNav height.",
   "frontend/src/lib/store.ts": "Zustand store with persist middleware managing all app state including daily data with enhanced gym activity tracking (exerciseName field), study topics with status-based workflow, food entries, goals, streak calculation, and CRUD operations for study topics.",
-  "frontend/src/pages/Dashboard.tsx": "Dashboard page displaying today's summary including current streak from store, study progress, gym metrics, nutrition totals, calorie burn calculations, net calories, and goal completion status for Selforge app.",
-  "frontend/src/pages/Study.tsx": "Study page for managing subjects and chapters with status-based workflow (done/pending/later), featuring add/update/delete operations, visual categorization of topics, and auto-completing study goal when all pending topics are marked done.",
-  "frontend/src/pages/Gym.tsx": "Gym workout tracking page with comprehensive exercise library featuring all variations across muscle groups, powered by DeepSeek AI for calorie calculations.",
-  "frontend/src/pages/Nutrition.tsx": "Nutrition tracking page with DeepSeek AI integration for accurate nutrition data including Indian brand support.",
-  "frontend/src/pages/Goals.tsx": "Goals page showing five daily goals (study, gym, nutrition, sleep, discipline) with completion checkboxes and school activity toggle.",
-  "frontend/src/components/BottomNav.tsx": "Fixed bottom navigation bar with five tabs (Dashboard, Study, Gym, Nutrition, Goals) with active state highlighting.",
+  "frontend/src/pages/Dashboard.tsx": "Dashboard page with refined minimalist header (title + streak + compact calendar) and tighter card layouts using consistent spacing and typography scale.",
+  "frontend/src/pages/Study.tsx": "Study page with normalized minimalist typography and spacing (compact cards, smaller buttons, tighter gaps) while preserving all topic management functionality.",
+  "frontend/src/pages/Gym.tsx": "Gym page with normalized minimalist density (compact cards, smaller text, tighter spacing) while maintaining all exercise logging and calorie calculation features.",
+  "frontend/src/pages/Nutrition.tsx": "Nutrition page with normalized minimalist spacing and typography (compact cards, smaller text) while preserving all food tracking and net calorie calculations.",
+  "frontend/src/pages/Goals.tsx": "Goals page with normalized minimalist density (compact cards, smaller icons, tighter spacing) while maintaining all goal tracking and school toggle functionality.",
+  "frontend/src/components/BottomNav.tsx": "Bottom navigation with refined minimalist density (reduced height from 16 to 14, smaller icons and labels) while keeping fixed positioning and clear active state.",
   "frontend/src/lib/calories.ts": "Calorie calculation utility using DeepSeek AI API as primary source with MET-based fallback calculations for gym and cardio activities.",
   "frontend/src/lib/nutrition.ts": "Nutrition data fetching utility using DeepSeek AI API as primary source with local database fallback for offline operation.",
-  "frontend/src/index.css": "Global styles with OKLCH color system defining neon green and yellow accent colors, dark theme tokens, and glow effects for key metrics.",
+  "frontend/src/index.css": "Global styles with OKLCH dark/neon color system and new minimalist utility classes (page-container, card-compact, section-title, page-title) for consistent density across pages.",
   "frontend/tailwind.config.js": "Tailwind configuration extending theme with custom neon colors, card-dark background, and border-subtle utilities for the dark futuristic design.",
   "frontend/src/hooks/useQueries.ts": "Empty placeholder file as the app uses local Zustand state management instead of backend queries.",
   "frontend/src/lib/mevsa.ts": "Expanded Mevsa AI data source with exhaustive exercise library covering all major variations (barbell, dumbbell, incline, decline, machine, bodyweight) across all muscle groups and comprehensive nutrition database.",
   "frontend/src/lib/indianNutrition.ts": "New module providing comprehensive Indian brand nutrition database (Amul, Mother Dairy, Country Delight, Verka, Nandini, Aavin, Heritage, Milma, Dodla) with API integration support and local fallback for Indian food products.",
-  "frontend/src/lib/deepseek.ts": "DeepSeek AI API integration module providing unified smart data backend for exercise and nutrition details with comprehensive fallback exercise categories and user profile constants."
+  "frontend/src/lib/deepseek.ts": "DeepSeek AI API integration module providing unified smart data backend for exercise and nutrition details with comprehensive fallback exercise categories and user profile constants.",
+  "frontend/src/components/LiveCalendarWidget.tsx": "Compact minimalist calendar widget displaying live time (24-hour format, 1s updates), short date, and tight month grid with current day highlighted in neon green."
 }

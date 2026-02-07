@@ -1,0 +1,69 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-refine-the-existing-livecalendarwidget-to-be-noticeably-more-compact-and-minimalist-while-preserving-the-current-functionality-local-device-date-time-live-updates-at-least-once-per-second-compact-month-grid-highlight-current-day",
+      "featureTitle": "Refine the existing LiveCalendarWidget to be noticeably more compact and minimalist while preserving the current functionality (local device date/time, live updates at least once per second, compact month grid, highlight current day).",
+      "files": [
+        "frontend/src/components/LiveCalendarWidget.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-dashboard-header-area-app-title-streak-calendar-area-to-follow-a-consistent-minimalist-stylish-layout-tighter-spacing-clearer-hierarchy-and-a-cohesive-typographic-scale-that-matches-the-compact-calendar",
+      "featureTitle": "Update the Dashboard header area (app title + streak + calendar area) to follow a consistent minimalist, stylish layout: tighter spacing, clearer hierarchy, and a cohesive typographic scale that matches the compact calendar.",
+      "files": [
+        "frontend/src/pages/Dashboard.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-apply-a-minimalist-styling-pass-across-the-app-screens-dashboard-study-gym-nutrition-goals-bottomnav-to-make-typography-spacing-borders-and-card-density-feel-consistent-with-the-compact-header-calendar-while-keeping-the-existing-dark-neon-aesthetic",
+      "featureTitle": "Apply a minimalist styling pass across the app screens (Dashboard, Study, Gym, Nutrition, Goals, BottomNav) to make typography, spacing, borders, and card density feel consistent with the compact header/calendar, while keeping the existing dark/neon aesthetic.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/BottomNav.tsx",
+        "frontend/src/index.css",
+        "frontend/src/pages/Dashboard.tsx",
+        "frontend/src/pages/Goals.tsx",
+        "frontend/src/pages/Gym.tsx",
+        "frontend/src/pages/Nutrition.tsx",
+        "frontend/src/pages/Study.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

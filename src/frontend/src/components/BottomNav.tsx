@@ -16,7 +16,7 @@ export default function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-black border-t border-border-subtle">
-      <div className="flex justify-around items-center h-16">
+      <div className="flex justify-around items-center h-14">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentPage === item.id;
@@ -25,12 +25,12 @@ export default function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
-              className={`flex flex-col items-center justify-center gap-1 flex-1 h-full transition-colors ${
+              className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full transition-colors ${
                 isActive ? 'text-neon-green' : 'text-muted-foreground'
               }`}
             >
-              <Icon className={`w-5 h-5 ${isActive ? 'glow-icon' : ''}`} />
-              <span className="text-xs font-medium">{item.label}</span>
+              <Icon className={`w-4.5 h-4.5 ${isActive ? 'glow-icon' : ''}`} />
+              <span className="text-[10px] font-medium">{item.label}</span>
             </button>
           );
         })}

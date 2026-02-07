@@ -1,6 +1,7 @@
 import { useAppStore } from '../lib/store';
 import { Card, CardContent } from '@/components/ui/card';
 import { Flame, BookOpen, Dumbbell, Apple, Target } from 'lucide-react';
+import LiveCalendarWidget from '../components/LiveCalendarWidget';
 
 export default function Dashboard() {
   const { getTodayData, currentStreak } = useAppStore();
@@ -30,36 +31,42 @@ export default function Dashboard() {
   const totalGoals = 5;
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-2">Selforge</h1>
-        <div className="flex items-center justify-center gap-2">
-          <Flame className="w-6 h-6 text-neon-yellow" />
-          <span className="text-4xl font-bold text-neon-yellow glow-text">{currentStreak}</span>
-          <span className="text-muted-foreground">day streak</span>
+    <div className="page-container">
+      {/* Header Block */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold tracking-tight">Selforge</h1>
+          <div className="flex items-center gap-1.5">
+            <Flame className="w-5 h-5 text-neon-yellow" />
+            <span className="text-2xl font-bold text-neon-yellow glow-text">{currentStreak}</span>
+            <span className="text-xs text-muted-foreground">days</span>
+          </div>
         </div>
+        
+        {/* Live Calendar Widget */}
+        <LiveCalendarWidget />
       </div>
 
       {/* Study Progress */}
       <Card className="bg-card-dark border-border-subtle">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-3 mb-4">
-            <BookOpen className="w-5 h-5 text-neon-green" />
-            <h2 className="text-lg font-semibold">Study</h2>
+        <CardContent className="card-compact">
+          <div className="flex items-center gap-2 mb-3">
+            <BookOpen className="w-4 h-4 text-neon-green" />
+            <h2 className="section-title">Study</h2>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Topics completed</span>
-              <span className="text-2xl font-bold text-neon-green">{doneTopics}</span>
+              <span className="text-xs text-muted-foreground">Topics completed</span>
+              <span className="text-xl font-bold text-neon-green">{doneTopics}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Topics pending</span>
-              <span className="text-2xl font-bold text-neon-yellow">{pendingTopics}</span>
+              <span className="text-xs text-muted-foreground">Topics pending</span>
+              <span className="text-xl font-bold text-neon-yellow">{pendingTopics}</span>
             </div>
             <div className="h-px bg-border-subtle" />
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Total topics</span>
-              <span className="text-lg font-bold">{totalStudyTopics}</span>
+              <span className="text-xs text-muted-foreground">Total topics</span>
+              <span className="text-base font-bold">{totalStudyTopics}</span>
             </div>
           </div>
         </CardContent>
@@ -67,28 +74,28 @@ export default function Dashboard() {
 
       {/* Gym Progress */}
       <Card className="bg-card-dark border-border-subtle">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Dumbbell className="w-5 h-5 text-neon-green" />
-            <h2 className="text-lg font-semibold">Gym</h2>
+        <CardContent className="card-compact">
+          <div className="flex items-center gap-2 mb-3">
+            <Dumbbell className="w-4 h-4 text-neon-green" />
+            <h2 className="section-title">Gym</h2>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Calories burned</span>
-              <span className="text-3xl font-bold text-neon-green glow-text">{totalGymCalories}</span>
+              <span className="text-xs text-muted-foreground">Calories burned</span>
+              <span className="text-2xl font-bold text-neon-green glow-text">{totalGymCalories}</span>
             </div>
             <div className="h-px bg-border-subtle" />
             <div>
-              <span className="text-sm text-muted-foreground">Muscles trained</span>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <span className="text-xs text-muted-foreground">Muscles trained</span>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {musclesTrained.length > 0 ? (
                   musclesTrained.map((muscle) => (
-                    <span key={muscle} className="px-2 py-1 bg-neon-green/20 text-neon-green rounded-full text-xs border border-neon-green/30">
+                    <span key={muscle} className="px-2 py-0.5 bg-neon-green/20 text-neon-green rounded-full text-[10px] border border-neon-green/30">
                       {muscle}
                     </span>
                   ))
                 ) : (
-                  <span className="text-muted-foreground text-sm">None yet</span>
+                  <span className="text-muted-foreground text-xs">None yet</span>
                 )}
               </div>
             </div>
@@ -98,23 +105,23 @@ export default function Dashboard() {
 
       {/* Nutrition Summary */}
       <Card className="bg-card-dark border-border-subtle">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Apple className="w-5 h-5 text-neon-yellow" />
-            <h2 className="text-lg font-semibold">Nutrition</h2>
+        <CardContent className="card-compact">
+          <div className="flex items-center gap-2 mb-3">
+            <Apple className="w-4 h-4 text-neon-yellow" />
+            <h2 className="section-title">Nutrition</h2>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Calories eaten</span>
-              <span className="text-3xl font-bold text-neon-yellow glow-text">{totalCaloriesEaten}</span>
+              <span className="text-xs text-muted-foreground">Calories eaten</span>
+              <span className="text-2xl font-bold text-neon-yellow glow-text">{totalCaloriesEaten}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Protein</span>
-              <span className="text-xl font-bold text-neon-green">{totalProtein.toFixed(1)}g</span>
+              <span className="text-xs text-muted-foreground">Protein</span>
+              <span className="text-lg font-bold text-neon-green">{totalProtein.toFixed(1)}g</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Sugar</span>
-              <span className="text-xl font-bold">{totalSugar.toFixed(1)}g</span>
+              <span className="text-xs text-muted-foreground">Sugar</span>
+              <span className="text-lg font-bold">{totalSugar.toFixed(1)}g</span>
             </div>
           </div>
         </CardContent>
@@ -122,33 +129,33 @@ export default function Dashboard() {
 
       {/* Calorie Burn Summary */}
       <Card className="bg-card-dark border-border-subtle">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Flame className="w-5 h-5 text-neon-green" />
-            <h2 className="text-lg font-semibold">Calorie Burn</h2>
+        <CardContent className="card-compact">
+          <div className="flex items-center gap-2 mb-3">
+            <Flame className="w-4 h-4 text-neon-green" />
+            <h2 className="section-title">Calorie Burn</h2>
           </div>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center text-sm">
+          <div className="space-y-2">
+            <div className="flex justify-between items-center text-xs">
               <span className="text-muted-foreground">Gym</span>
               <span className="text-neon-green font-bold">{totalGymCalories} kcal</span>
             </div>
-            <div className="flex justify-between items-center text-sm">
+            <div className="flex justify-between items-center text-xs">
               <span className="text-muted-foreground">School</span>
               <span className="text-neon-green font-bold">{schoolCalories} kcal</span>
             </div>
             <div className="h-px bg-border-subtle" />
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Total burned</span>
-              <span className="text-2xl font-bold text-neon-green glow-text">{totalCaloriesBurned}</span>
+              <span className="text-xs text-muted-foreground">Total burned</span>
+              <span className="text-xl font-bold text-neon-green glow-text">{totalCaloriesBurned}</span>
             </div>
             <div className="h-px bg-border-subtle" />
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Net calories</span>
-              <span className={`text-3xl font-bold glow-text ${netCalories < 0 ? 'text-neon-green' : 'text-neon-yellow'}`}>
+              <span className="text-xs text-muted-foreground">Net calories</span>
+              <span className={`text-2xl font-bold glow-text ${netCalories < 0 ? 'text-neon-green' : 'text-neon-yellow'}`}>
                 {netCalories > 0 ? '+' : ''}{netCalories}
               </span>
             </div>
-            <div className="text-xs text-center text-muted-foreground">
+            <div className="text-[10px] text-center text-muted-foreground">
               {netCalories < 0 ? 'Calorie deficit' : 'Calorie surplus'}
             </div>
           </div>
@@ -157,14 +164,14 @@ export default function Dashboard() {
 
       {/* Goals Progress */}
       <Card className="bg-card-dark border-border-subtle">
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Target className="w-5 h-5 text-neon-yellow" />
-            <h2 className="text-lg font-semibold">Daily Goals</h2>
+        <CardContent className="card-compact">
+          <div className="flex items-center gap-2 mb-3">
+            <Target className="w-4 h-4 text-neon-yellow" />
+            <h2 className="section-title">Daily Goals</h2>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Goals completed</span>
-            <span className="text-4xl font-bold text-neon-yellow glow-text">
+            <span className="text-xs text-muted-foreground">Goals completed</span>
+            <span className="text-3xl font-bold text-neon-yellow glow-text">
               {goalsCompleted}/{totalGoals}
             </span>
           </div>

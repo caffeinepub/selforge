@@ -100,14 +100,14 @@ export default function Gym() {
   const availableExercises = muscleGroup ? EXERCISE_CATEGORIES[muscleGroup as keyof typeof EXERCISE_CATEGORIES] || [] : [];
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="page-container">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Gym</h1>
+        <h1 className="page-title">Gym</h1>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-neon-green text-black hover:bg-neon-green/90">
-              <Dumbbell className="w-4 h-4 mr-1" />
-              Add Exercise
+            <Button size="sm" className="bg-neon-green text-black hover:bg-neon-green/90 h-8">
+              <Dumbbell className="w-3.5 h-3.5 mr-1" />
+              Add
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-card-dark border-border-subtle max-h-[90vh] overflow-y-auto">
@@ -217,14 +217,13 @@ export default function Gym() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="Running">Running</SelectItem>
-                        <SelectItem value="Jogging">Jogging</SelectItem>
                         <SelectItem value="Cycling">Cycling</SelectItem>
-                        <SelectItem value="Elliptical">Elliptical</SelectItem>
-                        <SelectItem value="Rowing">Rowing</SelectItem>
                         <SelectItem value="Swimming">Swimming</SelectItem>
-                        <SelectItem value="Jump Rope">Jump Rope</SelectItem>
-                        <SelectItem value="Stair Climber">Stair Climber</SelectItem>
                         <SelectItem value="Walking">Walking</SelectItem>
+                        <SelectItem value="Jump Rope">Jump Rope</SelectItem>
+                        <SelectItem value="Rowing">Rowing</SelectItem>
+                        <SelectItem value="Elliptical">Elliptical</SelectItem>
+                        <SelectItem value="Stair Climbing">Stair Climbing</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -256,33 +255,26 @@ export default function Gym() {
 
       {/* Summary */}
       <Card className="bg-card-dark border-border-subtle">
-        <CardContent className="pt-6">
-          <div className="space-y-4">
+        <CardContent className="card-compact">
+          <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Total calories burned</span>
-              <span className="text-4xl font-bold text-neon-green glow-text">{totalCalories}</span>
+              <span className="text-xs text-muted-foreground">Total calories burned</span>
+              <span className="text-3xl font-bold text-neon-green glow-text">{totalCalories}</span>
             </div>
             <div className="h-px bg-border-subtle" />
             <div>
-              <span className="text-sm text-muted-foreground">Muscles trained today</span>
-              <div className="mt-2 flex flex-wrap gap-2">
+              <span className="text-xs text-muted-foreground">Muscles trained</span>
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {musclesTrained.length > 0 ? (
                   musclesTrained.map((muscle) => (
-                    <span key={muscle} className="px-3 py-1 bg-neon-green/20 text-neon-green rounded-full text-sm border border-neon-green/30">
+                    <span key={muscle} className="px-2 py-0.5 bg-neon-green/20 text-neon-green rounded-full text-[10px] border border-neon-green/30">
                       {muscle}
                     </span>
                   ))
                 ) : (
-                  <span className="text-muted-foreground text-sm">No muscles trained yet</span>
+                  <span className="text-muted-foreground text-xs">None yet</span>
                 )}
               </div>
-            </div>
-            <div className="h-px bg-border-subtle" />
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Daily gym goal</span>
-              <span className={`text-lg font-bold ${todayData.goalsCompleted.gym ? 'text-neon-green' : 'text-muted-foreground'}`}>
-                {todayData.goalsCompleted.gym ? 'Complete ✓' : 'Incomplete'}
-              </span>
             </div>
           </div>
         </CardContent>
@@ -290,31 +282,33 @@ export default function Gym() {
 
       {/* Activity List */}
       {todayData.gymActivities.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-semibold">Today's Activities</h2>
+        <div className="space-y-2">
+          <h2 className="section-title">Today's Activities</h2>
           {todayData.gymActivities.map((activity) => (
             <Card key={activity.id} className="bg-card-dark border-border-subtle">
-              <CardContent className="pt-4">
+              <CardContent className="pt-3 pb-3">
                 {activity.type === 'gym' ? (
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold text-neon-yellow">{activity.exerciseName || activity.muscleGroup}</h3>
+                        <h3 className="text-sm font-semibold">{activity.exerciseName}</h3>
                         <p className="text-xs text-muted-foreground">{activity.muscleGroup}</p>
                       </div>
-                      <span className="text-sm text-neon-green font-bold">{activity.caloriesBurned} kcal</span>
+                      <span className="text-lg font-bold text-neon-green">{activity.caloriesBurned} kcal</span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {activity.sets} sets × {activity.reps} reps @ {activity.weight}kg
-                    </p>
+                    <div className="flex gap-3 text-xs text-muted-foreground">
+                      <span>{activity.sets} sets</span>
+                      <span>{activity.reps} reps</span>
+                      <span>{activity.weight} kg</span>
+                    </div>
                   </div>
                 ) : (
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-semibold text-neon-yellow">{activity.activityType}</h3>
-                      <span className="text-sm text-neon-green font-bold">{activity.caloriesBurned} kcal</span>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm font-semibold">{activity.activityType}</h3>
+                      <p className="text-xs text-muted-foreground">{activity.duration} minutes</p>
                     </div>
-                    <p className="text-sm text-muted-foreground">{activity.duration} minutes</p>
+                    <span className="text-lg font-bold text-neon-green">{activity.caloriesBurned} kcal</span>
                   </div>
                 )}
               </CardContent>
@@ -325,8 +319,8 @@ export default function Gym() {
 
       {todayData.gymActivities.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          <p>No exercises logged yet.</p>
-          <p className="text-sm">Add your first exercise to get started.</p>
+          <p className="text-sm">No activities logged yet.</p>
+          <p className="text-xs">Add your first exercise to get started.</p>
         </div>
       )}
     </div>

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 5,
+  "summary": "Add a compact real-time calendar widget (date + time) with a stylish, minimalist design integrated near the app title/header.",
+  "architectural_notes": [
+    "Calendar widget should be compact/minimalist and visually consistent with the app’s title/header styling (no layout disruption)."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-add-a-compact-calendar-widget-that-shows-the-current-date-and-a-live-updating-current-time-hours-minutes-seconds-using-the-user-s-device-local-time-and-update-it-automatically-at-least-once-per-second-while-the-widget-is-visible",
+      "title": "Add a compact calendar widget that shows the current date and a live-updating current time (hours:minutes:seconds) using the user’s device local time, and update it automatically at least once per second while the widget is visible.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-place-the-calendar-widget-on-the-dashboard-page-near-the-top-in-the-header-area-with-the-app-title-streak-without-disrupting-existing-layout-and-style-it-to-match-the-current-dark-neon-theme-bg-card-dark-subtle-border-neon-accent-for-the-current-day",
+      "title": "Place the calendar widget on the Dashboard page near the top (in the header area with the app title/streak) without disrupting existing layout, and style it to match the current dark neon theme (bg-card-dark, subtle border, neon accent for the current day).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refine-the-existing-livecalendarwidget-to-be-noticeably-more-compact-and-minimalist-while-preserving-the-current-functionality-local-device-date-time-live-updates-at-least-once-per-second-compact-month-grid-highlight-current-day",
+      "title": "Refine the existing LiveCalendarWidget to be noticeably more compact and minimalist while preserving the current functionality (local device date/time, live updates at least once per second, compact month grid, highlight current day).",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-dashboard-header-area-app-title-streak-calendar-area-to-follow-a-consistent-minimalist-stylish-layout-tighter-spacing-clearer-hierarchy-and-a-cohesive-typographic-scale-that-matches-the-compact-calendar",
+      "title": "Update the Dashboard header area (app title + streak + calendar area) to follow a consistent minimalist, stylish layout: tighter spacing, clearer hierarchy, and a cohesive typographic scale that matches the compact calendar.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-minimalist-styling-pass-across-the-app-screens-dashboard-study-gym-nutrition-goals-bottomnav-to-make-typography-spacing-borders-and-card-density-feel-consistent-with-the-compact-header-calendar-while-keeping-the-existing-dark-neon-aesthetic",
+      "title": "Apply a minimalist styling pass across the app screens (Dashboard, Study, Gym, Nutrition, Goals, BottomNav) to make typography, spacing, borders, and card density feel consistent with the compact header/calendar, while keeping the existing dark/neon aesthetic.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Add a small in-app calendar widget showing real-time date and time (kept accurate)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Refine the calendar widget to be smaller/compact and styled in a minimalist, stylish way consistent with the app title/header area.",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Add a small real-time calendar widget (date + time)",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

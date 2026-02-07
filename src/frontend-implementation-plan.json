@@ -1,0 +1,91 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Compact minimalist calendar + cohesive dark/neon UI density pass",
+  "requirements": [
+    {
+      "id": "REQ-3",
+      "summary": "Make LiveCalendarWidget noticeably more compact and minimalist without changing behavior (local time, 1s updates, month grid, current-day highlight).",
+      "acceptanceCriteria": [
+        "The widget still updates the time at least once per second while visible.",
+        "The widget footprint is reduced compared to the current implementation (smaller typography, tighter spacing, less vertical padding) without reducing readability.",
+        "Current day remains visually distinct from other days.",
+        "No new features are added to the calendar (no navigation, event creation, reminders)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/LiveCalendarWidget.tsx",
+          "operation": "modify",
+          "description": "Tighten layout and typography: reduce CardContent vertical padding, reduce time/date text sizes, compress internal spacing, and tighten month grid (smaller headers, smaller cells, smaller gap) while keeping the 1s setInterval, local device time formatting, compact month grid logic, and current-day highlight styling. Continue composing existing shadcn-ui Card/CardContent primitives (do not modify files under frontend/src/components/ui). Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Refactor the Dashboard header block (title + streak + calendar) into a cohesive minimalist header layout with consistent hierarchy and spacing.",
+      "acceptanceCriteria": [
+        "Dashboard header (title/streak/calendar) reads as a single coherent header block with consistent spacing and alignment.",
+        "The calendar remains near the top in the header area and does not disrupt existing metrics cards layout.",
+        "All user-facing text in the header remains in English."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Dashboard.tsx",
+          "operation": "modify",
+          "description": "Rework the top-of-page header area to a single cohesive block: tighten spacing, standardize typographic scale (title/streak labels), and place LiveCalendarWidget within the header region (still near the top) without changing the metrics card ordering/layout below. Keep all header strings in English. Continue composing existing shadcn-ui Card primitives where helpful (do not modify files under frontend/src/components/ui). Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Apply a minimalist density + typography pass across Dashboard, Study, Gym, Nutrition, Goals, and BottomNav while preserving the existing dark/neon aesthetic and functionality.",
+      "acceptanceCriteria": [
+        "Across pages, headings use a consistent size scale and weight; card padding and gaps feel consistent and slightly tighter than before.",
+        "Existing dark/neon theme tokens/utilities (e.g., bg-card-dark, border-border-subtle, neon accents) are preserved; the app remains dark-themed.",
+        "Bottom navigation remains fixed and functional with clear active state."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add a small set of reusable minimalist utility/component classes (via Tailwind @layer) to standardize tighter page padding, section spacing, card padding density, and a consistent heading scale that matches the compact calendar/header while preserving existing dark/neon utilities (bg-card-dark, border-border-subtle, glow-text, etc.). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/Dashboard.tsx",
+          "operation": "modify",
+          "description": "Apply the new compact spacing/typography utilities to cards and section headers so the Dashboard matches the refined header/calendar density (tighter CardContent padding, consistent section title sizing, consistent gaps) without changing features/metrics. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/Study.tsx",
+          "operation": "modify",
+          "description": "Normalize Study page typography and spacing (page header, summary card, lists) to the same minimalist scale: tighter vertical rhythm, consistent card padding, consistent section title sizing; keep all existing interactions and dialogs intact while continuing to compose shadcn-ui components (no edits under frontend/src/components/ui). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/Gym.tsx",
+          "operation": "modify",
+          "description": "Normalize Gym page typography and spacing across the header, summary card, activity list, and add-exercise dialog (tighter gaps and padding, consistent title scale) while preserving all logging/calculation flows and existing dark/neon styling tokens. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/Nutrition.tsx",
+          "operation": "modify",
+          "description": "Normalize Nutrition page typography and spacing across summary cards, net calories card, list, and add-food dialog (tighter gaps and padding, consistent title scale) while keeping functionality and preserving dark/neon tokens. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/Goals.tsx",
+          "operation": "modify",
+          "description": "Normalize Goals page typography and spacing (header block, progress bar spacing, goals list cards, school toggle card, success/motivation card) to match the compact minimalist density while preserving all interactions and active/completed styling semantics. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/BottomNav.tsx",
+          "operation": "modify",
+          "description": "Refine BottomNav density (slightly reduced height/padding, consistent icon/label sizing) while keeping it fixed, fully functional, and with a clear active state consistent with the minimalist typographic scale. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Align overall app layout spacing with the refined BottomNav/header density (e.g., adjust main bottom padding to match any nav height change) without introducing new routes or features. Verify the component's usage instructions before implementing."
+        }
+      ]
+    }
+  ]
+}

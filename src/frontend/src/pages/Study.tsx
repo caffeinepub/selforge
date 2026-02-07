@@ -3,7 +3,7 @@ import { useAppStore } from '../lib/store';
 import { Plus, Trash2, Check, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 
@@ -46,14 +46,14 @@ export default function Study() {
   const laterTopics = todayData.studyTopics.filter((t) => t.status === 'later');
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="page-container">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Study</h1>
+        <h1 className="page-title">Study</h1>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-neon-green text-black hover:bg-neon-green/90">
-              <Plus className="w-4 h-4 mr-1" />
-              Add Topic
+            <Button size="sm" className="bg-neon-green text-black hover:bg-neon-green/90 h-8">
+              <Plus className="w-3.5 h-3.5 mr-1" />
+              Add
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-card-dark border-border-subtle">
@@ -91,19 +91,19 @@ export default function Study() {
 
       {/* Progress Summary */}
       <Card className="bg-card-dark border-border-subtle">
-        <CardContent className="pt-6">
+        <CardContent className="card-compact">
           <div className="flex justify-around text-center">
             <div>
-              <div className="text-3xl font-bold text-neon-green">{doneTopics.length}</div>
-              <div className="text-xs text-muted-foreground">Done</div>
+              <div className="text-2xl font-bold text-neon-green">{doneTopics.length}</div>
+              <div className="text-[10px] text-muted-foreground">Done</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-neon-yellow">{pendingTopics.length}</div>
-              <div className="text-xs text-muted-foreground">Pending</div>
+              <div className="text-2xl font-bold text-neon-yellow">{pendingTopics.length}</div>
+              <div className="text-[10px] text-muted-foreground">Pending</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-muted-foreground">{laterTopics.length}</div>
-              <div className="text-xs text-muted-foreground">Later</div>
+              <div className="text-2xl font-bold text-muted-foreground">{laterTopics.length}</div>
+              <div className="text-[10px] text-muted-foreground">Later</div>
             </div>
           </div>
         </CardContent>
@@ -111,40 +111,40 @@ export default function Study() {
 
       {/* Pending Topics */}
       {pendingTopics.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-semibold text-neon-yellow">To Do Today</h2>
+        <div className="space-y-2">
+          <h2 className="section-title text-neon-yellow">To Do Today</h2>
           {pendingTopics.map((topic) => (
             <Card key={topic.id} className="bg-card-dark border-border-subtle">
-              <CardContent className="pt-4">
+              <CardContent className="pt-3 pb-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
-                    <h3 className="font-semibold">{topic.subject}</h3>
-                    <p className="text-sm text-muted-foreground">{topic.chapter}</p>
+                    <h3 className="text-sm font-semibold">{topic.subject}</h3>
+                    <p className="text-xs text-muted-foreground">{topic.chapter}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleMarkDone(topic.id)}
-                      className="border-neon-green text-neon-green hover:bg-neon-green/20"
+                      className="border-neon-green text-neon-green hover:bg-neon-green/20 h-7 w-7 p-0"
                     >
-                      <Check className="w-4 h-4" />
+                      <Check className="w-3.5 h-3.5" />
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleMarkLater(topic.id)}
-                      className="border-border-subtle hover:bg-accent"
+                      className="border-border-subtle hover:bg-accent h-7 w-7 p-0"
                     >
-                      <Clock className="w-4 h-4" />
+                      <Clock className="w-3.5 h-3.5" />
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => deleteStudyTopic(topic.id)}
-                      className="border-destructive text-destructive hover:bg-destructive/20"
+                      className="border-destructive text-destructive hover:bg-destructive/20 h-7 w-7 p-0"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                   </div>
                 </div>
@@ -156,32 +156,32 @@ export default function Study() {
 
       {/* Done Topics */}
       {doneTopics.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-semibold text-neon-green">Completed</h2>
+        <div className="space-y-2">
+          <h2 className="section-title text-neon-green">Completed</h2>
           {doneTopics.map((topic) => (
             <Card key={topic.id} className="bg-card-dark border-neon-green/30">
-              <CardContent className="pt-4">
+              <CardContent className="pt-3 pb-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 opacity-70">
-                    <h3 className="font-semibold line-through">{topic.subject}</h3>
-                    <p className="text-sm text-muted-foreground line-through">{topic.chapter}</p>
+                    <h3 className="text-sm font-semibold line-through">{topic.subject}</h3>
+                    <p className="text-xs text-muted-foreground line-through">{topic.chapter}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleMarkDone(topic.id)}
-                      className="border-neon-green bg-neon-green/20 text-neon-green"
+                      className="border-neon-green bg-neon-green/20 text-neon-green h-7 w-7 p-0"
                     >
-                      <Check className="w-4 h-4" />
+                      <Check className="w-3.5 h-3.5" />
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => deleteStudyTopic(topic.id)}
-                      className="border-destructive text-destructive hover:bg-destructive/20"
+                      className="border-destructive text-destructive hover:bg-destructive/20 h-7 w-7 p-0"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                   </div>
                 </div>
@@ -193,32 +193,32 @@ export default function Study() {
 
       {/* Later Topics */}
       {laterTopics.length > 0 && (
-        <div className="space-y-3">
-          <h2 className="text-lg font-semibold text-muted-foreground">For Later</h2>
+        <div className="space-y-2">
+          <h2 className="section-title text-muted-foreground">For Later</h2>
           {laterTopics.map((topic) => (
             <Card key={topic.id} className="bg-card-dark border-border-subtle opacity-60">
-              <CardContent className="pt-4">
+              <CardContent className="pt-3 pb-3">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
-                    <h3 className="font-semibold">{topic.subject}</h3>
-                    <p className="text-sm text-muted-foreground">{topic.chapter}</p>
+                    <h3 className="text-sm font-semibold">{topic.subject}</h3>
+                    <p className="text-xs text-muted-foreground">{topic.chapter}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleMarkLater(topic.id)}
-                      className="border-border-subtle bg-accent"
+                      className="border-border-subtle bg-accent h-7 w-7 p-0"
                     >
-                      <Clock className="w-4 h-4" />
+                      <Clock className="w-3.5 h-3.5" />
                     </Button>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => deleteStudyTopic(topic.id)}
-                      className="border-destructive text-destructive hover:bg-destructive/20"
+                      className="border-destructive text-destructive hover:bg-destructive/20 h-7 w-7 p-0"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </Button>
                   </div>
                 </div>
@@ -230,8 +230,8 @@ export default function Study() {
 
       {todayData.studyTopics.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          <p>No study topics yet.</p>
-          <p className="text-sm">Add your first topic to get started.</p>
+          <p className="text-sm">No study topics yet.</p>
+          <p className="text-xs">Add your first topic to get started.</p>
         </div>
       )}
     </div>

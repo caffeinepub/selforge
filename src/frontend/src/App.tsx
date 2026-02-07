@@ -6,7 +6,6 @@ import Gym from './pages/Gym';
 import Nutrition from './pages/Nutrition';
 import Goals from './pages/Goals';
 import BottomNav from './components/BottomNav';
-import { useAppStore } from './lib/store';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'dashboard' | 'study' | 'gym' | 'nutrition' | 'goals'>('dashboard');
@@ -14,7 +13,7 @@ function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
       <div className="min-h-screen bg-black text-white flex flex-col">
-        <main className="flex-1 pb-20 overflow-y-auto">
+        <main className="flex-1 pb-16 overflow-y-auto">
           {currentPage === 'dashboard' && <Dashboard />}
           {currentPage === 'study' && <Study />}
           {currentPage === 'gym' && <Gym />}

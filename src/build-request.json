@@ -1,0 +1,75 @@
+{
+  "kind": "build_request",
+  "title": "Make the calendar widget smaller and refine the app to a stylish, minimalist look",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-3",
+      "text": "Refine the existing LiveCalendarWidget to be noticeably more compact and minimalist while preserving the current functionality (local device date/time, live updates at least once per second, compact month grid, highlight current day).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "i said small calendar and make app for stylish and minilimatsit like title and all"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The widget still updates the time at least once per second while visible.",
+        "The widget footprint is reduced compared to the current implementation (smaller typography, tighter spacing, less vertical padding) without reducing readability.",
+        "Current day remains visually distinct from other days.",
+        "No new features are added to the calendar (no navigation, event creation, reminders)."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Update the Dashboard header area (app title + streak + calendar area) to follow a consistent minimalist, stylish layout: tighter spacing, clearer hierarchy, and a cohesive typographic scale that matches the compact calendar.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "make app for stylish and minilimatsit like title and all"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Dashboard header (title/streak/calendar) reads as a single coherent header block with consistent spacing and alignment.",
+        "The calendar remains near the top in the header area and does not disrupt existing metrics cards layout.",
+        "All user-facing text in the header remains in English."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Apply a minimalist styling pass across the app screens (Dashboard, Study, Gym, Nutrition, Goals, BottomNav) to make typography, spacing, borders, and card density feel consistent with the compact header/calendar, while keeping the existing dark/neon aesthetic.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "make app for stylish and minilimatsit like title and all"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Across pages, headings use a consistent size scale and weight; card padding and gaps feel consistent and slightly tighter than before.",
+        "Existing dark/neon theme tokens/utilities (e.g., bg-card-dark, border-border-subtle, neon accents) are preserved; the app remains dark-themed.",
+        "Bottom navigation remains fixed and functional with clear active state."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not edit files under frontend/src/components/ui (compose existing shadcn components instead).",
+    "Do not modify any files listed as immutable in SYSTEM_CONTEXT (e.g., frontend/src/main.tsx, frontend/src/hooks/useActor.ts, frontend/src/hooks/useInternetIdentity.ts).",
+    "Keep existing calendar behavior: local time, live updating, and current-day highlighting."
+  ],
+  "nonGoals": [
+    "Add reminders, events, or calendar interactions (month switching, adding notes).",
+    "Backend changes or data persistence related to the calendar widget."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
