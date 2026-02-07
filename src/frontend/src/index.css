@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.625rem;
+        --background: 0 0 0;
+        --foreground: 1 0 0;
+        --card: 0.1 0 0;
+        --card-foreground: 1 0 0;
+        --popover: 0.15 0 0;
+        --popover-foreground: 1 0 0;
+        --primary: 0.75 0.25 145;
+        --primary-foreground: 0 0 0;
+        --secondary: 0.2 0 0;
+        --secondary-foreground: 1 0 0;
+        --muted: 0.3 0 0;
+        --muted-foreground: 0.6 0 0;
+        --accent: 0.15 0 0;
+        --accent-foreground: 1 0 0;
+        --destructive: 0.55 0.25 25;
+        --destructive-foreground: 1 0 0;
+        --border: 0.2 0 0;
+        --input: 0.2 0 0;
+        --ring: 0.75 0.25 145;
+        
+        /* Custom colors for Self Forge */
+        --neon-green: 0.75 0.35 145;
+        --neon-yellow: 0.95 0.25 100;
+        --card-dark: 0.08 0 0;
+        --border-subtle: 0.15 0 0;
+    }
+
+    .dark {
+        --background: 0 0 0;
+        --foreground: 1 0 0;
+        --card: 0.1 0 0;
+        --card-foreground: 1 0 0;
+        --popover: 0.15 0 0;
+        --popover-foreground: 1 0 0;
+        --primary: 0.75 0.25 145;
+        --primary-foreground: 0 0 0;
+        --secondary: 0.2 0 0;
+        --secondary-foreground: 1 0 0;
+        --muted: 0.3 0 0;
+        --muted-foreground: 0.6 0 0;
+        --accent: 0.15 0 0;
+        --accent-foreground: 1 0 0;
+        --destructive: 0.55 0.25 25;
+        --destructive-foreground: 1 0 0;
+        --border: 0.2 0 0;
+        --input: 0.2 0 0;
+        --ring: 0.75 0.25 145;
+        
+        /* Custom colors for Self Forge */
+        --neon-green: 0.75 0.35 145;
+        --neon-yellow: 0.95 0.25 100;
+        --card-dark: 0.08 0 0;
+        --border-subtle: 0.15 0 0;
+    }
+
+    * {
+        @apply border-border;
+    }
+    
+    body {
+        @apply bg-background text-foreground;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    }
+}
+
+@layer utilities {
+    .text-neon-green {
+        color: oklch(var(--neon-green));
+    }
+    
+    .text-neon-yellow {
+        color: oklch(var(--neon-yellow));
+    }
+    
+    .bg-neon-green {
+        background-color: oklch(var(--neon-green));
+    }
+    
+    .bg-neon-yellow {
+        background-color: oklch(var(--neon-yellow));
+    }
+    
+    .border-neon-green {
+        border-color: oklch(var(--neon-green));
+    }
+    
+    .border-neon-yellow {
+        border-color: oklch(var(--neon-yellow));
+    }
+    
+    .bg-card-dark {
+        background-color: oklch(var(--card-dark));
+    }
+    
+    .border-border-subtle {
+        border-color: oklch(var(--border-subtle));
+    }
+    
+    .glow-text {
+        text-shadow: 0 0 10px oklch(var(--neon-green) / 0.5),
+                     0 0 20px oklch(var(--neon-green) / 0.3);
+    }
+    
+    .glow-icon {
+        filter: drop-shadow(0 0 4px oklch(var(--neon-green) / 0.6));
+    }
+}
