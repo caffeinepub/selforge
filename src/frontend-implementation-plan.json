@@ -1,94 +1,106 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Portion-aware multi-item meal parsing with online nutrition lookup and Chrome-like breakdown UI",
+  "title": "Improve free-text restaurant meal parsing and optional web-search nutrition fallback",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Parse free-text meal prompts into multiple food items with portion-aware unit handling (slices/packets/tablespoons/grams) instead of defaulting to 100g.",
+      "summary": "Improve free-text parsing to keep multi-word restaurant/menu item names intact and default to realistic per-piece portions for burger-like foods.",
       "acceptanceCriteria": [
-        "Given input like \"2 cheese slice\", the parsed food quantity shown in the UI is based on a slice-to-grams estimate (not 100g by default).",
-        "Given input like \"10 gram mayonnaise\", the parsed quantity remains 10g (no conversion/guessing needed).",
-        "If the prompt includes multiple food items (e.g., \"2 maggie 2 cheese slice 10 gram mayannaise\"), the parser extracts all items instead of collapsing into a single food entry."
+        "Entering \"2 kfc veg zinger burger\" results in a parsed food item whose name includes \"kfc\" and \"veg zinger burger\" (not truncated to only the first 2–3 words).",
+        "The parser treats \"2 <menu item>\" as 2 pieces (not 2g) when no explicit unit is provided.",
+        "Portion estimation for burger-like items defaults to a higher per-piece gram estimate than the generic 50g piece (so total grams for 2 burgers is plausibly >100g)."
       ],
       "file_operations": [
         {
           "path": "frontend/src/lib/mealPromptParser.ts",
-          "operation": "create",
-          "description": "Create a dedicated meal prompt parser that extracts multiple items by recognizing repeating quantity+unit+food-name segments, preserving both the interpreted grams and the original unit display (e.g., \"2 slices\")."
+          "operation": "modify",
+          "description": "Update parsing heuristics so number-led items can capture longer multi-word names (e.g., restaurant + menu item) without the current 3-word truncation, while still supporting multi-item inputs separated by additional quantities/conjunctions."
         },
         {
           "path": "frontend/src/lib/portionEstimates.ts",
-          "operation": "create",
-          "description": "Add portion-to-grams estimates for common units (slice, packet, tablespoon, teaspoon, cup, serving) with food-aware overrides (e.g., cheese slice → grams, Maggi packet → grams), used only when the prompt unit is not already grams/ml."
+          "operation": "modify",
+          "description": "Adjust portion estimation so missing-unit quantities default to pieces, and add burger-like per-piece gram overrides (e.g., burger/zinger/sandwich) to produce plausible totals for restaurant items."
         },
         {
           "path": "frontend/src/lib/descriptionFlow.ts",
           "operation": "modify",
-          "description": "Update food parsing to use the new meal prompt parser for heuristic parsing, returning a multi-item food result structure (items array + totals-ready fields) while keeping gym/cardio parsing behavior unchanged."
+          "description": "Ensure heuristic food parsing uses the improved meal prompt parser output for single-item cases (including restaurant/menu items) and keeps the computed per-piece gram quantity for downstream nutrition scaling."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add a public, keyless online nutrition lookup step (e.g., Open Food Facts search) before DeepSeek/local fallback and track nutrition source in the enriched results.",
+      "summary": "Add an optional Google Custom Search-based nutrition lookup step after Open Food Facts not-found and before DeepSeek/local fallback, configured via environment variables.",
       "acceptanceCriteria": [
-        "When an item can be matched via a public nutrition endpoint (e.g., Open Food Facts), the app uses those values rather than the local fallback DB.",
-        "If online lookup fails or returns no match, the app continues to work and uses the existing DeepSeek/local fallback logic without crashing.",
-        "The enrichment pipeline clearly tracks whether numbers are from online lookup vs fallback (internally and/or as a small UI note)."
+        "If Open Food Facts returns not-found for a query like \"KFC veg zinger burger\", the app attempts a web-search-based lookup next.",
+        "The web-search integration is configurable via environment variables (do not hardcode keys in source).",
+        "When the search API is not configured or fails, the app continues gracefully to the existing DeepSeek/local fallback without breaking the UI.",
+        "The nutrition result includes an explicit nutritionSource value that distinguishes search-based results from 'online' (Open Food Facts), 'deepseek', and 'local'."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/onlineNutrition.ts",
+          "path": "frontend/src/lib/webSearchNutrition.ts",
           "operation": "create",
-          "description": "Implement a keyless public nutrition fetcher that tries to match a query to public sources (such as Open Food Facts) and returns normalized calories/protein/sugar plus an explicit source label (e.g., \"online\")."
+          "description": "Implement a web-search-based nutrition provider that calls Google Custom Search JSON API when configured, returning a structured result (including a confidence indicator) derived from search results/snippets. Verify the component's usage instructions before implementing."
         },
         {
           "path": "frontend/src/lib/nutrition.ts",
           "operation": "modify",
-          "description": "Adjust nutrition enrichment pipeline ordering to try online lookup first, then existing DeepSeek logic (when configured), and finally the local nutrition DB; extend return shape to include a nutritionSource field for UI/internal tracking."
+          "description": "Insert the new web-search provider into the fallback chain (after Open Food Facts not-found, before DeepSeek/local), read configuration from import.meta.env, and extend NutritionData.nutritionSource to include a distinct 'web-search' value."
         },
         {
-          "path": "frontend/src/pages/Description.tsx",
+          "path": "frontend/src/lib/descriptionFlow.ts",
           "operation": "modify",
-          "description": "Display a small per-item note (or badge-like text) indicating whether nutrition came from online lookup vs DeepSeek vs local fallback; ensure the note is in English and does not block saving."
+          "description": "Update types for nutritionSource in ParsedEntry/foodItems to include 'web-search' and propagate it from fetchNutritionData into enriched results."
+        },
+        {
+          "path": "frontend/.env.example",
+          "operation": "create",
+          "description": "Document optional environment variables for the web-search lookup (e.g., VITE_GOOGLE_CSE_API_KEY and VITE_GOOGLE_CSE_CX) and note that the feature is disabled when unconfigured."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Update Quick Log (Description) results UI to show a Chrome-like itemized breakdown with interpreted quantities, per-item macros, and totals.",
+      "summary": "Extract calories (and protein/sugar when available) from web-search snippets using unit-aware heuristics and scale results to the parsed quantity, falling back when confidence is low.",
       "acceptanceCriteria": [
-        "For multi-item input, the results screen shows a per-item list (e.g., Maggi x2, cheese slice x2, mayonnaise 10g) with calories and protein per item and totals at the bottom.",
-        "The totals match the sum of the displayed per-item values.",
-        "All user-facing labels and summaries are in English."
+        "For a search snippet containing a calories value (e.g., \"450 kcal\"), the app can parse and populate calories for the item.",
+        "If protein is present in the snippet (e.g., \"25g protein\"), the app parses and populates protein; if absent, protein can remain 0.",
+        "Parsed per-item nutrition is scaled to the final gram quantity that the parser/portion estimator computes for the entry.",
+        "If parsing yields ambiguous/low-confidence values, the app does not present them as definitive; it should fall back to the next provider (DeepSeek/local) rather than saving incorrect numbers."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Description.tsx",
+          "path": "frontend/src/lib/webSearchNutrition.ts",
           "operation": "modify",
-          "description": "Replace the single-food grid UI with a food-results renderer that supports both single-item and multi-item meals: show an itemized list with interpreted quantity (original unit + grams), calories/protein/sugar (when available), and a totals section whose values are computed from the displayed items."
+          "description": "Add robust, unit-aware snippet parsing heuristics (kcal/calories, grams; optionally handle kJ→kcal) and a confidence/validity check so ambiguous values return no usable result (triggering fallback) rather than being surfaced as definitive. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/nutrition.ts",
+          "operation": "modify",
+          "description": "Ensure web-search-derived nutrition is only used when snippet parsing reports sufficient confidence, and scale parsed nutrition to the final gram quantity computed by the parser/portion estimator for the entry."
         }
       ]
     },
     {
       "id": "REQ-4",
-      "summary": "Enrich multiple parsed food items in one prompt, generate an English bullet-like summary with totals, and keep saved data consistent with what the UI shows.",
+      "summary": "Update Quick Log (Description) results UI to clearly label nutrition source as Web Search vs Online DB vs AI vs Estimated, in English, without affecting gym/cardio flows.",
       "acceptanceCriteria": [
-        "A single prompt containing multiple foods results in enrichment of each item and a combined summary string that includes itemized estimates and a total calories/protein line.",
-        "The existing Save flow still works (no runtime errors), and saved entries reflect the enriched calories/protein/sugar values used in the UI.",
-        "If only one food is entered, the UI and save behavior remain sensible and similar to current behavior (single-item display is acceptable)."
+        "For single-item and multi-item food results, the UI shows a source badge that includes a distinct label for the new search-based provider (e.g., \"Web Search\"), separate from existing badges.",
+        "All user-facing text for the new provider is in English.",
+        "The UI continues to work for gym/cardio entries unchanged."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/descriptionFlow.ts",
-          "operation": "modify",
-          "description": "Update food enrichment to enrich each parsed food item, compute per-item macros and meal totals, and generate a combined English summary string (itemized lines + totals) while preserving compatibility for non-food types."
-        },
-        {
           "path": "frontend/src/pages/Description.tsx",
           "operation": "modify",
-          "description": "Update confirm-and-save behavior for multi-item meals to save one food entry per recognized item using the enriched values shown in the UI, while keeping single-item save behavior consistent with current flow (no runtime errors)."
+          "description": "Extend the nutrition source badge mapping to include a distinct English label for 'web-search' (e.g., \"Web Search\") and keep existing badges unchanged for online/deepseek/local; ensure gym/cardio rendering remains unaffected."
+        },
+        {
+          "path": "frontend/src/lib/descriptionFlow.ts",
+          "operation": "modify",
+          "description": "Align any frontend-facing type unions and value wiring so the UI can reliably render the new 'web-search' nutritionSource badge for both single-item and multi-item food results."
         }
       ]
     }

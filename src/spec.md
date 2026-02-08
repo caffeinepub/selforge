@@ -1,12 +1,13 @@
 # Specification
 
 ## Summary
-**Goal:** Improve free-text meal logging so multi-item prompts are parsed with portion-aware quantities, enriched with public online nutrition data when available, and shown in a Chrome-like itemized breakdown with totals.
+**Goal:** Improve free-text restaurant/menu meal logging so multi-word items parse correctly and nutrition can be fetched via an optional web-search fallback with clear source labeling.
 
 **Planned changes:**
-- Update meal prompt parsing to extract multiple food items from one input and interpret portion-based units (e.g., slices, packets, tablespoons, grams) without defaulting to 100g when a different unit is implied.
-- Add an online nutrition lookup step using free/public endpoints (e.g., Open Food Facts) to fetch calories/protein/sugar before falling back to the existing local/DeepSeek enrichment logic, while tracking the source of the values.
-- Revise the Quick Log (Description) results UI to display an English, Chrome-like per-item breakdown (quantity + calories/protein/sugar when available) and show summed totals for the full meal.
-- Update enrichment/saving flow to handle enriching multiple items per prompt, produce a human-style English summary (itemized + totals), and keep saved entries consistent with the enriched values shown in the UI.
+- Update free-text meal parsing to keep full multi-word restaurant/menu item names (e.g., “kfc veg zinger burger”) as one item, and interpret leading quantities like “2” as pieces when no unit is provided.
+- Improve portion estimation defaults for burger-like items so per-piece grams are more realistic than generic small-piece estimates.
+- Add an optional Google Custom Search JSON API lookup step when Open Food Facts has no match, configured via environment variables and gracefully skipped when unconfigured or failing.
+- Extract nutrition numbers (at minimum calories; protein/sugar when available) from web-search result text using unit-aware heuristics, scale to parsed quantity/portion, and fall back to existing providers when confidence is low.
+- Update Quick Log (Description) results UI to show an English source badge distinguishing Open Food Facts vs Web Search vs AI vs local estimation, without changing gym/cardio flows.
 
-**User-visible outcome:** Users can type prompts like “2 maggie 2 cheese slice 10 gram mayonnaise” and see each recognized item with an interpreted quantity, nutrition values sourced from the web when possible (with fallback when not), and a clear total calories/protein (and sugar when available) summary in English.
+**User-visible outcome:** Users can enter free-text meals like “2 kfc veg zinger burger” and get a correctly parsed item with sensible portions, with nutrition fetched from Open Food Facts or (when needed) an optional web search fallback, and the UI clearly shows where the nutrition came from.

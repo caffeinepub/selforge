@@ -1,86 +1,52 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-08T01:13:31.092Z",
-  "summary": "Implemented portion-aware parsing utilities and an online-first nutrition lookup (Open Food Facts) with source tracking, plus some Description page handling for multi-item saves. However, the diff evidence is insufficient/absent for the requested Chrome-like per-item breakdown UI with totals and for multi-item enrichment + combined English summary generation. Several unrelated UI/feature expansions were also introduced.",
-  "missing_requirements": [
-    {
-      "id": "REQ-3",
-      "requirement": "Change the Quick Log (Description) result UI to present a Chrome-like breakdown for multi-item meals: list each recognized food item with its interpreted quantity plus calories/protein/sugar and show totals for the full meal (English labels).",
-      "reason": "Description.tsx changes shown cover parsing/enriching and saving multi-item entries plus a nutrition source badge helper, but the diff snippet does not show any rendered per-item results list nor totals calculation/display in the UI.",
-      "evidence": [
-        "frontend/src/pages/Description.tsx (truncated)"
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "requirement": "Update food enrichment logic to enrich multiple parsed food items in one prompt and generate a human-style English summary (itemized breakdown + totals) while keeping saved data consistent.",
-      "reason": "The diff summary does not show the implementation of multi-item enrichment (e.g., iterating parsed items, calling nutrition lookup per item, computing totals) nor generation of a combined summary string with totals. Description.tsx saves per-item summaries, but no combined summary/totals generation is evidenced.",
-      "evidence": [
-        "frontend/src/lib/descriptionFlow.ts (truncated)",
-        "frontend/src/pages/Description.tsx (truncated)"
-      ]
-    }
-  ],
+  "generatedAt": "2026-02-08T01:26:36.810Z",
+  "summary": "Diff implements web-search nutrition lookup via Google Custom Search (env-configured) with snippet parsing heuristics, adds a new nutritionSource='web-search' path in the nutrition fallback chain, improves meal prompt parsing to capture longer restaurant/menu item names, adjusts portion gram estimates for burger-like items, and updates Description results UI to display source badges. Diff also includes several broader UI/layout refactors and additional modules not explicitly requested.",
+  "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "Large-scale UI density/minimalist redesign and new 720×1600 app canvas constraint across the app.",
-      "reason": "Not requested by any REQ; BuildRequest focuses on meal parsing, nutrition lookup, and Description results formatting.",
+      "description": "Large-scale UI/UX refactor across multiple pages (Dashboard/Study/Goals/Gym/Nutrition), addition of a new Description page and navigation changes beyond the requested Quick Log source indication.",
+      "reason": "BuildRequest only asks to update Quick Log (Description) results UI to show nutrition source badges; it does not request redesigns or workflow changes replacing manual logging with a Description CTA.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/App.tsx, frontend/src/index.css, multiple pages)"
+        "frontend-file-summaries.txt",
+        "frontend/src/App.tsx",
+        "frontend/src/pages/Dashboard.tsx",
+        "frontend/src/pages/Study.tsx",
+        "frontend/src/pages/Goals.tsx",
+        "frontend/src/pages/Gym.tsx",
+        "frontend/src/pages/Nutrition.tsx",
+        "frontend/src/components/BottomNav.tsx"
       ]
     },
     {
-      "description": "Gym/Nutrition pages changed to replace manual logging with an \"Add via Description\" CTA flow.",
-      "reason": "Not requested; requirements only mention updating the Quick Log (Description) results UI and parsing/enrichment logic.",
+      "description": "Added/expanded unrelated nutrition/exercise data modules and placeholder hooks not tied to the web-search nutrition feature (e.g., comprehensive exercise library, Indian nutrition module, empty useQueries placeholder, live time widget).",
+      "reason": "Not requested by REQ-1..REQ-4; scope is restaurant/menu parsing + web-search nutrition + source labeling.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/pages/Gym.tsx, frontend/src/pages/Nutrition.tsx)"
+        "frontend-file-summaries.txt",
+        "frontend/src/lib/mevsa.ts",
+        "frontend/src/lib/indianNutrition.ts",
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/components/LiveCalendarWidget.tsx"
       ]
     },
     {
-      "description": "Bottom navigation updated to include a sixth tab for a new Description (Log) page.",
-      "reason": "Adding a new nav tab/page is not explicitly requested in the requirements (only asks to change Quick Log/Description result UI).",
+      "description": "Use of DeepSeek Chat Completions endpoint for parsing free-text descriptions into structured entries within descriptionFlow.ts.",
+      "reason": "Not requested (and BuildRequest emphasizes showing the user it's not \"asking ChatGPT for everything\"; while DeepSeek was mentioned as existing fallback, implementing/expanding AI parsing for description is extra scope relative to the specified changes).",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/BottomNav.tsx)"
-      ]
-    },
-    {
-      "description": "Added/expanded extensive exercise library/module (Mevsa AI data source).",
-      "reason": "Unrelated to meal prompt parsing/nutrition lookup/Description UI requirements.",
-      "evidence": [
-        "frontend-file-summaries.txt (frontend/src/lib/mevsa.ts)"
-      ]
-    },
-    {
-      "description": "Added a comprehensive Indian brand nutrition module with 'API integration support'.",
-      "reason": "Not requested; online lookup was specifically for public endpoints like Open Food Facts and a fallback pipeline—this adds a separate nutrition module beyond stated requirements.",
-      "evidence": [
-        "frontend-file-summaries.txt (frontend/src/lib/indianNutrition.ts)"
-      ]
-    },
-    {
-      "description": "LiveCalendarWidget changed to a live date/time widget and removed calendar grid.",
-      "reason": "Not requested; unrelated to meal parsing/nutrition lookup.",
-      "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/LiveCalendarWidget.tsx)"
-      ]
-    },
-    {
-      "description": "Added a clean rebuild bash script.",
-      "reason": "Not requested by BuildRequest.",
-      "evidence": [
-        "frontend-file-summaries.txt (frontend/scripts/clean-rebuild.sh)"
+        "frontend/src/lib/descriptionFlow.ts"
       ]
     }
   ],
-  "confidence": 0.62,
+  "confidence": 0.72,
   "changed_files": [
     "frontend-file-summaries.txt",
+    "frontend/.env.example",
     "frontend/src/lib/descriptionFlow.ts",
     "frontend/src/lib/mealPromptParser.ts",
     "frontend/src/lib/nutrition.ts",
-    "frontend/src/lib/onlineNutrition.ts",
     "frontend/src/lib/portionEstimates.ts",
+    "frontend/src/lib/webSearchNutrition.ts",
     "frontend/src/pages/Description.tsx",
     "project_state.json"
   ]

@@ -1,5 +1,6 @@
 import { fetchDeepSeekNutritionData } from './deepseek';
 import { fetchOnlineNutrition, type OnlineNutritionResult } from './onlineNutrition';
+import { fetchWebSearchNutrition } from './webSearchNutrition';
 
 // Local nutrition database (fallback)
 const nutritionDB: Record<string, { calories: number; protein: number; sugar: number }> = {
@@ -55,7 +56,7 @@ export interface NutritionData {
   calories: number;
   protein: number;
   sugar: number;
-  nutritionSource: 'online' | 'deepseek' | 'local';
+  nutritionSource: 'online' | 'web-search' | 'deepseek' | 'local';
 }
 
 export async function fetchNutritionData(
@@ -70,6 +71,19 @@ export async function fetchNutritionData(
       protein: onlineResult.protein || 0,
       sugar: onlineResult.sugar || 0,
       nutritionSource: 'online',
+    };
+  }
+
+  // Try web search if configured
+  const webSearchResult = await fetchWebSearchNutrition(foodName, quantityGrams);
+  if (webSearchResult.source === 'web-search' && 
+      (webSearchResult.confidence === 'high' || webSearchResult.confidence === 'medium') &&
+      webSearchResult.calories) {
+    return {
+      calories: webSearchResult.calories,
+      protein: webSearchResult.protein || 0,
+      sugar: webSearchResult.sugar || 0,
+      nutritionSource: 'web-search',
     };
   }
 

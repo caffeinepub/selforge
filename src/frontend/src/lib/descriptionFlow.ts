@@ -13,7 +13,7 @@ export interface ParsedEntry {
   calories?: number;
   protein?: number;
   sugar?: number;
-  nutritionSource?: 'online' | 'deepseek' | 'local';
+  nutritionSource?: 'online' | 'web-search' | 'deepseek' | 'local';
   
   // Food fields (multi-item)
   foodItems?: Array<{
@@ -23,7 +23,7 @@ export interface ParsedEntry {
     calories: number;
     protein: number;
     sugar: number;
-    nutritionSource: 'online' | 'deepseek' | 'local';
+    nutritionSource: 'online' | 'web-search' | 'deepseek' | 'local';
   }>;
   totalCalories?: number;
   totalProtein?: number;
@@ -135,7 +135,7 @@ Only include fields relevant to the type. If you can't determine the type, use "
 // Fallback heuristic parsing
 function parseWithHeuristics(text: string, originalText: string): ParsedEntry {
   // Food keywords
-  const foodKeywords = ['ate', 'had', 'consumed', 'drank', 'breakfast', 'lunch', 'dinner', 'snack', 'meal', 'food', 'egg', 'bread', 'rice', 'chicken', 'milk', 'fruit', 'cheese', 'maggi', 'mayonnaise', 'mayo'];
+  const foodKeywords = ['ate', 'had', 'consumed', 'drank', 'breakfast', 'lunch', 'dinner', 'snack', 'meal', 'food', 'egg', 'bread', 'rice', 'chicken', 'milk', 'fruit', 'cheese', 'maggi', 'mayonnaise', 'mayo', 'burger', 'sandwich', 'pizza', 'kfc', 'mcdonalds'];
   
   // Exercise keywords
   const gymKeywords = ['bench', 'press', 'squat', 'deadlift', 'curl', 'row', 'pull', 'push', 'lift', 'sets', 'reps', 'kg', 'weight'];
@@ -182,7 +182,7 @@ function parseFoodHeuristic(text: string, originalText: string): ParsedEntry {
       })),
     };
   } else if (mealResult.items.length === 1) {
-    // Single item
+    // Single item - use the parsed quantity
     const item = mealResult.items[0];
     return {
       type: 'food',
@@ -194,7 +194,7 @@ function parseFoodHeuristic(text: string, originalText: string): ParsedEntry {
   
   // Fallback to simple parsing
   let name = 'Unknown food';
-  const foodItems = ['egg', 'eggs', 'bread', 'toast', 'rice', 'chicken', 'milk', 'banana', 'apple', 'yogurt', 'cheese', 'paneer', 'maggi'];
+  const foodItems = ['egg', 'eggs', 'bread', 'toast', 'rice', 'chicken', 'milk', 'banana', 'apple', 'yogurt', 'cheese', 'paneer', 'maggi', 'burger', 'sandwich', 'pizza'];
   
   for (const item of foodItems) {
     if (text.includes(item)) {
@@ -208,8 +208,14 @@ function parseFoodHeuristic(text: string, originalText: string): ParsedEntry {
   
   if (numbers && numbers.length > 0) {
     const num = parseInt(numbers[0]);
+    // If number is small (< 10), treat as pieces
     if (num < 10) {
-      quantity = num * 50;
+      // Use portion estimation for pieces
+      if (name.includes('burger') || name.includes('sandwich') || name.includes('pizza')) {
+        quantity = num * 200; // 200g per piece for restaurant items
+      } else {
+        quantity = num * 150; // 150g per piece default
+      }
     } else {
       quantity = num;
     }
@@ -224,9 +230,9 @@ function parseFoodHeuristic(text: string, originalText: string): ParsedEntry {
 }
 
 function parseGymHeuristic(text: string, originalText: string): ParsedEntry {
-  const exercises = ['bench press', 'squat', 'deadlift', 'curl', 'row', 'pull up', 'push up', 'press'];
-  let exerciseName = 'Unknown exercise';
+  const exercises = ['bench press', 'squat', 'deadlift', 'bicep curl', 'shoulder press', 'lat pulldown', 'leg press'];
   
+  let exerciseName = 'Unknown exercise';
   for (const ex of exercises) {
     if (text.includes(ex)) {
       exerciseName = ex;
@@ -234,21 +240,17 @@ function parseGymHeuristic(text: string, originalText: string): ParsedEntry {
     }
   }
   
-  const numbers = text.match(/\d+/g)?.map(n => parseInt(n)) || [];
-  
+  const numbers = text.match(/\d+/g);
   let sets = 3;
   let reps = 10;
-  let weight = 20;
+  let weight = 0;
   
-  if (numbers.length >= 3) {
-    sets = numbers[0];
-    reps = numbers[1];
-    weight = numbers[2];
-  } else if (numbers.length === 2) {
-    sets = numbers[0];
-    reps = numbers[1];
-  } else if (numbers.length === 1) {
-    reps = numbers[0];
+  if (numbers && numbers.length >= 2) {
+    sets = parseInt(numbers[0]);
+    reps = parseInt(numbers[1]);
+    if (numbers.length >= 3) {
+      weight = parseInt(numbers[2]);
+    }
   }
   
   return {
@@ -257,27 +259,26 @@ function parseGymHeuristic(text: string, originalText: string): ParsedEntry {
     sets,
     reps,
     weight,
-    muscleGroup: 'General',
-    summary: `${sets} sets of ${reps} reps ${exerciseName}${weight > 0 ? ` with ${weight}kg` : ''}`,
+    summary: `${exerciseName}: ${sets} sets × ${reps} reps${weight > 0 ? ` @ ${weight}kg` : ''}`,
   };
 }
 
 function parseCardioHeuristic(text: string, originalText: string): ParsedEntry {
   const activities = ['running', 'jogging', 'walking', 'cycling', 'swimming'];
-  let activityType = 'Running';
   
+  let activityType = 'Unknown activity';
   for (const activity of activities) {
     if (text.includes(activity) || text.includes(activity.slice(0, -3))) {
-      activityType = activity.charAt(0).toUpperCase() + activity.slice(1);
+      activityType = activity;
       break;
     }
   }
   
-  const numbers = text.match(/\d+/g)?.map(n => parseInt(n)) || [];
+  const numbers = text.match(/\d+/g);
   let duration = 30;
   
-  if (numbers.length > 0) {
-    duration = numbers[0];
+  if (numbers && numbers.length > 0) {
+    duration = parseInt(numbers[0]);
   }
   
   return {
@@ -288,13 +289,13 @@ function parseCardioHeuristic(text: string, originalText: string): ParsedEntry {
   };
 }
 
-// Enrich parsed entry with online data
-export async function enrichDescription(parsed: ParsedEntry): Promise<ParsedEntry> {
-  if (parsed.type === 'food') {
-    // Handle multi-item meals
-    if (parsed.foodItems && parsed.foodItems.length > 0) {
+// Enrich parsed entry with nutrition/calorie data
+export async function enrichParsedEntry(entry: ParsedEntry): Promise<ParsedEntry> {
+  if (entry.type === 'food') {
+    if (entry.foodItems && entry.foodItems.length > 0) {
+      // Multi-item meal: enrich each item
       const enrichedItems = await Promise.all(
-        parsed.foodItems.map(async (item) => {
+        entry.foodItems.map(async (item) => {
           const nutrition = await fetchNutritionData(item.name, item.quantity);
           return {
             ...item,
@@ -305,61 +306,53 @@ export async function enrichDescription(parsed: ParsedEntry): Promise<ParsedEntr
           };
         })
       );
-
+      
       const totalCalories = enrichedItems.reduce((sum, item) => sum + item.calories, 0);
       const totalProtein = enrichedItems.reduce((sum, item) => sum + item.protein, 0);
       const totalSugar = enrichedItems.reduce((sum, item) => sum + item.sugar, 0);
-
-      // Generate summary
-      const itemLines = enrichedItems.map(
-        item => `• ${item.displayQuantity} ${item.name}: ${item.calories} kcal, ${item.protein}g protein`
-      );
-      const summary = `${itemLines.join('\n')}\n\nTotal: ${totalCalories} kcal, ${Math.round(totalProtein * 10) / 10}g protein`;
-
+      
       return {
-        ...parsed,
+        ...entry,
         foodItems: enrichedItems,
         totalCalories,
-        totalProtein: Math.round(totalProtein * 10) / 10,
-        totalSugar: Math.round(totalSugar * 10) / 10,
-        summary,
+        totalProtein,
+        totalSugar,
       };
-    }
-
-    // Handle single food item
-    if (parsed.name && parsed.quantity) {
-      const nutrition = await fetchNutritionData(parsed.name, parsed.quantity);
+    } else if (entry.name && entry.quantity) {
+      // Single item: enrich with nutrition
+      const nutrition = await fetchNutritionData(entry.name, entry.quantity);
       return {
-        ...parsed,
+        ...entry,
         calories: nutrition.calories,
         protein: nutrition.protein,
         sugar: nutrition.sugar,
         nutritionSource: nutrition.nutritionSource,
-        summary: `${parsed.name} (${parsed.quantity}g): ${nutrition.calories} kcal, ${nutrition.protein}g protein, ${nutrition.sugar}g sugar`,
       };
     }
-  } else if (parsed.type === 'gym' && parsed.exerciseName) {
+  } else if (entry.type === 'gym' && entry.exerciseName && entry.sets && entry.reps) {
+    // Calculate calories burned for gym
     const caloriesBurned = await calculateCaloriesBurned('gym', {
-      exerciseName: parsed.exerciseName,
-      muscleGroup: parsed.muscleGroup,
-      sets: parsed.sets,
-      reps: parsed.reps,
-      weight: parsed.weight,
+      exerciseName: entry.exerciseName,
+      muscleGroup: entry.muscleGroup,
+      sets: entry.sets,
+      reps: entry.reps,
+      weight: entry.weight,
     });
     return {
-      ...parsed,
+      ...entry,
       caloriesBurned,
     };
-  } else if (parsed.type === 'cardio' && parsed.activityType && parsed.duration) {
+  } else if (entry.type === 'cardio' && entry.activityType && entry.duration) {
+    // Calculate calories burned for cardio
     const caloriesBurned = await calculateCaloriesBurned('cardio', {
-      activityType: parsed.activityType,
-      duration: parsed.duration,
+      activityType: entry.activityType,
+      duration: entry.duration,
     });
     return {
-      ...parsed,
+      ...entry,
       caloriesBurned,
     };
   }
-
-  return parsed;
+  
+  return entry;
 }

@@ -21,6 +21,8 @@ const FOOD_KEYWORDS = [
   'maggi', 'noodles', 'pasta', 'roti', 'chapati', 'dal', 'curry', 'sabzi',
   'mayonnaise', 'mayo', 'butter', 'oil', 'yogurt', 'curd', 'banana', 'apple',
   'orange', 'mango', 'potato', 'tomato', 'onion', 'garlic', 'ginger',
+  'burger', 'sandwich', 'pizza', 'wrap', 'roll', 'zinger', 'kfc', 'mcdonalds',
+  'subway', 'dominos', 'veg', 'vegetarian', 'non-veg',
 ];
 
 // Common quantity units
@@ -37,7 +39,7 @@ export function parseMealPrompt(text: string): MealParseResult {
 
   // Try to extract multiple items using pattern matching
   // Pattern: [number] [unit?] [food name]
-  // Examples: "2 cheese slice", "10 gram mayonnaise", "2 maggi"
+  // Examples: "2 cheese slice", "10 gram mayonnaise", "2 kfc veg zinger burger"
   
   const words = normalizedText.split(/\s+/);
   let i = 0;
@@ -69,6 +71,7 @@ export function parseMealPrompt(text: string): MealParseResult {
       let foodWords: string[] = [];
       
       // Collect words until we hit another number or end
+      // For restaurant items, collect more words to capture full names
       while (i < words.length && !words[i].match(/^\d+/)) {
         foodWords.push(words[i]);
         i++;
@@ -78,16 +81,25 @@ export function parseMealPrompt(text: string): MealParseResult {
         let foundFood = false;
         for (const keyword of FOOD_KEYWORDS) {
           if (currentFood.includes(keyword)) {
-            foodName = currentFood;
             foundFood = true;
+            // For restaurant/brand items, keep collecting words
+            if (keyword === 'kfc' || keyword === 'mcdonalds' || keyword === 'subway' || 
+                keyword === 'dominos' || keyword === 'burger' || keyword === 'sandwich' ||
+                keyword === 'zinger' || keyword === 'pizza') {
+              // Continue collecting up to 6 words for full menu item names
+              if (foodWords.length < 6) {
+                continue;
+              }
+            }
             break;
           }
         }
         
-        if (foundFood) break;
+        // For non-restaurant items, limit to 3 words
+        if (!foundFood && foodWords.length >= 3) break;
         
-        // Limit to 3 words for food name
-        if (foodWords.length >= 3) break;
+        // For restaurant items, limit to 6 words
+        if (foundFood && foodWords.length >= 6) break;
       }
 
       if (foodWords.length === 0) continue;
@@ -140,6 +152,7 @@ export function parseMealPrompt(text: string): MealParseResult {
             originalText: keyword,
           });
         }
+        break;
       }
     }
   }

@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-08T01:13:31.095Z",
+  "generatedAt": "2026-02-08T01:26:36.812Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,7 +12,7 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update the free-text meal parsing flow to support portion-aware quantities (e.g., slices, packets, tablespoons, grams) instead of defaulting foods like cheese to 100g when the user input implies a different unit (e.g., \"2 cheese slices\").",
+        "summary": "Update the free-text meal parsing so inputs like \"2 kfc veg zinger burger\" are parsed as a single food item with the full name (including multi-word restaurant/menu items) and a sensible default portion estimate for items like burgers (per piece) instead of truncating to 2–3 words or assuming unrealistic grams.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/lib/mealPromptParser.ts",
@@ -27,41 +27,45 @@
       },
       {
         "id": "REQ-2",
-        "summary": "Add a web-based nutrition lookup step (no paid/keys required) to fetch calories/protein/sugar from public online sources before falling back to the local nutrition database, so results feel \"grabbed from Chrome\" rather than purely estimated.",
+        "summary": "Add a new nutrition lookup step that uses a Google-like web search API (Google Custom Search JSON API) to find nutrition facts for restaurant/menu items when Open Food Facts does not return a match, and use that result before falling back to AI estimation or local defaults.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/onlineNutrition.ts",
+          "frontend/src/lib/webSearchNutrition.ts",
           "frontend/src/lib/nutrition.ts",
-          "frontend/src/pages/Description.tsx"
+          "frontend/src/lib/descriptionFlow.ts",
+          "frontend/.env.example"
         ],
         "matchedFiles": [
-          "frontend/src/lib/onlineNutrition.ts",
+          "frontend/src/lib/webSearchNutrition.ts",
           "frontend/src/lib/nutrition.ts",
-          "frontend/src/pages/Description.tsx"
+          "frontend/src/lib/descriptionFlow.ts",
+          "frontend/.env.example"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Change the Quick Log (Description) result UI to present a Chrome-like breakdown for multi-item meals: list each recognized food item with its interpreted quantity plus calories and protein (and sugar when available), and show totals for the full meal.",
+        "summary": "Extract usable nutrition numbers (at minimum calories; protein/sugar when available) from web-search results (e.g., result snippet text) with robust, unit-aware heuristics (kcal/calories, grams), and scale results according to the parsed quantity/portion.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/Description.tsx"
+          "frontend/src/lib/webSearchNutrition.ts",
+          "frontend/src/lib/nutrition.ts"
         ],
         "matchedFiles": [
-          "frontend/src/pages/Description.tsx"
+          "frontend/src/lib/webSearchNutrition.ts",
+          "frontend/src/lib/nutrition.ts"
         ]
       },
       {
         "id": "REQ-4",
-        "summary": "Update the food enrichment logic so it can enrich multiple parsed food items in one prompt and generate a human-style English summary similar to the assistant’s earlier response (bullet-like breakdown + totals) while keeping the saved data consistent.",
+        "summary": "Update the Quick Log (Description) results UI to clearly indicate when nutrition came from web search vs Open Food Facts vs AI vs estimation, using English labels, so the user can see that menu items are being fetched from an external source rather than \"asking ChatGPT for everything\".",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/descriptionFlow.ts",
-          "frontend/src/pages/Description.tsx"
+          "frontend/src/pages/Description.tsx",
+          "frontend/src/lib/descriptionFlow.ts"
         ],
         "matchedFiles": [
-          "frontend/src/lib/descriptionFlow.ts",
-          "frontend/src/pages/Description.tsx"
+          "frontend/src/pages/Description.tsx",
+          "frontend/src/lib/descriptionFlow.ts"
         ]
       }
     ]
@@ -71,11 +75,12 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/.env.example",
     "frontend/src/lib/descriptionFlow.ts",
     "frontend/src/lib/mealPromptParser.ts",
     "frontend/src/lib/nutrition.ts",
-    "frontend/src/lib/onlineNutrition.ts",
     "frontend/src/lib/portionEstimates.ts",
+    "frontend/src/lib/webSearchNutrition.ts",
     "frontend/src/pages/Description.tsx",
     "project_state.json",
     "scratch/component-selection.json",

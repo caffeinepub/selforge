@@ -1,103 +1,97 @@
 {
   "kind": "build_request",
-  "title": "Improve meal prompt parsing with portion-aware nutrition lookup and Chrome-like summary output",
+  "title": "Improve restaurant menu nutrition fetching (Google-like search) for free-text meal inputs",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the free-text meal parsing flow to support portion-aware quantities (e.g., slices, packets, tablespoons, grams) instead of defaulting foods like cheese to 100g when the user input implies a different unit (e.g., \"2 cheese slices\").",
+      "text": "Update the free-text meal parsing so inputs like \"2 kfc veg zinger burger\" are parsed as a single food item with the full name (including multi-word restaurant/menu items) and a sensible default portion estimate for items like burgers (per piece) instead of truncating to 2–3 words or assuming unrealistic grams.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "recent-messages"
         ],
         "quotes": [
-          "bro i want same thing you said like grabed from chrome ... but i want that i write prompts like this and ai grabs and fetches data"
+          "i write 2 kfc veg zinger burger and it dont fetches data"
         ]
       },
       "acceptanceCriteria": [
-        "Given input like \"2 cheese slice\", the parsed food quantity shown in the UI is based on a slice-to-grams estimate (not 100g by default).",
-        "Given input like \"10 gram mayonnaise\", the parsed quantity remains 10g (no conversion/guessing needed).",
-        "If the prompt includes multiple food items (e.g., \"2 maggie 2 cheese slice 10 gram mayannaise\"), the parser extracts all items instead of collapsing into a single food entry."
+        "Entering \"2 kfc veg zinger burger\" results in a parsed food item whose name includes \"kfc\" and \"veg zinger burger\" (not truncated to only the first 2–3 words).",
+        "The parser treats \"2 <menu item>\" as 2 pieces (not 2g) when no explicit unit is provided.",
+        "Portion estimation for burger-like items defaults to a higher per-piece gram estimate than the generic 50g piece (so total grams for 2 burgers is plausibly >100g)."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add a web-based nutrition lookup step (no paid/keys required) to fetch calories/protein/sugar from public online sources before falling back to the local nutrition database, so results feel \"grabbed from Chrome\" rather than purely estimated.",
+      "text": "Add a new nutrition lookup step that uses a Google-like web search API (Google Custom Search JSON API) to find nutrition facts for restaurant/menu items when Open Food Facts does not return a match, and use that result before falling back to AI estimation or local defaults.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "recent-messages"
         ],
         "quotes": [
-          "like grabed from chrome just add yourself or free chat gpt or another ai that willl help me but i want that i write prompts like this and ai grabs and fetches data"
+          "bro just connect this to google or smth bcz its not working",
+          "ask toa uth with chat gpt and whatever i tell in description menu it just ask chatgpt for all things and for data"
         ]
       },
       "acceptanceCriteria": [
-        "When an item can be matched via a public nutrition endpoint (e.g., Open Food Facts), the app uses those values rather than the local fallback DB.",
-        "If online lookup fails or returns no match, the app continues to work and uses the existing DeepSeek/local fallback logic without crashing.",
-        "The enrichment pipeline clearly tracks whether numbers are from online lookup vs fallback (internally and/or as a small UI note)."
+        "If Open Food Facts returns not-found for a query like \"KFC veg zinger burger\", the app attempts a web-search-based lookup next.",
+        "The web-search integration is configurable via environment variables (do not hardcode keys in source).",
+        "When the search API is not configured or fails, the app continues gracefully to the existing DeepSeek/local fallback without breaking the UI.",
+        "The nutrition result includes an explicit nutritionSource value that distinguishes search-based results from 'online' (Open Food Facts), 'deepseek', and 'local'."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Change the Quick Log (Description) result UI to present a Chrome-like breakdown for multi-item meals: list each recognized food item with its interpreted quantity plus calories and protein (and sugar when available), and show totals for the full meal.",
+      "text": "Extract usable nutrition numbers (at minimum calories; protein/sugar when available) from web-search results (e.g., result snippet text) with robust, unit-aware heuristics (kcal/calories, grams), and scale results according to the parsed quantity/portion.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "recent-messages"
         ],
         "quotes": [
-          "i want same thing you said like grabed from chrome ... cheese ... Quantity 100g ... Calories ... Protein ... Sugar ..."
+          "it dont fetches data jist . ... ask chatgpt for all things and for data"
         ]
       },
       "acceptanceCriteria": [
-        "For multi-item input, the results screen shows a per-item list (e.g., Maggi x2, cheese slice x2, mayonnaise 10g) with calories and protein per item and totals at the bottom.",
-        "The totals match the sum of the displayed per-item values.",
-        "All user-facing labels and summaries are in English."
+        "For a search snippet containing a calories value (e.g., \"450 kcal\"), the app can parse and populate calories for the item.",
+        "If protein is present in the snippet (e.g., \"25g protein\"), the app parses and populates protein; if absent, protein can remain 0.",
+        "Parsed per-item nutrition is scaled to the final gram quantity that the parser/portion estimator computes for the entry.",
+        "If parsing yields ambiguous/low-confidence values, the app does not present them as definitive; it should fall back to the next provider (DeepSeek/local) rather than saving incorrect numbers."
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Update the food enrichment logic so it can enrich multiple parsed food items in one prompt and generate a human-style English summary similar to the assistant’s earlier response (bullet-like breakdown + totals) while keeping the saved data consistent.",
+      "text": "Update the Quick Log (Description) results UI to clearly indicate when nutrition came from web search vs Open Food Facts vs AI vs estimation, using English labels, so the user can see that menu items are being fetched from an external source rather than \"asking ChatGPT for everything\".",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "recent-messages"
         ],
         "quotes": [
-          "i had 2 maggie 2 cheese slice 10 gram mayannaise for lunch calc calories and protein in it fromc chrome"
+          "whatever i tell in description menu it just ask chatgpt for all things and for data"
         ]
       },
       "acceptanceCriteria": [
-        "A single prompt containing multiple foods results in enrichment of each item and a combined summary string that includes itemized estimates and a total calories/protein line.",
-        "The existing Save flow still works (no runtime errors), and saved entries reflect the enriched calories/protein/sugar values used in the UI.",
-        "If only one food is entered, the UI and save behavior remain sensible and similar to current behavior (single-item display is acceptable)."
+        "For single-item and multi-item food results, the UI shows a source badge that includes a distinct label for the new search-based provider (e.g., \"Web Search\"), separate from existing badges.",
+        "All user-facing text for the new provider is in English.",
+        "The UI continues to work for gym/cardio entries unchanged."
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under frontend/src/components/ui or any immutable paths listed in SYSTEM_CONTEXT (compose existing UI components instead).",
-    "Backend must remain single-actor; do not introduce additional backend services.",
-    "Do not add OpenAI/Anthropic or other disallowed LLM integrations; any external fetch must be generic REST to public endpoints."
+    "Use English for any user-facing text.",
+    "Do not edit files under frontend/src/components/ui, frontend/src/hooks/useInternetIdentity.ts/tsx, frontend/src/hooks/useActor.ts, or frontend/src/main.tsx (compose them instead).",
+    "Backend must remain a single Motoko actor if backend changes are introduced; add migration.mo only if stable state is changed."
   ],
   "nonGoals": [
-    "Implementing an actual Chrome extension or directly scraping the user’s browser/Chrome history.",
-    "Adding paid nutrition APIs that require user-provided API keys.",
-    "Implementing third-party authentication beyond Internet Identity."
+    "Do not add third-party authentication providers (only Internet Identity is allowed).",
+    "Do not add paid/closed-source nutrition databases that require mandatory API keys to function (the web-search step must be optional and gracefully disabled when unconfigured).",
+    "Do not implement real-time features (WebSockets/chat).",
+    "Do not integrate OpenAI/Anthropic/ChatGPT APIs."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }
