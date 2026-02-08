@@ -2,12 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-first-run-onboarding-gate-that-appears-before-the-user-can-access-the-main-app-requiring-the-user-to-enter-a-their-name-b-deepseek-api-key-c-nutritionix-credentials-and-d-api-ninjas-api-key-persist-these-values-locally-and-do-not-show-the-main-navigation-pages-until-onboarding-is-completed",
-      "featureTitle": "Add a first-run onboarding gate that appears before the user can access the main app, requiring the user to enter (a) their name, (b) DeepSeek API key, (c) Nutritionix credentials, and (d) API Ninjas API key; persist these values locally and do not show the main navigation/pages until onboarding is completed.",
+      "featureId": "feature-update-the-dashboard-header-so-the-user-name-line-displays-a-greeting-in-english-as-hello-name-with-a-small-icon-sign-placed-next-to-the-greeting-text-e-g-a-lucide-icon-instead-of-showing-only-the-raw-name",
+      "featureTitle": "Update the Dashboard header so the user name line displays a greeting in English as \"Hello, <name>\" with a small icon/sign placed next to the greeting text (e.g., a Lucide icon), instead of showing only the raw name.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/OnboardingGate.tsx",
-        "frontend/src/lib/store.ts"
+        "frontend/src/pages/Dashboard.tsx"
       ],
       "components": [
         "http-outcalls@3.0.0",
@@ -23,10 +21,9 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-app-header-area-to-greet-the-user-in-english-and-display-the-user-name-alongside-the-current-time-date-same-header-block-e-g-hello-name-with-the-live-time-date-shown-next-to-it",
-      "featureTitle": "Update the app header area to greet the user in English and display the user name alongside the current time/date (same header block), e.g., \"Hello, <Name>\" with the live time/date shown next to it.",
+      "featureId": "feature-move-the-weekly-and-monthly-result-countdown-indicators-e-g-x-days-before-weekly-result-and-y-days-before-monthly-result-into-the-same-greeting-section-next-to-under-hello-name-in-the-dashboard-header-and-remove-the-existing-weekly-monthly-countdown-indicators-that-are-currently-displayed-below-the-app-name-section",
+      "featureTitle": "Move the weekly and monthly result countdown indicators (e.g., \"X days before weekly result\" and \"Y days before monthly result\") into the same greeting section next to/under \"Hello, <name>\" in the Dashboard header, and remove the existing weekly/monthly countdown indicators that are currently displayed below the app name section.",
       "files": [
-        "frontend/src/components/LiveCalendarWidget.tsx",
         "frontend/src/pages/Dashboard.tsx"
       ],
       "components": [
@@ -43,15 +40,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-remove-all-other-api-options-settings-from-the-ui-so-the-only-apis-the-user-is-ever-prompted-to-configure-are-deepseek-ai-nutritionix-food-and-api-ninjas-gym",
-      "featureTitle": "Remove all other API options/settings from the UI so the only APIs the user is ever prompted to configure are: DeepSeek (AI), Nutritionix (food), and API Ninjas (gym).",
+      "featureId": "feature-avoid-duplicate-greetings-by-ensuring-only-one-greeting-is-shown-on-the-dashboard-screen-either-in-the-dashboard-header-or-inside-the-livecalendarwidget-keeping-the-greeting-located-where-the-user-requested-next-to-the-name-in-the-dashboard-header",
+      "featureTitle": "Avoid duplicate greetings by ensuring only one greeting is shown on the Dashboard screen (either in the Dashboard header or inside the LiveCalendarWidget), keeping the greeting located where the user requested (next to the name in the Dashboard header).",
       "files": [
-        "frontend/src/components/ApiKeySettings.tsx",
-        "frontend/src/components/CaloriesBurnedApiKeySettings.tsx",
-        "frontend/src/components/OpenFoodFactsKeySettings.tsx",
-        "frontend/src/pages/Goals.tsx",
-        "frontend/src/pages/Gym.tsx",
-        "frontend/src/pages/Nutrition.tsx"
+        "frontend/src/components/LiveCalendarWidget.tsx",
+        "frontend/src/pages/Dashboard.tsx"
       ],
       "components": [
         "http-outcalls@3.0.0",
@@ -63,69 +56,6 @@
       ],
       "testIds": [
         "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-integrate-nutritionix-api-for-food-nutrition-lookup-and-ensure-the-nutrition-logging-flow-uses-nutritionix-as-the-primary-external-nutrition-data-source-with-existing-local-fallbacks-only-if-credentials-are-missing",
-      "featureTitle": "Integrate Nutritionix API for food/nutrition lookup and ensure the nutrition logging flow uses Nutritionix as the primary external nutrition data source (with existing local fallbacks only if credentials are missing).",
-      "files": [
-        "frontend/src/lib/nutrition.ts",
-        "frontend/src/lib/nutritionix.ts",
-        "frontend/src/lib/onlineNutrition.ts",
-        "frontend/src/lib/openFoodFactsKey.ts",
-        "frontend/src/lib/webSearchNutrition.ts"
-      ],
-      "components": [
-        "http-outcalls@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-integrate-api-ninjas-for-gym-exercise-support-so-gym-related-api-calls-use-api-ninjas-and-the-user-provides-only-the-api-ninjas-key-in-onboarding",
-      "featureTitle": "Integrate API Ninjas for gym/exercise support so gym-related API calls use API Ninjas (and the user provides only the API Ninjas key in onboarding).",
-      "files": [
-        "frontend/src/lib/caloriesBurnedKey.ts",
-        "frontend/src/lib/store.ts"
-      ],
-      "components": [
-        "http-outcalls@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-example-environment-configuration-to-reflect-only-the-supported-apis-deepseek-nutritionix-api-ninjas-and-remove-example-entries-for-other-api-providers",
-      "featureTitle": "Update the example environment configuration to reflect only the supported APIs (DeepSeek, Nutritionix, API Ninjas) and remove example entries for other API providers.",
-      "files": [
-        "frontend/.env.example",
-        "frontend/src/lib/apiKey.ts"
-      ],
-      "components": [
-        "http-outcalls@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-6"
       ],
       "confidence": "high"
     }

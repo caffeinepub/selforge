@@ -1,6 +1,3 @@
-import { calculateDeepSeekGymCalories, calculateDeepSeekCardioCalories } from './deepseek';
-import { fetchCaloriesBurnedFromApi } from './caloriesBurnedApi';
-
 // User profile constants for calorie calculations
 const USER_PROFILE = {
   age: 17,
@@ -8,7 +5,7 @@ const USER_PROFILE = {
   weight: 80, // kg
 };
 
-// MET (Metabolic Equivalent of Task) values for different activities (fallback)
+// MET (Metabolic Equivalent of Task) values for different activities
 const MET_VALUES: Record<string, number> = {
   Running: 9.8,
   Jogging: 8.0,
@@ -22,7 +19,7 @@ const MET_VALUES: Record<string, number> = {
   Treadmill: 9.0,
 };
 
-// Calculate calories burned using external API, DeepSeek AI, or MET fallback
+// Calculate calories burned using MET-based calculations
 export async function calculateCaloriesBurned(
   type: 'gym' | 'cardio',
   params: {
@@ -36,50 +33,14 @@ export async function calculateCaloriesBurned(
   }
 ): Promise<number> {
   if (type === 'cardio' && params.activityType && params.duration) {
-    // Try external Calories Burned API first
-    const apiCalories = await fetchCaloriesBurnedFromApi(
-      params.activityType,
-      params.duration,
-      USER_PROFILE.weight
-    );
-    
-    if (apiCalories !== null) {
-      return apiCalories;
-    }
-
-    // Try DeepSeek AI second
-    const deepseekCalories = await calculateDeepSeekCardioCalories(
-      params.activityType,
-      params.duration
-    );
-    
-    if (deepseekCalories !== null) {
-      return deepseekCalories;
-    }
-
-    // Fallback to MET calculation
+    // Use MET calculation for cardio
     const met = MET_VALUES[params.activityType] || 6.0;
     const durationHours = params.duration / 60;
     return Math.round(met * USER_PROFILE.weight * durationHours);
   }
 
   if (type === 'gym' && params.sets && params.reps && params.weight) {
-    // Try DeepSeek AI first (external API doesn't typically handle gym exercises)
-    if (params.exerciseName && params.muscleGroup) {
-      const deepseekCalories = await calculateDeepSeekGymCalories(
-        params.exerciseName,
-        params.muscleGroup,
-        params.sets,
-        params.reps,
-        params.weight
-      );
-      
-      if (deepseekCalories !== null) {
-        return deepseekCalories;
-      }
-    }
-
-    // Fallback calculation
+    // Fallback calculation for gym exercises
     const estimatedMinutes = (params.sets * params.reps * 3) / 60;
     const caloriesPerMinute = 6.5;
     const baseCalories = estimatedMinutes * caloriesPerMinute;

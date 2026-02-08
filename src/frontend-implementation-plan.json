@@ -1,179 +1,57 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "First-run onboarding gate for required API credentials, simplified settings UI, and Nutritionix/API Ninjas integrations",
+  "title": "Dashboard header greeting: add icon and move weekly/monthly countdowns; remove duplicate greeting",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a first-run onboarding gate that requires name + DeepSeek key + Nutritionix credentials + API Ninjas key, persisted locally before showing the main app.",
+      "summary": "Change Dashboard header name line to an English greeting \"Hello, <name>\" with a small adjacent icon, replacing the raw name display.",
       "acceptanceCriteria": [
-        "On a fresh install (empty local storage), the app shows an onboarding screen/modal instead of the main app pages.",
-        "Onboarding collects: Name, DeepSeek API key, Nutritionix App ID + Nutritionix App Key (or an equivalent explicit pair), and API Ninjas API key.",
-        "The user cannot dismiss onboarding without providing at least a non-empty name and non-empty values for all required API credentials.",
-        "After saving onboarding, the app persists these values (Zustand persisted store) and does not show onboarding again on subsequent reloads.",
-        "There is a clear validation/error message in English when required fields are missing."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/lib/store.ts",
-          "operation": "modify",
-          "description": "Extend the persisted Zustand store to include: user name, DeepSeek API key, Nutritionix App ID + App Key, API Ninjas API key, and an onboarding completion flag; add setters/clearers as needed to support the onboarding flow."
-        },
-        {
-          "path": "frontend/src/components/OnboardingGate.tsx",
-          "operation": "create",
-          "description": "Create an onboarding gate component that renders a required credentials form (Name, DeepSeek API key, Nutritionix App ID, Nutritionix App Key, API Ninjas API key), performs English validation messaging, and saves values to the persisted Zustand store. Use shadcn-ui form primitives (e.g., Card, Input, Label, Button) to match the app styling. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Wire the onboarding gate into the app shell: if onboarding is incomplete (or required fields are missing), render the onboarding UI and do not render the main pages or BottomNav; otherwise render the existing app."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Update the dashboard header to greet the stored user name in English and show it alongside the live time/date in the same header block.",
-      "acceptanceCriteria": [
-        "When a name is stored, the dashboard header area shows a greeting starting with \"Hello\" and includes the stored name.",
-        "The live time/date remains visible and updates as it currently does, with the name displayed alongside it (not on a separate page).",
-        "If no name exists (before onboarding completion), the greeting/name is not shown and onboarding is shown instead (per REQ-1)."
+        "On the Dashboard page header, the user name is shown as \"Hello, <name>\" (with the stored onboarding name)",
+        "A small icon/sign is rendered adjacent to the greeting text on the same line",
+        "No other part of the Dashboard shows the raw name alone in the header area"
       ],
       "file_operations": [
         {
           "path": "frontend/src/pages/Dashboard.tsx",
           "operation": "modify",
-          "description": "Read the stored user name from the persisted store and render an English greeting (\"Hello, <Name>\") within the existing header block, positioned alongside the existing live time/date area (not as a separate page/section)."
-        },
+          "description": "Replace the raw {userName} header line with a greeting line formatted as \"Hello, {userName}\" and render a small Lucide icon adjacent to the greeting text (same line). Ensure no other header element renders the raw name alone."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Relocate weekly/monthly countdown indicators into the Dashboard greeting section and remove the existing countdown block below the app name.",
+      "acceptanceCriteria": [
+        "The weekly and monthly countdown indicators are displayed within the greeting section that contains \"Hello, <name>\"",
+        "The separate \"Countdown Indicators\" block that appears below the app name (Nuvio) is removed from the Dashboard layout",
+        "Weekly and monthly countdown values continue to use the existing countdown logic (no change in computed numbers), only their placement changes"
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/components/LiveCalendarWidget.tsx",
+          "path": "frontend/src/pages/Dashboard.tsx",
           "operation": "modify",
-          "description": "Adjust the widget layout/API as needed to support rendering the greeting alongside the live time/date while preserving the current live update behavior (1-second ticking) and English date/time formatting."
+          "description": "Move the UI rendering of weekly/monthly countdown indicators (using existing values from useResultCountdowns) into the same greeting section as \"Hello, <name>\" (next to or under it). Remove the existing standalone \"Countdown Indicators\" block currently rendered below the app name area, without changing countdown computation logic."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Remove all other API options/settings from the UI so users are only prompted for DeepSeek, Nutritionix, and API Ninjas (via onboarding only).",
+      "summary": "Ensure only one Dashboard greeting is shown by removing the greeting from LiveCalendarWidget while keeping time/date intact.",
       "acceptanceCriteria": [
-        "No page (Goals/Nutrition/Gym/Dashboard/etc.) displays API key settings for Google CSE, OpenFoodFacts, or any other non-requested API.",
-        "Any existing components/sections for OpenFoodFacts and Google CSE are removed from the rendered UI.",
-        "Any existing calories-burned API key UI is renamed/reframed to API Ninjas Gym API key (if retained) and is not shown outside onboarding.",
-        "All user-facing copy is in English and references only DeepSeek, Nutritionix, and API Ninjas."
+        "On the Dashboard screen, \"Hello, <name>\" appears only once",
+        "The LiveCalendarWidget continues to show time and date correctly after greeting duplication is removed"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Nutrition.tsx",
+          "path": "frontend/src/components/LiveCalendarWidget.tsx",
           "operation": "modify",
-          "description": "Remove rendered API settings sections/cards (including AI key and OpenFoodFacts key settings) so the Nutrition page no longer prompts for any API configuration outside onboarding."
+          "description": "Remove (or disable) the greeting display from LiveCalendarWidget so the Dashboard shows \"Hello, <name>\" only in the Dashboard header greeting section. Keep the live time and full date rendering behavior unchanged."
         },
         {
-          "path": "frontend/src/pages/Gym.tsx",
+          "path": "frontend/src/pages/Dashboard.tsx",
           "operation": "modify",
-          "description": "Remove the rendered calories-burned API key settings UI from the Gym page so the user is not prompted for any gym API provider configuration outside onboarding."
-        },
-        {
-          "path": "frontend/src/pages/Goals.tsx",
-          "operation": "modify",
-          "description": "Remove any rendered API key settings UI from the Goals page so no API configuration options appear outside onboarding; ensure all remaining copy stays in English."
-        },
-        {
-          "path": "frontend/src/components/OpenFoodFactsKeySettings.tsx",
-          "operation": "delete",
-          "description": "Delete the OpenFoodFacts API key settings component to ensure it is not available for rendering anywhere in the UI."
-        },
-        {
-          "path": "frontend/src/components/CaloriesBurnedApiKeySettings.tsx",
-          "operation": "delete",
-          "description": "Delete the Calories Burned API key settings component to ensure it is not available for rendering anywhere in the UI (API Ninjas key will be collected only via onboarding)."
-        },
-        {
-          "path": "frontend/src/components/ApiKeySettings.tsx",
-          "operation": "delete",
-          "description": "Delete the standalone AI API key settings component so DeepSeek configuration is only collected in onboarding (per requirements), and remove any remaining non-required provider references from UI copy by eliminating this screen."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Integrate Nutritionix for nutrition lookup and make it the primary external nutrition data source with local fallback when credentials are missing.",
-      "acceptanceCriteria": [
-        "When Nutritionix credentials are present, nutrition lookup requests are made to Nutritionix (not OpenFoodFacts, not Google CSE).",
-        "If Nutritionix credentials are not present, the app falls back to an existing non-credential method (e.g., local heuristics/DB) without exposing alternative API configuration options.",
-        "OpenFoodFacts and Google CSE environment variables are no longer required for the nutrition feature to work."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/lib/nutritionix.ts",
-          "operation": "create",
-          "description": "Add a Nutritionix client helper that performs food/nutrition lookup using the stored Nutritionix App ID + App Key and returns normalized calories/macros data for the existing nutrition logging/enrichment flow."
-        },
-        {
-          "path": "frontend/src/lib/nutrition.ts",
-          "operation": "modify",
-          "description": "Update nutrition lookup flow to use Nutritionix as the first-choice external source when credentials exist; if missing, fall back to existing non-credential methods (e.g., local DB and existing heuristics/DeepSeek without showing other provider settings). Remove any OpenFoodFacts/Google CSE usage from the active path."
-        },
-        {
-          "path": "frontend/src/lib/onlineNutrition.ts",
-          "operation": "delete",
-          "description": "Remove the Open Food Facts-based nutrition lookup module so it is no longer part of the nutrition feature."
-        },
-        {
-          "path": "frontend/src/lib/webSearchNutrition.ts",
-          "operation": "delete",
-          "description": "Remove the Google CSE web-search nutrition lookup module so it is no longer part of the nutrition feature and no longer requires Google CSE environment variables."
-        },
-        {
-          "path": "frontend/src/lib/openFoodFactsKey.ts",
-          "operation": "delete",
-          "description": "Remove the OpenFoodFacts key getter since OpenFoodFacts is no longer supported or required."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Integrate API Ninjas for gym/exercise support so gym-related external requests use API Ninjas with a single stored API key from onboarding.",
-      "acceptanceCriteria": [
-        "When an API Ninjas key is present, gym/exercise-related external requests use API Ninjas endpoints (including calories-burned calculations if applicable in the existing code).",
-        "The stored credential is a single API Ninjas API key (persisted).",
-        "No other gym API providers are exposed or configurable in the UI."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/lib/store.ts",
-          "operation": "modify",
-          "description": "Replace/rename the existing calories-burned API key field to an API Ninjas API key field (single key) in the persisted store, and update related setters so onboarding can save it."
-        },
-        {
-          "path": "frontend/src/lib/caloriesBurnedKey.ts",
-          "operation": "modify",
-          "description": "Update the runtime key getter to read the persisted API Ninjas API key first and then (optionally) fall back to an API Ninjas env var name used by the updated .env.example."
-        },
-        {
-          "path": "frontend/src/lib/caloriesBurnedApi.ts",
-          "operation": "modify",
-          "description": "Ensure the calories-burned external request logic is explicitly framed as API Ninjas usage (base URL defaults to API Ninjas as it does now) and uses the single API Ninjas key from the persisted store getter."
-        }
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "summary": "Update example environment configuration to reflect only DeepSeek, Nutritionix, and API Ninjas; remove other provider entries.",
-      "acceptanceCriteria": [
-        "frontend/.env.example no longer includes Google CSE or OpenFoodFacts keys.",
-        "frontend/.env.example includes entries for DeepSeek, Nutritionix (explicitly App ID + App Key or equivalent), and API Ninjas (API key and URL if needed).",
-        "The app still runs without any .env values if the user enters keys via onboarding (persisted store)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/.env.example",
-          "operation": "modify",
-          "description": "Remove Google CSE and OpenFoodFacts entries and keep only DeepSeek, Nutritionix (App ID + App Key), and API Ninjas (API key and optional base URL) examples; ensure names align with the updated runtime getters and onboarding-first behavior."
-        },
-        {
-          "path": "frontend/src/lib/apiKey.ts",
-          "operation": "modify",
-          "description": "Keep DeepSeek runtime key resolution aligned with the onboarding-persisted store first, then optional env fallback; ensure naming/copy reflects DeepSeek only (no other AI providers referenced)."
+          "description": "Verify the Dashboard renders exactly one greeting (in the header greeting section) after updating LiveCalendarWidget, and that the remaining LiveCalendarWidget still displays time/date correctly in the Dashboard layout."
         }
       ]
     }

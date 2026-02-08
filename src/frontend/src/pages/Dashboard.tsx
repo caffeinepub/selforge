@@ -1,11 +1,14 @@
 import { useAppStore } from '../lib/store';
 import { Card, CardContent } from '@/components/ui/card';
-import { Flame, BookOpen, Dumbbell, Apple, Target } from 'lucide-react';
+import { Flame, BookOpen, Dumbbell, Apple, Target, Sparkles } from 'lucide-react';
 import LiveCalendarWidget from '../components/LiveCalendarWidget';
+import HeaderMeasurements from '../components/HeaderMeasurements';
+import { useResultCountdowns } from '../hooks/useResultCountdowns';
 
 export default function Dashboard() {
-  const { getTodayData, currentStreak } = useAppStore();
+  const { getTodayData, currentStreak, userName } = useAppStore();
   const todayData = getTodayData();
+  const { weeklyDays, monthlyDays } = useResultCountdowns();
 
   // Calculate study progress
   const totalStudyTopics = todayData.studyTopics.length;
@@ -32,18 +35,44 @@ export default function Dashboard() {
 
   return (
     <div className="page-container">
-      {/* Header Block */}
+      {/* Header Block - Aligned */}
       <div className="space-y-3">
+        {/* Top Row: App Name and Streak */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold tracking-tight">Selforge</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-neon-green">Nuvio</h1>
           <div className="flex items-center gap-1.5">
             <Flame className="w-5 h-5 text-neon-yellow" />
             <span className="text-2xl font-bold text-neon-yellow glow-text">{currentStreak}</span>
             <span className="text-xs text-muted-foreground">days</span>
           </div>
         </div>
+
+        {/* Greeting with Icon and Countdown Indicators */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-neon-green" />
+            <span className="text-base font-semibold text-white">Hello, {userName}</span>
+          </div>
+          
+          {/* Countdown Indicators inside greeting section */}
+          <div className="flex flex-col gap-1.5 pl-6">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-neon-green/30 rounded-full w-fit">
+              <span className="text-xs text-white/90">
+                {weeklyDays} {weeklyDays === 1 ? 'day' : 'days'} before weekly result
+              </span>
+            </div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-neon-green/30 rounded-full w-fit">
+              <span className="text-xs text-white/90">
+                {monthlyDays} {monthlyDays === 1 ? 'day' : 'days'} before monthly result
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Measurements Row */}
+        <HeaderMeasurements />
         
-        {/* Live Calendar Widget with Greeting */}
+        {/* Live Calendar Widget (time and date only) */}
         <LiveCalendarWidget />
       </div>
 

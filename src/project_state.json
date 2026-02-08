@@ -1,58 +1,32 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Build a nutrition + gym app that uses only three APIs (DeepSeek AI for natural language-to-API translation, Nutritionix for food, and API Ninjas for gym). On first launch, prompt for the user's name, greet them, and display their name alongside the current time/date. Remove any other API options from the app.",
-  "architectural_notes": [
-    "Use only three external integrations: DeepSeek AI, Nutritionix, and API Ninjas (gym); remove/disable any other API selection UI."
-  ],
+  "summary": "New project",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-add-a-first-run-onboarding-gate-that-appears-before-the-user-can-access-the-main-app-requiring-the-user-to-enter-a-their-name-b-deepseek-api-key-c-nutritionix-credentials-and-d-api-ninjas-api-key-persist-these-values-locally-and-do-not-show-the-main-navigation-pages-until-onboarding-is-completed",
-      "title": "Add a first-run onboarding gate that appears before the user can access the main app, requiring the user to enter (a) their name, (b) DeepSeek API key, (c) Nutritionix credentials, and (d) API Ninjas API key; persist these values locally and do not show the main navigation/pages until onboarding is completed.",
+      "id": "feature-update-the-dashboard-header-so-the-user-name-line-displays-a-greeting-in-english-as-hello-name-with-a-small-icon-sign-placed-next-to-the-greeting-text-e-g-a-lucide-icon-instead-of-showing-only-the-raw-name",
+      "title": "Update the Dashboard header so the user name line displays a greeting in English as \"Hello, <name>\" with a small icon/sign placed next to the greeting text (e.g., a Lucide icon), instead of showing only the raw name.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-update-the-app-header-area-to-greet-the-user-in-english-and-display-the-user-name-alongside-the-current-time-date-same-header-block-e-g-hello-name-with-the-live-time-date-shown-next-to-it",
-      "title": "Update the app header area to greet the user in English and display the user name alongside the current time/date (same header block), e.g., \"Hello, <Name>\" with the live time/date shown next to it.",
+      "id": "feature-move-the-weekly-and-monthly-result-countdown-indicators-e-g-x-days-before-weekly-result-and-y-days-before-monthly-result-into-the-same-greeting-section-next-to-under-hello-name-in-the-dashboard-header-and-remove-the-existing-weekly-monthly-countdown-indicators-that-are-currently-displayed-below-the-app-name-section",
+      "title": "Move the weekly and monthly result countdown indicators (e.g., \"X days before weekly result\" and \"Y days before monthly result\") into the same greeting section next to/under \"Hello, <name>\" in the Dashboard header, and remove the existing weekly/monthly countdown indicators that are currently displayed below the app name section.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-remove-all-other-api-options-settings-from-the-ui-so-the-only-apis-the-user-is-ever-prompted-to-configure-are-deepseek-ai-nutritionix-food-and-api-ninjas-gym",
-      "title": "Remove all other API options/settings from the UI so the only APIs the user is ever prompted to configure are: DeepSeek (AI), Nutritionix (food), and API Ninjas (gym).",
+      "id": "feature-avoid-duplicate-greetings-by-ensuring-only-one-greeting-is-shown-on-the-dashboard-screen-either-in-the-dashboard-header-or-inside-the-livecalendarwidget-keeping-the-greeting-located-where-the-user-requested-next-to-the-name-in-the-dashboard-header",
+      "title": "Avoid duplicate greetings by ensuring only one greeting is shown on the Dashboard screen (either in the Dashboard header or inside the LiveCalendarWidget), keeping the greeting located where the user requested (next to the name in the Dashboard header).",
       "reqIds": [
         "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-integrate-nutritionix-api-for-food-nutrition-lookup-and-ensure-the-nutrition-logging-flow-uses-nutritionix-as-the-primary-external-nutrition-data-source-with-existing-local-fallbacks-only-if-credentials-are-missing",
-      "title": "Integrate Nutritionix API for food/nutrition lookup and ensure the nutrition logging flow uses Nutritionix as the primary external nutrition data source (with existing local fallbacks only if credentials are missing).",
-      "reqIds": [
-        "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-integrate-api-ninjas-for-gym-exercise-support-so-gym-related-api-calls-use-api-ninjas-and-the-user-provides-only-the-api-ninjas-key-in-onboarding",
-      "title": "Integrate API Ninjas for gym/exercise support so gym-related API calls use API Ninjas (and the user provides only the API Ninjas key in onboarding).",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-example-environment-configuration-to-reflect-only-the-supported-apis-deepseek-nutritionix-api-ninjas-and-remove-example-entries-for-other-api-providers",
-      "title": "Update the example environment configuration to reflect only the supported APIs (DeepSeek, Nutritionix, API Ninjas) and remove example entries for other API providers.",
-      "reqIds": [
-        "REQ-6"
       ],
       "version": 1
     }
@@ -60,37 +34,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Integrate DeepSeek AI API to translate user text into app/API actions/requests",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "Integrate Nutritionix API for food/nutrition lookup",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Integrate API Ninjas gym API for workouts/exercises",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "First-run onboarding: ask for user's name before app starts; greet user and show name next to time/date",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Remove all other API options from the app; only expose DeepSeek AI, Nutritionix, and API Ninjas",
+      "summary": "Update UI header: add a greeting next to the user name (\"Hello, <name>\"); move weekly/monthly results into that section; remove weekly/monthly results from below the app name",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
-  "projectName": "First-run onboarding for name + DeepSeek/Nutritionix/API Ninjas keys and remove other API options",
+  "projectName": "Move weekly/monthly result indicators into greeting next to user name",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

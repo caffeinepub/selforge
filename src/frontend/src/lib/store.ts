@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface StudyTopic {
   id: string;
@@ -46,12 +46,30 @@ interface GoalsCompleted {
   discipline: boolean;
 }
 
+interface GoalManualOverrides {
+  study: boolean;
+  gym: boolean;
+  nutrition: boolean;
+  sleep: boolean;
+  discipline: boolean;
+}
+
+interface BodyMeasurements {
+  chest: number;
+  waist: number;
+  butt: number;
+  thighs: number;
+  weight: number;
+  height: number;
+}
+
 interface DailyData {
   date: string;
   studyTopics: StudyTopic[];
   gymActivities: GymActivity[];
   foodEntries: FoodEntry[];
   goalsCompleted: GoalsCompleted;
+  goalManualOverrides: GoalManualOverrides;
   wentToSchool: boolean;
 }
 
@@ -59,11 +77,10 @@ interface AppState {
   dailyData: Record<string, DailyData>;
   currentStreak: number;
   userName: string;
-  deepseekApiKey: string;
-  nutritionixAppId: string;
-  nutritionixAppKey: string;
-  apiNinjasKey: string;
   onboardingCompleted: boolean;
+  userStartTimestamp: number | null;
+  weeklyMeasurements: BodyMeasurements;
+  monthlyMeasurements: BodyMeasurements;
   getTodayData: () => DailyData;
   addStudyTopic: (topic: Omit<StudyTopic, 'id' | 'date'>) => void;
   updateStudyTopicStatus: (id: string, status: StudyTopic['status']) => void;
@@ -75,12 +92,10 @@ interface AppState {
   setWentToSchool: (went: boolean) => void;
   calculateStreak: () => void;
   setUserName: (name: string) => void;
-  setDeepseekApiKey: (key: string) => void;
-  setNutritionixAppId: (id: string) => void;
-  setNutritionixAppKey: (key: string) => void;
-  setApiNinjasKey: (key: string) => void;
   completeOnboarding: () => void;
   clearAllSettings: () => void;
+  setWeeklyMeasurements: (measurements: Partial<BodyMeasurements>) => void;
+  setMonthlyMeasurements: (measurements: Partial<BodyMeasurements>) => void;
 }
 
 const getTodayString = () => new Date().toISOString().split('T')[0];
@@ -97,7 +112,23 @@ const getEmptyDailyData = (date: string): DailyData => ({
     sleep: false,
     discipline: false,
   },
+  goalManualOverrides: {
+    study: false,
+    gym: false,
+    nutrition: false,
+    sleep: false,
+    discipline: false,
+  },
   wentToSchool: false,
+});
+
+const getEmptyMeasurements = (): BodyMeasurements => ({
+  chest: 0,
+  waist: 0,
+  butt: 0,
+  thighs: 0,
+  weight: 0,
+  height: 0,
 });
 
 export const useAppStore = create<AppState>()(
@@ -106,11 +137,10 @@ export const useAppStore = create<AppState>()(
       dailyData: {},
       currentStreak: 0,
       userName: '',
-      deepseekApiKey: '',
-      nutritionixAppId: '',
-      nutritionixAppKey: '',
-      apiNinjasKey: '',
       onboardingCompleted: false,
+      userStartTimestamp: null,
+      weeklyMeasurements: getEmptyMeasurements(),
+      monthlyMeasurements: getEmptyMeasurements(),
 
       getTodayData: () => {
         const today = getTodayString();
@@ -139,6 +169,9 @@ export const useAppStore = create<AppState>()(
           const updatedTopics = [...todayData.studyTopics, newTopic];
           const allDone = updatedTopics.filter(t => t.status !== 'later').every(t => t.status === 'done');
           
+          // Only auto-update if not manually overridden
+          const shouldAutoUpdate = !todayData.goalManualOverrides.study;
+          
           return {
             dailyData: {
               ...state.dailyData,
@@ -147,7 +180,7 @@ export const useAppStore = create<AppState>()(
                 studyTopics: updatedTopics,
                 goalsCompleted: {
                   ...todayData.goalsCompleted,
-                  study: allDone && updatedTopics.length > 0,
+                  study: shouldAutoUpdate ? (allDone && updatedTopics.length > 0) : todayData.goalsCompleted.study,
                 },
               },
             },
@@ -166,6 +199,9 @@ export const useAppStore = create<AppState>()(
           
           const allDone = updatedTopics.filter(t => t.status !== 'later').every(t => t.status === 'done');
           
+          // Only auto-update if not manually overridden
+          const shouldAutoUpdate = !todayData.goalManualOverrides.study;
+          
           return {
             dailyData: {
               ...state.dailyData,
@@ -174,7 +210,7 @@ export const useAppStore = create<AppState>()(
                 studyTopics: updatedTopics,
                 goalsCompleted: {
                   ...todayData.goalsCompleted,
-                  study: allDone && updatedTopics.length > 0,
+                  study: shouldAutoUpdate ? (allDone && updatedTopics.length > 0) : todayData.goalsCompleted.study,
                 },
               },
             },
@@ -193,6 +229,9 @@ export const useAppStore = create<AppState>()(
           
           const allDone = updatedTopics.filter(t => t.status !== 'later').every(t => t.status === 'done');
           
+          // Only auto-update if not manually overridden
+          const shouldAutoUpdate = !todayData.goalManualOverrides.study;
+          
           return {
             dailyData: {
               ...state.dailyData,
@@ -201,7 +240,7 @@ export const useAppStore = create<AppState>()(
                 studyTopics: updatedTopics,
                 goalsCompleted: {
                   ...todayData.goalsCompleted,
-                  study: allDone && updatedTopics.length > 0,
+                  study: shouldAutoUpdate ? (allDone && updatedTopics.length > 0) : todayData.goalsCompleted.study,
                 },
               },
             },
@@ -218,6 +257,9 @@ export const useAppStore = create<AppState>()(
           
           const allDone = updatedTopics.filter(t => t.status !== 'later').every(t => t.status === 'done');
           
+          // Only auto-update if not manually overridden
+          const shouldAutoUpdate = !todayData.goalManualOverrides.study;
+          
           return {
             dailyData: {
               ...state.dailyData,
@@ -226,7 +268,7 @@ export const useAppStore = create<AppState>()(
                 studyTopics: updatedTopics,
                 goalsCompleted: {
                   ...todayData.goalsCompleted,
-                  study: allDone && updatedTopics.length > 0,
+                  study: shouldAutoUpdate ? (allDone && updatedTopics.length > 0) : todayData.goalsCompleted.study,
                 },
               },
             },
@@ -245,6 +287,9 @@ export const useAppStore = create<AppState>()(
             date: today,
           };
           
+          // Only auto-update if not manually overridden
+          const shouldAutoUpdate = !todayData.goalManualOverrides.gym;
+          
           return {
             dailyData: {
               ...state.dailyData,
@@ -253,7 +298,7 @@ export const useAppStore = create<AppState>()(
                 gymActivities: [...todayData.gymActivities, newActivity],
                 goalsCompleted: {
                   ...todayData.goalsCompleted,
-                  gym: true,
+                  gym: shouldAutoUpdate ? true : todayData.goalsCompleted.gym,
                 },
               },
             },
@@ -272,16 +317,24 @@ export const useAppStore = create<AppState>()(
             date: today,
           };
           
+          // Only auto-update if not manually overridden
+          const shouldAutoUpdate = !todayData.goalManualOverrides.nutrition;
+          
           return {
             dailyData: {
               ...state.dailyData,
               [today]: {
                 ...todayData,
                 foodEntries: [...todayData.foodEntries, newFood],
+                goalsCompleted: {
+                  ...todayData.goalsCompleted,
+                  nutrition: shouldAutoUpdate ? true : todayData.goalsCompleted.nutrition,
+                },
               },
             },
           };
         });
+        get().calculateStreak();
       },
 
       updateGoal: (goal, completed) => {
@@ -296,6 +349,10 @@ export const useAppStore = create<AppState>()(
                 goalsCompleted: {
                   ...todayData.goalsCompleted,
                   [goal]: completed,
+                },
+                goalManualOverrides: {
+                  ...todayData.goalManualOverrides,
+                  [goal]: true,
                 },
               },
             },
@@ -322,65 +379,102 @@ export const useAppStore = create<AppState>()(
 
       calculateStreak: () => {
         const state = get();
-        let streak = 0;
-        const today = new Date();
+        const sortedDates = Object.keys(state.dailyData).sort().reverse();
         
-        for (let i = 0; i < 365; i++) {
-          const date = new Date(today);
-          date.setDate(date.getDate() - i);
-          const dateString = date.toISOString().split('T')[0];
+        let streak = 0;
+        const today = getTodayString();
+        
+        for (let i = 0; i < sortedDates.length; i++) {
+          const date = sortedDates[i];
+          const data = state.dailyData[date];
           
-          const dayData = state.dailyData[dateString];
-          if (!dayData) break;
+          const completedGoals = Object.values(data.goalsCompleted).filter(Boolean).length;
           
-          const allGoalsComplete = Object.values(dayData.goalsCompleted).every(Boolean);
-          if (allGoalsComplete) {
+          if (completedGoals >= 3) {
             streak++;
           } else {
-            break;
+            if (date !== today) {
+              break;
+            }
+          }
+          
+          if (i > 0) {
+            const prevDate = new Date(sortedDates[i - 1]);
+            const currDate = new Date(date);
+            const diffTime = Math.abs(prevDate.getTime() - currDate.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays > 1) {
+              break;
+            }
           }
         }
         
         set({ currentStreak: streak });
       },
 
-      setUserName: (name) => {
-        set({ userName: name });
-      },
-
-      setDeepseekApiKey: (key) => {
-        set({ deepseekApiKey: key });
-      },
-
-      setNutritionixAppId: (id) => {
-        set({ nutritionixAppId: id });
-      },
-
-      setNutritionixAppKey: (key) => {
-        set({ nutritionixAppKey: key });
-      },
-
-      setApiNinjasKey: (key) => {
-        set({ apiNinjasKey: key });
-      },
+      setUserName: (name) => set({ userName: name }),
 
       completeOnboarding: () => {
-        set({ onboardingCompleted: true });
+        const state = get();
+        // Only set userStartTimestamp if it doesn't exist yet
+        if (!state.userStartTimestamp) {
+          set({
+            onboardingCompleted: true,
+            userStartTimestamp: Date.now(),
+          });
+        } else {
+          set({ onboardingCompleted: true });
+        }
       },
 
       clearAllSettings: () => {
         set({
           userName: '',
-          deepseekApiKey: '',
-          nutritionixAppId: '',
-          nutritionixAppKey: '',
-          apiNinjasKey: '',
           onboardingCompleted: false,
+          userStartTimestamp: null,
+          weeklyMeasurements: getEmptyMeasurements(),
+          monthlyMeasurements: getEmptyMeasurements(),
         });
+      },
+
+      setWeeklyMeasurements: (measurements) => {
+        set((state) => ({
+          weeklyMeasurements: {
+            ...state.weeklyMeasurements,
+            ...measurements,
+          },
+        }));
+      },
+
+      setMonthlyMeasurements: (measurements) => {
+        set((state) => ({
+          monthlyMeasurements: {
+            ...state.monthlyMeasurements,
+            ...measurements,
+          },
+        }));
       },
     }),
     {
-      name: 'selforge-storage',
+      name: 'nuvio-app-storage',
+      version: 2,
+      storage: createJSONStorage(() => localStorage),
+      migrate: (persistedState: any, version: number) => {
+        if (version < 2) {
+          // Clear old API credentials from previous versions
+          const { 
+            deepseekApiKey, 
+            nutritionixAppId, 
+            nutritionixAppKey, 
+            apiNinjasKey, 
+            apiNinjasKeyConfirmedAt,
+            ...rest 
+          } = persistedState;
+          return rest;
+        }
+        return persistedState;
+      },
     }
   )
 );

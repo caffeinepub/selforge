@@ -1,129 +1,68 @@
 {
   "kind": "build_request",
-  "title": "First-run onboarding for name + DeepSeek/Nutritionix/API Ninjas keys and remove other API options",
+  "title": "Move weekly/monthly result indicators into greeting next to user name",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a first-run onboarding gate that appears before the user can access the main app, requiring the user to enter (a) their name, (b) DeepSeek API key, (c) Nutritionix credentials, and (d) API Ninjas API key; persist these values locally and do not show the main navigation/pages until onboarding is completed.",
+      "text": "Update the Dashboard header so the user name line displays a greeting in English as \"Hello, <name>\" with a small icon/sign placed next to the greeting text (e.g., a Lucide icon), instead of showing only the raw name.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "Before starting app for first ask person name and to put these 3 apis and remove all api options in app onlu put this one before starting app"
+          "now put sign asid my name hello,name"
         ]
       },
       "acceptanceCriteria": [
-        "On a fresh install (empty local storage), the app shows an onboarding screen/modal instead of the main app pages.",
-        "Onboarding collects: Name, DeepSeek API key, Nutritionix App ID + Nutritionix App Key (or an equivalent explicit pair), and API Ninjas API key.",
-        "The user cannot dismiss onboarding without providing at least a non-empty name and non-empty values for all required API credentials.",
-        "After saving onboarding, the app persists these values (Zustand persisted store) and does not show onboarding again on subsequent reloads.",
-        "There is a clear validation/error message in English when required fields are missing."
+        "On the Dashboard page header, the user name is shown as \"Hello, <name>\" (with the stored onboarding name)",
+        "A small icon/sign is rendered adjacent to the greeting text on the same line",
+        "No other part of the Dashboard shows the raw name alone in the header area"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Update the app header area to greet the user in English and display the user name alongside the current time/date (same header block), e.g., \"Hello, <Name>\" with the live time/date shown next to it.",
+      "text": "Move the weekly and monthly result countdown indicators (e.g., \"X days before weekly result\" and \"Y days before monthly result\") into the same greeting section next to/under \"Hello, <name>\" in the Dashboard header, and remove the existing weekly/monthly countdown indicators that are currently displayed below the app name section.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "and put name aside the time date and say helo"
+          "put weekly and monthly rsult inside it and remove it below the app name"
         ]
       },
       "acceptanceCriteria": [
-        "When a name is stored, the dashboard header area shows a greeting starting with \"Hello\" and includes the stored name.",
-        "The live time/date remains visible and updates as it currently does, with the name displayed alongside it (not on a separate page).",
-        "If no name exists (before onboarding completion), the greeting/name is not shown and onboarding is shown instead (per REQ-1)."
+        "The weekly and monthly countdown indicators are displayed within the greeting section that contains \"Hello, <name>\"",
+        "The separate \"Countdown Indicators\" block that appears below the app name (Nuvio) is removed from the Dashboard layout",
+        "Weekly and monthly countdown values continue to use the existing countdown logic (no change in computed numbers), only their placement changes"
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Remove all other API options/settings from the UI so the only APIs the user is ever prompted to configure are: DeepSeek (AI), Nutritionix (food), and API Ninjas (gym).",
+      "text": "Avoid duplicate greetings by ensuring only one greeting is shown on the Dashboard screen (either in the Dashboard header or inside the LiveCalendarWidget), keeping the greeting located where the user requested (next to the name in the Dashboard header).",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "remove all api options in app onlu put this one"
+          "now put sign asid my name hello,name"
         ]
       },
       "acceptanceCriteria": [
-        "No page (Goals/Nutrition/Gym/Dashboard/etc.) displays API key settings for Google CSE, OpenFoodFacts, or any other non-requested API.",
-        "Any existing components/sections for OpenFoodFacts and Google CSE are removed from the rendered UI.",
-        "Any existing calories-burned API key UI is renamed/reframed to API Ninjas Gym API key (if retained) and is not shown outside onboarding.",
-        "All user-facing copy is in English and references only DeepSeek, Nutritionix, and API Ninjas."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Integrate Nutritionix API for food/nutrition lookup and ensure the nutrition logging flow uses Nutritionix as the primary external nutrition data source (with existing local fallbacks only if credentials are missing).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "Nutritionix APi for food"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When Nutritionix credentials are present, nutrition lookup requests are made to Nutritionix (not OpenFoodFacts, not Google CSE).",
-        "If Nutritionix credentials are not present, the app falls back to an existing non-credential method (e.g., local heuristics/DB) without exposing alternative API configuration options.",
-        "OpenFoodFacts and Google CSE environment variables are no longer required for the nutrition feature to work."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Integrate API Ninjas for gym/exercise support so gym-related API calls use API Ninjas (and the user provides only the API Ninjas key in onboarding).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "and api ninjas for gym"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When an API Ninjas key is present, gym/exercise-related external requests use API Ninjas endpoints (including calories-burned calculations if applicable in the existing code).",
-        "The stored credential is a single API Ninjas API key (persisted).",
-        "No other gym API providers are exposed or configurable in the UI."
-      ]
-    },
-    {
-      "id": "REQ-6",
-      "text": "Update the example environment configuration to reflect only the supported APIs (DeepSeek, Nutritionix, API Ninjas) and remove example entries for other API providers.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "ask three apis 1- deepseek ai ... 2-Nutritionix APi for food  and api ninjas for gym"
-        ]
-      },
-      "acceptanceCriteria": [
-        "frontend/.env.example no longer includes Google CSE or OpenFoodFacts keys.",
-        "frontend/.env.example includes entries for DeepSeek, Nutritionix (explicitly App ID + App Key or equivalent), and API Ninjas (API key and URL if needed).",
-        "The app still runs without any .env values if the user enters keys via onboarding (persisted store)."
+        "On the Dashboard screen, \"Hello, <name>\" appears only once",
+        "The LiveCalendarWidget continues to show time and date correctly after greeting duplication is removed"
       ]
     }
   ],
   "constraints": [
-    "Use English for any user-facing text.",
-    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything in frontend/src/components/ui (compose them instead).",
-    "Backend is a single Motoko actor (backend/main.mo); only add backend requirements if strictly needed for this request."
+    "Do not modify any files under frontend/src/components/ui (read-only components must be composed, not edited)."
   ],
   "nonGoals": [
-    "Adding third-party authentication beyond existing Internet Identity support.",
-    "Adding any additional API providers (e.g., Google CSE, OpenFoodFacts, other calories APIs).",
-    "Building a backend persistence layer for these settings (local persisted store is sufficient unless explicitly required later)."
+    "Do not add new pages or forms for entering weekly/monthly measurement data as part of this change.",
+    "Do not change the countdown calculation rules or measurement data models; only update the UI placement/presentation."
   ],
   "imageRequirements": {
     "required": [],

@@ -14,7 +14,7 @@ export default function Goals() {
     { key: 'gym' as const, label: 'Gym', icon: Dumbbell, auto: true },
     { key: 'nutrition' as const, label: 'Nutrition', icon: Apple, auto: false },
     { key: 'sleep' as const, label: 'Sleep', icon: Moon, auto: false },
-    { key: 'discipline' as const, label: 'Discipline/NMB', icon: Target, auto: false },
+    { key: 'discipline' as const, label: 'NMB', icon: Target, auto: false },
   ];
 
   const completedCount = Object.values(todayData.goalsCompleted).filter(Boolean).length;
@@ -69,7 +69,6 @@ export default function Goals() {
                   <Checkbox
                     checked={isCompleted}
                     onCheckedChange={(checked) => updateGoal(goal.key, checked as boolean)}
-                    disabled={goal.auto}
                     className={`w-5 h-5 ${isCompleted ? 'border-neon-green data-[state=checked]:bg-neon-green' : ''}`}
                   />
                 </div>

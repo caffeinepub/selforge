@@ -1,15 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Add a first-run onboarding flow that collects the user’s name and only the required API credentials (DeepSeek, Nutritionix, API Ninjas), then tailor the UI to use these settings and remove all other API options.
+**Goal:** Update the Dashboard header greeting to show “Hello, <name>” with an icon, and relocate weekly/monthly countdown indicators into the same greeting area while removing duplicates.
 
 **Planned changes:**
-- Add a mandatory first-run onboarding gate (before any main navigation/pages) that collects and locally persists: Name, DeepSeek API key, Nutritionix App ID + App Key, and API Ninjas API key.
-- Add required-field validation with clear English error messages and prevent proceeding until all fields are non-empty.
-- Update the header to greet the user in English (e.g., “Hello, <Name>”) and display the name alongside the live time/date in the same header block.
-- Remove/hide all other API provider settings and UI references (e.g., Google CSE, OpenFoodFacts, and any other non-requested API options) so only DeepSeek, Nutritionix, and API Ninjas are referenced.
-- Switch nutrition lookup/logging to use Nutritionix when credentials are present, with existing local fallback behavior when credentials are missing (without exposing alternative API configuration).
-- Switch gym/exercise-related external calls to use API Ninjas when the key is present, with no other gym API providers configurable.
-- Update `frontend/.env.example` to include only DeepSeek, Nutritionix (App ID + App Key), and API Ninjas entries, removing examples for other providers.
+- Change the Dashboard header name display to “Hello, <name>” using the stored onboarding name, and render a small adjacent icon on the same line.
+- Move the weekly and monthly countdown indicators into the greeting section (next to/under the greeting) and remove the existing countdown block shown below the app name.
+- Ensure the greeting appears only once on the Dashboard by removing/avoiding any duplicate greeting (e.g., within the LiveCalendarWidget), while keeping time/date display intact.
 
-**User-visible outcome:** On first launch, users must enter their name and the three supported API credentials before accessing the app; afterward, the app greets them by name next to the live time/date, and nutrition/gym features use Nutritionix and API Ninjas without showing any other API configuration options.
+**User-visible outcome:** The Dashboard shows a single “Hello, <name>” greeting with a small icon, with weekly and monthly countdown indicators shown in that same header area instead of below the app name.

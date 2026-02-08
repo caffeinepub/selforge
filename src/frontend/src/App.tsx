@@ -11,10 +11,10 @@ import { useAppStore } from './lib/store';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'dashboard' | 'study' | 'gym' | 'nutrition' | 'goals'>('dashboard');
-  const { onboardingCompleted, userName, deepseekApiKey, nutritionixAppId, nutritionixAppKey, apiNinjasKey } = useAppStore();
+  const { onboardingCompleted, userName } = useAppStore();
 
-  // Check if onboarding is complete and all required fields are present
-  const isOnboardingComplete = onboardingCompleted && userName && deepseekApiKey && nutritionixAppId && nutritionixAppKey && apiNinjasKey;
+  // Check if initial onboarding is complete (only requires name)
+  const isOnboardingComplete = onboardingCompleted && userName;
 
   // Show onboarding gate if not complete
   if (!isOnboardingComplete) {
