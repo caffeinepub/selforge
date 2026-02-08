@@ -1,7 +1,7 @@
 {
   "frontend/src/App.tsx": "Main app component that shows OnboardingGate when name is not set, then renders the main app with 5 pages and bottom navigation without any API key requirements.",
   "frontend/src/lib/store.ts": "Zustand store with persist middleware (version 2) managing all app state including user start timestamp, weekly/monthly body measurements, and manual override tracking for goals, with migration logic to clear old API credentials from previous versions.",
-  "frontend/src/pages/Dashboard.tsx": "Dashboard page with green \"Nuvio\" branding, header showing app name, \"Hello, {userName}\" greeting with Sparkles icon and embedded weekly/monthly countdown indicators, measurements, streak, and summary cards for all tracking features.",
+  "frontend/src/pages/Dashboard.tsx": "Dashboard page with three-area header layout: app name \"Nuvio\" in top-left corner, centered greeting/time/date widget in top center, and streak with countdown indicators grouped in top-right corner, followed by measurements summary and tracking feature cards.",
   "frontend/src/pages/Study.tsx": "Study page with normalized minimalist typography and spacing (compact cards, smaller buttons, tighter gaps) while preserving all topic management functionality.",
   "frontend/src/pages/Gym.tsx": "Gym page with manual entry for gym/cardio activities that calculates calories burned using local MET-based calculations only, no AI or external API calls.",
   "frontend/src/pages/Nutrition.tsx": "Nutrition page with manual entry and local database lookup for food items, using only Indian and Mevsa nutrition databases with local fallback estimation.",
@@ -15,7 +15,7 @@
   "frontend/src/lib/mevsa.ts": "Mevsa nutrition and exercise database module providing nutrition data for common foods and comprehensive exercise lists organized by muscle groups.",
   "frontend/src/lib/indianNutrition.ts": "Indian nutrition database module providing nutrition data for common Indian foods and brands (Amul, Mother Dairy, Parle, Maggi) with exact and partial name matching.",
   "frontend/src/lib/deepseek.ts": "DeepSeek AI API integration module using runtime API key helper instead of direct environment variable access for all API calls.",
-  "frontend/src/components/LiveCalendarWidget.tsx": "Live date/time widget displaying auto-updating time (HH:MM:SS in 24-hour format), weekday name, month name, day number, and year without any greeting text.",
+  "frontend/src/components/LiveCalendarWidget.tsx": "Compact live date/time widget designed for Dashboard header's center area, displaying centered greeting \"Hello [name]\" with calendar icon button above centered time and date information, updating every second.",
   "frontend/scripts/clean-rebuild.sh": "Bash script that automates the clean rebuild process by removing all build artifacts, node_modules, lock file, reinstalling dependencies, running TypeScript checks, and building the project.",
   "frontend/CLEAN_REDEPLOY.md": "Documentation describing the exact steps to perform a clean rebuild and redeploy after a generic deployment error, including both automated script usage and manual steps, verification procedures, and troubleshooting guidance.",
   "frontend/REGRESSION_CHECKLIST.md": "Comprehensive manual testing checklist covering all critical functionality including the 720×1600 canvas layout, bottom navigation between 5 pages, live time/date widget behavior, and all data tracking features to verify no regressions after rebuild.",
@@ -40,6 +40,7 @@
   "frontend/index.html": "HTML entry point with updated document title \"Nuvio - Mobile Self Improvement App\".",
   "frontend/src/lib/countdowns.ts": "Date-based countdown utilities that calculate remaining days in 7-day and 30-day cycles based on user start timestamp, returning values 0-6 for weekly and 0-29 for monthly with local midnight boundaries.",
   "frontend/src/hooks/useResultCountdowns.ts": "React hook that provides live countdown values for weekly and monthly results based on user start timestamp, updating every minute to handle date changes without reload.",
-  "frontend/src/components/HeaderMeasurements.tsx": "Presentational component that displays weekly and monthly body measurements (chest, waist, butt, thighs, weight, height) with clear English labels and placeholders when values are not set.",
-  "frontend/src/main.tsx": "Application entry point with QueryClient and InternetIdentity providers wrapping the App component."
+  "frontend/src/components/HeaderMeasurements.tsx": "Presentational component that displays weekly and monthly body measurements with clear English labels, hiding \"No data yet\" fallback text and collapsing entirely when both weekly and monthly measurements contain no values > 0.",
+  "frontend/src/main.tsx": "Application entry point with QueryClient and InternetIdentity providers wrapping the App component.",
+  "frontend/src/components/MeasurementsEditorDialog.tsx": "Dialog component with Weekly/Monthly tabs for editing body measurements (chest, waist, butt, thighs, weight, height) with local draft state and explicit Save/Cancel actions that persist to Zustand store."
 }

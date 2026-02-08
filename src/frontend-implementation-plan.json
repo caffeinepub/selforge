@@ -1,57 +1,54 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Dashboard header greeting: add icon and move weekly/monthly countdowns; remove duplicate greeting",
+  "title": "Hide 'No data yet' in Dashboard header measurements and collapse empty row",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Change Dashboard header name line to an English greeting \"Hello, <name>\" with a small adjacent icon, replacing the raw name display.",
+      "summary": "Remove the Weekly measurements fallback text so only the 'Weekly' label remains when there is no weekly data.",
       "acceptanceCriteria": [
-        "On the Dashboard page header, the user name is shown as \"Hello, <name>\" (with the stored onboarding name)",
-        "A small icon/sign is rendered adjacent to the greeting text on the same line",
-        "No other part of the Dashboard shows the raw name alone in the header area"
+        "When weekly measurements contain no values > 0, the Dashboard header does not display the text \"No data yet\" anywhere under the \"Weekly\" label.",
+        "The \"Weekly\" label itself remains visible (unless it is intentionally hidden by REQ-3)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Dashboard.tsx",
+          "path": "frontend/src/components/HeaderMeasurements.tsx",
           "operation": "modify",
-          "description": "Replace the raw {userName} header line with a greeting line formatted as \"Hello, {userName}\" and render a small Lucide icon adjacent to the greeting text (same line). Ensure no other header element renders the raw name alone."
+          "description": "Adjust Weekly rendering logic to not render the \"No data yet\" fallback when weekly measurements have no values > 0; keep the \"Weekly\" label visible when Monthly has data."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Relocate weekly/monthly countdown indicators into the Dashboard greeting section and remove the existing countdown block below the app name.",
+      "summary": "Remove the Monthly measurements fallback text so only the 'Monthly' label remains when there is no monthly data.",
       "acceptanceCriteria": [
-        "The weekly and monthly countdown indicators are displayed within the greeting section that contains \"Hello, <name>\"",
-        "The separate \"Countdown Indicators\" block that appears below the app name (Nuvio) is removed from the Dashboard layout",
-        "Weekly and monthly countdown values continue to use the existing countdown logic (no change in computed numbers), only their placement changes"
+        "When monthly measurements contain no values > 0, the Dashboard header does not display the text \"No data yet\" anywhere under the \"Monthly\" label.",
+        "The \"Monthly\" label itself remains visible (unless it is intentionally hidden by REQ-3)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Dashboard.tsx",
+          "path": "frontend/src/components/HeaderMeasurements.tsx",
           "operation": "modify",
-          "description": "Move the UI rendering of weekly/monthly countdown indicators (using existing values from useResultCountdowns) into the same greeting section as \"Hello, <name>\" (next to or under it). Remove the existing standalone \"Countdown Indicators\" block currently rendered below the app name area, without changing countdown computation logic."
+          "description": "Adjust Monthly rendering logic to not render the \"No data yet\" fallback when monthly measurements have no values > 0; keep the \"Monthly\" label visible when Weekly has data."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Ensure only one Dashboard greeting is shown by removing the greeting from LiveCalendarWidget while keeping time/date intact.",
+      "summary": "Collapse the Dashboard header measurements row when both Weekly and Monthly have no data so no empty gap is shown.",
       "acceptanceCriteria": [
-        "On the Dashboard screen, \"Hello, <name>\" appears only once",
-        "The LiveCalendarWidget continues to show time and date correctly after greeting duplication is removed"
+        "With no weekly data and no monthly data, the Dashboard does not show empty measurement containers/spacers below the header row, and the next section starts immediately after the header block with normal spacing."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/LiveCalendarWidget.tsx",
+          "path": "frontend/src/components/HeaderMeasurements.tsx",
           "operation": "modify",
-          "description": "Remove (or disable) the greeting display from LiveCalendarWidget so the Dashboard shows \"Hello, <name>\" only in the Dashboard header greeting section. Keep the live time and full date rendering behavior unchanged."
+          "description": "When both Weekly and Monthly measurements contain no values > 0, render nothing (return null) so the measurements row collapses to minimal/zero height and does not leave a placeholder gap on the Dashboard."
         },
         {
           "path": "frontend/src/pages/Dashboard.tsx",
           "operation": "modify",
-          "description": "Verify the Dashboard renders exactly one greeting (in the header greeting section) after updating LiveCalendarWidget, and that the remaining LiveCalendarWidget still displays time/date correctly in the Dashboard layout."
+          "description": "Ensure the header block spacing remains correct when HeaderMeasurements renders nothing (no extra spacer/gap introduced by the measurements row)."
         }
       ]
     }

@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-08T22:42:19.326Z",
+  "generatedAt": "2026-02-08T23:06:26.881Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -12,37 +12,36 @@
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update the Dashboard header so the user name line displays a greeting in English as \"Hello, <name>\" with a small icon/sign placed next to the greeting text (e.g., a Lucide icon), instead of showing only the raw name.",
+        "summary": "Update the Dashboard header measurements section so that when there is no Weekly measurements data, the UI does not render the fallback text \"No data yet\" under the \"Weekly\" label.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/Dashboard.tsx"
+          "frontend/src/components/HeaderMeasurements.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/Dashboard.tsx"
+          "frontend/src/components/HeaderMeasurements.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Move the weekly and monthly result countdown indicators (e.g., \"X days before weekly result\" and \"Y days before monthly result\") into the same greeting section next to/under \"Hello, <name>\" in the Dashboard header, and remove the existing weekly/monthly countdown indicators that are currently displayed below the app name section.",
+        "summary": "Update the Dashboard header measurements section so that when there is no Monthly measurements data, the UI does not render the fallback text \"No data yet\" under the \"Monthly\" label.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/Dashboard.tsx"
+          "frontend/src/components/HeaderMeasurements.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/Dashboard.tsx"
+          "frontend/src/components/HeaderMeasurements.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Avoid duplicate greetings by ensuring only one greeting is shown on the Dashboard screen (either in the Dashboard header or inside the LiveCalendarWidget), keeping the greeting located where the user requested (next to the name in the Dashboard header).",
+        "summary": "If both Weekly and Monthly measurements have no data, ensure the header measurements row does not leave an empty placeholder gap on the Dashboard (i.e., it should collapse to minimal/zero height).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/LiveCalendarWidget.tsx",
+          "frontend/src/components/HeaderMeasurements.tsx",
           "frontend/src/pages/Dashboard.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/LiveCalendarWidget.tsx",
-          "frontend/src/pages/Dashboard.tsx"
+          "frontend/src/components/HeaderMeasurements.tsx"
         ]
       }
     ]
@@ -52,8 +51,7 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/LiveCalendarWidget.tsx",
-    "frontend/src/pages/Dashboard.tsx",
+    "frontend/src/components/HeaderMeasurements.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

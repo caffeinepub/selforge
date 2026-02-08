@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-export default function LiveCalendarWidget() {
+interface LiveCalendarWidgetProps {
+  userName: string;
+  onCalendarClick: () => void;
+}
+
+export default function LiveCalendarWidget({ userName, onCalendarClick }: LiveCalendarWidgetProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -38,27 +44,37 @@ export default function LiveCalendarWidget() {
   };
 
   return (
-    <Card className="bg-card-dark border-border-subtle">
-      <CardContent className="p-4">
-        <div className="space-y-3">
-          {/* Time Display */}
-          <div className="text-center">
-            <span className="text-3xl font-bold text-neon-green glow-text tabular-nums tracking-tight">
-              {formatTime(currentTime)}
-            </span>
-          </div>
+    <div className="flex flex-col items-center gap-2">
+      {/* Greeting with Calendar Icon */}
+      <div className="flex items-center gap-2">
+        <span className="text-lg font-semibold text-white">Hello {userName}</span>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-6 w-6 hover:bg-neon-green/20"
+          onClick={onCalendarClick}
+          aria-label="Edit measurements"
+        >
+          <Calendar className="h-4 w-4 text-neon-green" />
+        </Button>
+      </div>
 
-          {/* Full Date Breakdown */}
-          <div className="text-center space-y-1">
-            <div className="text-lg font-semibold text-foreground">
-              {getWeekday(currentTime)}
-            </div>
-            <div className="text-base text-muted-foreground">
-              {getMonth(currentTime)} {getDay(currentTime)}, {getYear(currentTime)}
-            </div>
-          </div>
+      {/* Time Display - centered */}
+      <div className="text-center">
+        <span className="text-2xl font-bold text-neon-green glow-text tabular-nums tracking-tight">
+          {formatTime(currentTime)}
+        </span>
+      </div>
+
+      {/* Date Display - centered */}
+      <div className="text-center space-y-0.5">
+        <div className="text-sm font-semibold text-foreground">
+          {getWeekday(currentTime)}
         </div>
-      </CardContent>
-    </Card>
+        <div className="text-xs text-muted-foreground">
+          {getMonth(currentTime)} {getDay(currentTime)}, {getYear(currentTime)}
+        </div>
+      </div>
+    </div>
   );
 }

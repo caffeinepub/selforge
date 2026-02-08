@@ -7,6 +7,11 @@ export default function HeaderMeasurements() {
   const hasWeeklyData = Object.values(weeklyMeasurements).some((val) => val > 0);
   const hasMonthlyData = Object.values(monthlyMeasurements).some((val) => val > 0);
 
+  // If neither has data, collapse the entire component
+  if (!hasWeeklyData && !hasMonthlyData) {
+    return null;
+  }
+
   const formatMeasurement = (value: number, unit: string = '') => {
     return value > 0 ? `${value}${unit}` : '-';
   };
@@ -14,9 +19,9 @@ export default function HeaderMeasurements() {
   return (
     <div className="flex flex-col gap-2 text-xs">
       {/* Weekly Measurements */}
-      <div className="space-y-1">
-        <div className="text-neon-green font-semibold">Weekly</div>
-        {hasWeeklyData ? (
+      {hasWeeklyData && (
+        <div className="space-y-1">
+          <div className="text-neon-green font-semibold">Weekly</div>
           <div className="grid grid-cols-3 gap-x-3 gap-y-0.5 text-white/70">
             <div>Chest: {formatMeasurement(weeklyMeasurements.chest, 'cm')}</div>
             <div>Waist: {formatMeasurement(weeklyMeasurements.waist, 'cm')}</div>
@@ -25,15 +30,13 @@ export default function HeaderMeasurements() {
             <div>Weight: {formatMeasurement(weeklyMeasurements.weight, 'kg')}</div>
             <div>Height: {formatMeasurement(weeklyMeasurements.height, 'cm')}</div>
           </div>
-        ) : (
-          <div className="text-white/50">No data yet</div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Monthly Measurements */}
-      <div className="space-y-1">
-        <div className="text-neon-yellow font-semibold">Monthly</div>
-        {hasMonthlyData ? (
+      {hasMonthlyData && (
+        <div className="space-y-1">
+          <div className="text-neon-yellow font-semibold">Monthly</div>
           <div className="grid grid-cols-3 gap-x-3 gap-y-0.5 text-white/70">
             <div>Chest: {formatMeasurement(monthlyMeasurements.chest, 'cm')}</div>
             <div>Waist: {formatMeasurement(monthlyMeasurements.waist, 'cm')}</div>
@@ -42,10 +45,8 @@ export default function HeaderMeasurements() {
             <div>Weight: {formatMeasurement(monthlyMeasurements.weight, 'kg')}</div>
             <div>Height: {formatMeasurement(monthlyMeasurements.height, 'cm')}</div>
           </div>
-        ) : (
-          <div className="text-white/50">No data yet</div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

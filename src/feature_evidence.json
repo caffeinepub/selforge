@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-dashboard-header-so-the-user-name-line-displays-a-greeting-in-english-as-hello-name-with-a-small-icon-sign-placed-next-to-the-greeting-text-e-g-a-lucide-icon-instead-of-showing-only-the-raw-name",
-      "featureTitle": "Update the Dashboard header so the user name line displays a greeting in English as \"Hello, <name>\" with a small icon/sign placed next to the greeting text (e.g., a Lucide icon), instead of showing only the raw name.",
+      "featureId": "feature-update-the-dashboard-header-measurements-section-so-that-when-there-is-no-weekly-measurements-data-the-ui-does-not-render-the-fallback-text-no-data-yet-under-the-weekly-label",
+      "featureTitle": "Update the Dashboard header measurements section so that when there is no Weekly measurements data, the UI does not render the fallback text \"No data yet\" under the \"Weekly\" label.",
       "files": [
-        "frontend/src/pages/Dashboard.tsx"
+        "frontend/src/components/HeaderMeasurements.tsx"
       ],
       "components": [
         "http-outcalls@3.0.0",
@@ -21,10 +21,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-move-the-weekly-and-monthly-result-countdown-indicators-e-g-x-days-before-weekly-result-and-y-days-before-monthly-result-into-the-same-greeting-section-next-to-under-hello-name-in-the-dashboard-header-and-remove-the-existing-weekly-monthly-countdown-indicators-that-are-currently-displayed-below-the-app-name-section",
-      "featureTitle": "Move the weekly and monthly result countdown indicators (e.g., \"X days before weekly result\" and \"Y days before monthly result\") into the same greeting section next to/under \"Hello, <name>\" in the Dashboard header, and remove the existing weekly/monthly countdown indicators that are currently displayed below the app name section.",
+      "featureId": "feature-update-the-dashboard-header-measurements-section-so-that-when-there-is-no-monthly-measurements-data-the-ui-does-not-render-the-fallback-text-no-data-yet-under-the-monthly-label",
+      "featureTitle": "Update the Dashboard header measurements section so that when there is no Monthly measurements data, the UI does not render the fallback text \"No data yet\" under the \"Monthly\" label.",
       "files": [
-        "frontend/src/pages/Dashboard.tsx"
+        "frontend/src/components/HeaderMeasurements.tsx"
       ],
       "components": [
         "http-outcalls@3.0.0",
@@ -40,11 +40,10 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-avoid-duplicate-greetings-by-ensuring-only-one-greeting-is-shown-on-the-dashboard-screen-either-in-the-dashboard-header-or-inside-the-livecalendarwidget-keeping-the-greeting-located-where-the-user-requested-next-to-the-name-in-the-dashboard-header",
-      "featureTitle": "Avoid duplicate greetings by ensuring only one greeting is shown on the Dashboard screen (either in the Dashboard header or inside the LiveCalendarWidget), keeping the greeting located where the user requested (next to the name in the Dashboard header).",
+      "featureId": "feature-if-both-weekly-and-monthly-measurements-have-no-data-ensure-the-header-measurements-row-does-not-leave-an-empty-placeholder-gap-on-the-dashboard-i-e-it-should-collapse-to-minimal-zero-height",
+      "featureTitle": "If both Weekly and Monthly measurements have no data, ensure the header measurements row does not leave an empty placeholder gap on the Dashboard (i.e., it should collapse to minimal/zero height).",
       "files": [
-        "frontend/src/components/LiveCalendarWidget.tsx",
-        "frontend/src/pages/Dashboard.tsx"
+        "frontend/src/components/HeaderMeasurements.tsx"
       ],
       "components": [
         "http-outcalls@3.0.0",

@@ -7,24 +7,24 @@
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-update-the-dashboard-header-so-the-user-name-line-displays-a-greeting-in-english-as-hello-name-with-a-small-icon-sign-placed-next-to-the-greeting-text-e-g-a-lucide-icon-instead-of-showing-only-the-raw-name",
-      "title": "Update the Dashboard header so the user name line displays a greeting in English as \"Hello, <name>\" with a small icon/sign placed next to the greeting text (e.g., a Lucide icon), instead of showing only the raw name.",
+      "id": "feature-update-the-dashboard-header-measurements-section-so-that-when-there-is-no-weekly-measurements-data-the-ui-does-not-render-the-fallback-text-no-data-yet-under-the-weekly-label",
+      "title": "Update the Dashboard header measurements section so that when there is no Weekly measurements data, the UI does not render the fallback text \"No data yet\" under the \"Weekly\" label.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-move-the-weekly-and-monthly-result-countdown-indicators-e-g-x-days-before-weekly-result-and-y-days-before-monthly-result-into-the-same-greeting-section-next-to-under-hello-name-in-the-dashboard-header-and-remove-the-existing-weekly-monthly-countdown-indicators-that-are-currently-displayed-below-the-app-name-section",
-      "title": "Move the weekly and monthly result countdown indicators (e.g., \"X days before weekly result\" and \"Y days before monthly result\") into the same greeting section next to/under \"Hello, <name>\" in the Dashboard header, and remove the existing weekly/monthly countdown indicators that are currently displayed below the app name section.",
+      "id": "feature-update-the-dashboard-header-measurements-section-so-that-when-there-is-no-monthly-measurements-data-the-ui-does-not-render-the-fallback-text-no-data-yet-under-the-monthly-label",
+      "title": "Update the Dashboard header measurements section so that when there is no Monthly measurements data, the UI does not render the fallback text \"No data yet\" under the \"Monthly\" label.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-avoid-duplicate-greetings-by-ensuring-only-one-greeting-is-shown-on-the-dashboard-screen-either-in-the-dashboard-header-or-inside-the-livecalendarwidget-keeping-the-greeting-located-where-the-user-requested-next-to-the-name-in-the-dashboard-header",
-      "title": "Avoid duplicate greetings by ensuring only one greeting is shown on the Dashboard screen (either in the Dashboard header or inside the LiveCalendarWidget), keeping the greeting located where the user requested (next to the name in the Dashboard header).",
+      "id": "feature-if-both-weekly-and-monthly-measurements-have-no-data-ensure-the-header-measurements-row-does-not-leave-an-empty-placeholder-gap-on-the-dashboard-i-e-it-should-collapse-to-minimal-zero-height",
+      "title": "If both Weekly and Monthly measurements have no data, ensure the header measurements row does not leave an empty placeholder gap on the Dashboard (i.e., it should collapse to minimal/zero height).",
       "reqIds": [
         "REQ-3"
       ],
@@ -34,12 +34,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Update UI header: add a greeting next to the user name (\"Hello, <name>\"); move weekly/monthly results into that section; remove weekly/monthly results from below the app name",
+      "summary": "Remove the UI text/labels under Nuvio for Weekly/Monthly that say \"No data yet\" (e.g., \"weekly no data yet\", \"monthly no data yet\")",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Move weekly/monthly result indicators into greeting next to user name",
+  "projectName": "Remove 'No data yet' text under Weekly/Monthly measurements on Dashboard header",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }
