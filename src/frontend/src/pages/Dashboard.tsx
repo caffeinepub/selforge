@@ -43,7 +43,7 @@ export default function Dashboard() {
           </div>
         </div>
         
-        {/* Live Calendar Widget */}
+        {/* Live Calendar Widget with Greeting */}
         <LiveCalendarWidget />
       </div>
 
@@ -137,11 +137,11 @@ export default function Dashboard() {
           <div className="space-y-2">
             <div className="flex justify-between items-center text-xs">
               <span className="text-muted-foreground">Gym</span>
-              <span className="text-neon-green font-bold">{totalGymCalories} kcal</span>
+              <span className="text-neon-green font-bold">{totalGymCalories}</span>
             </div>
             <div className="flex justify-between items-center text-xs">
               <span className="text-muted-foreground">School</span>
-              <span className="text-neon-green font-bold">{schoolCalories} kcal</span>
+              <span className="text-neon-yellow font-bold">{schoolCalories}</span>
             </div>
             <div className="h-px bg-border-subtle" />
             <div className="flex justify-between items-center">
@@ -151,27 +151,24 @@ export default function Dashboard() {
             <div className="h-px bg-border-subtle" />
             <div className="flex justify-between items-center">
               <span className="text-xs text-muted-foreground">Net calories</span>
-              <span className={`text-2xl font-bold glow-text ${netCalories < 0 ? 'text-neon-green' : 'text-neon-yellow'}`}>
+              <span className={`text-xl font-bold ${netCalories > 0 ? 'text-neon-yellow' : 'text-red-400'}`}>
                 {netCalories > 0 ? '+' : ''}{netCalories}
               </span>
-            </div>
-            <div className="text-[10px] text-center text-muted-foreground">
-              {netCalories < 0 ? 'Calorie deficit' : 'Calorie surplus'}
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Goals Progress */}
+      {/* Goals Overview */}
       <Card className="bg-card-dark border-border-subtle">
         <CardContent className="card-compact">
           <div className="flex items-center gap-2 mb-3">
-            <Target className="w-4 h-4 text-neon-yellow" />
-            <h2 className="section-title">Daily Goals</h2>
+            <Target className="w-4 h-4 text-neon-green" />
+            <h2 className="section-title">Goals</h2>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-xs text-muted-foreground">Goals completed</span>
-            <span className="text-3xl font-bold text-neon-yellow glow-text">
+            <span className="text-xs text-muted-foreground">Completed today</span>
+            <span className="text-2xl font-bold text-neon-green glow-text">
               {goalsCompleted}/{totalGoals}
             </span>
           </div>

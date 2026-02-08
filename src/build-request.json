@@ -1,94 +1,129 @@
 {
   "kind": "build_request",
-  "title": "Improve restaurant menu nutrition fetching (Google-like search) for free-text meal inputs",
+  "title": "First-run onboarding for name + DeepSeek/Nutritionix/API Ninjas keys and remove other API options",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the free-text meal parsing so inputs like \"2 kfc veg zinger burger\" are parsed as a single food item with the full name (including multi-word restaurant/menu items) and a sensible default portion estimate for items like burgers (per piece) instead of truncating to 2–3 words or assuming unrealistic grams.",
+      "text": "Add a first-run onboarding gate that appears before the user can access the main app, requiring the user to enter (a) their name, (b) DeepSeek API key, (c) Nutritionix credentials, and (d) API Ninjas API key; persist these values locally and do not show the main navigation/pages until onboarding is completed.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-1"
         ],
         "quotes": [
-          "i write 2 kfc veg zinger burger and it dont fetches data"
+          "Before starting app for first ask person name and to put these 3 apis and remove all api options in app onlu put this one before starting app"
         ]
       },
       "acceptanceCriteria": [
-        "Entering \"2 kfc veg zinger burger\" results in a parsed food item whose name includes \"kfc\" and \"veg zinger burger\" (not truncated to only the first 2–3 words).",
-        "The parser treats \"2 <menu item>\" as 2 pieces (not 2g) when no explicit unit is provided.",
-        "Portion estimation for burger-like items defaults to a higher per-piece gram estimate than the generic 50g piece (so total grams for 2 burgers is plausibly >100g)."
+        "On a fresh install (empty local storage), the app shows an onboarding screen/modal instead of the main app pages.",
+        "Onboarding collects: Name, DeepSeek API key, Nutritionix App ID + Nutritionix App Key (or an equivalent explicit pair), and API Ninjas API key.",
+        "The user cannot dismiss onboarding without providing at least a non-empty name and non-empty values for all required API credentials.",
+        "After saving onboarding, the app persists these values (Zustand persisted store) and does not show onboarding again on subsequent reloads.",
+        "There is a clear validation/error message in English when required fields are missing."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Add a new nutrition lookup step that uses a Google-like web search API (Google Custom Search JSON API) to find nutrition facts for restaurant/menu items when Open Food Facts does not return a match, and use that result before falling back to AI estimation or local defaults.",
+      "text": "Update the app header area to greet the user in English and display the user name alongside the current time/date (same header block), e.g., \"Hello, <Name>\" with the live time/date shown next to it.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-1"
         ],
         "quotes": [
-          "bro just connect this to google or smth bcz its not working",
-          "ask toa uth with chat gpt and whatever i tell in description menu it just ask chatgpt for all things and for data"
+          "and put name aside the time date and say helo"
         ]
       },
       "acceptanceCriteria": [
-        "If Open Food Facts returns not-found for a query like \"KFC veg zinger burger\", the app attempts a web-search-based lookup next.",
-        "The web-search integration is configurable via environment variables (do not hardcode keys in source).",
-        "When the search API is not configured or fails, the app continues gracefully to the existing DeepSeek/local fallback without breaking the UI.",
-        "The nutrition result includes an explicit nutritionSource value that distinguishes search-based results from 'online' (Open Food Facts), 'deepseek', and 'local'."
+        "When a name is stored, the dashboard header area shows a greeting starting with \"Hello\" and includes the stored name.",
+        "The live time/date remains visible and updates as it currently does, with the name displayed alongside it (not on a separate page).",
+        "If no name exists (before onboarding completion), the greeting/name is not shown and onboarding is shown instead (per REQ-1)."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Extract usable nutrition numbers (at minimum calories; protein/sugar when available) from web-search results (e.g., result snippet text) with robust, unit-aware heuristics (kcal/calories, grams), and scale results according to the parsed quantity/portion.",
+      "text": "Remove all other API options/settings from the UI so the only APIs the user is ever prompted to configure are: DeepSeek (AI), Nutritionix (food), and API Ninjas (gym).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-1"
         ],
         "quotes": [
-          "it dont fetches data jist . ... ask chatgpt for all things and for data"
+          "remove all api options in app onlu put this one"
         ]
       },
       "acceptanceCriteria": [
-        "For a search snippet containing a calories value (e.g., \"450 kcal\"), the app can parse and populate calories for the item.",
-        "If protein is present in the snippet (e.g., \"25g protein\"), the app parses and populates protein; if absent, protein can remain 0.",
-        "Parsed per-item nutrition is scaled to the final gram quantity that the parser/portion estimator computes for the entry.",
-        "If parsing yields ambiguous/low-confidence values, the app does not present them as definitive; it should fall back to the next provider (DeepSeek/local) rather than saving incorrect numbers."
+        "No page (Goals/Nutrition/Gym/Dashboard/etc.) displays API key settings for Google CSE, OpenFoodFacts, or any other non-requested API.",
+        "Any existing components/sections for OpenFoodFacts and Google CSE are removed from the rendered UI.",
+        "Any existing calories-burned API key UI is renamed/reframed to API Ninjas Gym API key (if retained) and is not shown outside onboarding.",
+        "All user-facing copy is in English and references only DeepSeek, Nutritionix, and API Ninjas."
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Update the Quick Log (Description) results UI to clearly indicate when nutrition came from web search vs Open Food Facts vs AI vs estimation, using English labels, so the user can see that menu items are being fetched from an external source rather than \"asking ChatGPT for everything\".",
+      "text": "Integrate Nutritionix API for food/nutrition lookup and ensure the nutrition logging flow uses Nutritionix as the primary external nutrition data source (with existing local fallbacks only if credentials are missing).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "msg-1"
         ],
         "quotes": [
-          "whatever i tell in description menu it just ask chatgpt for all things and for data"
+          "Nutritionix APi for food"
         ]
       },
       "acceptanceCriteria": [
-        "For single-item and multi-item food results, the UI shows a source badge that includes a distinct label for the new search-based provider (e.g., \"Web Search\"), separate from existing badges.",
-        "All user-facing text for the new provider is in English.",
-        "The UI continues to work for gym/cardio entries unchanged."
+        "When Nutritionix credentials are present, nutrition lookup requests are made to Nutritionix (not OpenFoodFacts, not Google CSE).",
+        "If Nutritionix credentials are not present, the app falls back to an existing non-credential method (e.g., local heuristics/DB) without exposing alternative API configuration options.",
+        "OpenFoodFacts and Google CSE environment variables are no longer required for the nutrition feature to work."
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Integrate API Ninjas for gym/exercise support so gym-related API calls use API Ninjas (and the user provides only the API Ninjas key in onboarding).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "and api ninjas for gym"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When an API Ninjas key is present, gym/exercise-related external requests use API Ninjas endpoints (including calories-burned calculations if applicable in the existing code).",
+        "The stored credential is a single API Ninjas API key (persisted).",
+        "No other gym API providers are exposed or configurable in the UI."
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Update the example environment configuration to reflect only the supported APIs (DeepSeek, Nutritionix, API Ninjas) and remove example entries for other API providers.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "ask three apis 1- deepseek ai ... 2-Nutritionix APi for food  and api ninjas for gym"
+        ]
+      },
+      "acceptanceCriteria": [
+        "frontend/.env.example no longer includes Google CSE or OpenFoodFacts keys.",
+        "frontend/.env.example includes entries for DeepSeek, Nutritionix (explicitly App ID + App Key or equivalent), and API Ninjas (API key and URL if needed).",
+        "The app still runs without any .env values if the user enters keys via onboarding (persisted store)."
       ]
     }
   ],
   "constraints": [
     "Use English for any user-facing text.",
-    "Do not edit files under frontend/src/components/ui, frontend/src/hooks/useInternetIdentity.ts/tsx, frontend/src/hooks/useActor.ts, or frontend/src/main.tsx (compose them instead).",
-    "Backend must remain a single Motoko actor if backend changes are introduced; add migration.mo only if stable state is changed."
+    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything in frontend/src/components/ui (compose them instead).",
+    "Backend is a single Motoko actor (backend/main.mo); only add backend requirements if strictly needed for this request."
   ],
   "nonGoals": [
-    "Do not add third-party authentication providers (only Internet Identity is allowed).",
-    "Do not add paid/closed-source nutrition databases that require mandatory API keys to function (the web-search step must be optional and gracefully disabled when unconfigured).",
-    "Do not implement real-time features (WebSockets/chat).",
-    "Do not integrate OpenAI/Anthropic/ChatGPT APIs."
+    "Adding third-party authentication beyond existing Internet Identity support.",
+    "Adding any additional API providers (e.g., Google CSE, OpenFoodFacts, other calories APIs).",
+    "Building a backend persistence layer for these settings (local persisted store is sufficient unless explicitly required later)."
   ],
   "imageRequirements": {
     "required": [],

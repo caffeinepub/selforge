@@ -5,11 +5,25 @@ import Study from './pages/Study';
 import Gym from './pages/Gym';
 import Nutrition from './pages/Nutrition';
 import Goals from './pages/Goals';
-import Description from './pages/Description';
 import BottomNav from './components/BottomNav';
+import OnboardingGate from './components/OnboardingGate';
+import { useAppStore } from './lib/store';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'dashboard' | 'study' | 'gym' | 'nutrition' | 'goals' | 'description'>('dashboard');
+  const [currentPage, setCurrentPage] = useState<'dashboard' | 'study' | 'gym' | 'nutrition' | 'goals'>('dashboard');
+  const { onboardingCompleted, userName, deepseekApiKey, nutritionixAppId, nutritionixAppKey, apiNinjasKey } = useAppStore();
+
+  // Check if onboarding is complete and all required fields are present
+  const isOnboardingComplete = onboardingCompleted && userName && deepseekApiKey && nutritionixAppId && nutritionixAppKey && apiNinjasKey;
+
+  // Show onboarding gate if not complete
+  if (!isOnboardingComplete) {
+    return (
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
+        <OnboardingGate />
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
@@ -18,10 +32,9 @@ function App() {
           <main className="flex-1 pb-16 overflow-y-auto">
             {currentPage === 'dashboard' && <Dashboard />}
             {currentPage === 'study' && <Study />}
-            {currentPage === 'gym' && <Gym onNavigateToDescription={() => setCurrentPage('description')} />}
-            {currentPage === 'nutrition' && <Nutrition onNavigateToDescription={() => setCurrentPage('description')} />}
+            {currentPage === 'gym' && <Gym />}
+            {currentPage === 'nutrition' && <Nutrition />}
             {currentPage === 'goals' && <Goals />}
-            {currentPage === 'description' && <Description />}
           </main>
           <BottomNav currentPage={currentPage} onNavigate={setCurrentPage} />
         </div>

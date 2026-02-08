@@ -1,53 +1,76 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-08T01:26:36.810Z",
-  "summary": "Diff implements web-search nutrition lookup via Google Custom Search (env-configured) with snippet parsing heuristics, adds a new nutritionSource='web-search' path in the nutrition fallback chain, improves meal prompt parsing to capture longer restaurant/menu item names, adjusts portion gram estimates for burger-like items, and updates Description results UI to display source badges. Diff also includes several broader UI/layout refactors and additional modules not explicitly requested.",
+  "generatedAt": "2026-02-08T19:18:17.186Z",
+  "summary": "Most requested onboarding + credential persistence, header greeting, Nutritionix-first nutrition lookup, and env example cleanup appear implemented. The diff also includes several unrelated UI/layout tweaks and new maintenance docs/scripts not requested.",
   "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "Large-scale UI/UX refactor across multiple pages (Dashboard/Study/Goals/Gym/Nutrition), addition of a new Description page and navigation changes beyond the requested Quick Log source indication.",
-      "reason": "BuildRequest only asks to update Quick Log (Description) results UI to show nutrition source badges; it does not request redesigns or workflow changes replacing manual logging with a Description CTA.",
+      "description": "Added clean rebuild/redeploy tooling and documentation (script + multiple docs/checklists) not requested in the BuildRequest.",
+      "reason": "BuildRequest focuses on onboarding/API provider changes; no requirement mentions build scripts or redeploy documentation.",
       "evidence": [
-        "frontend-file-summaries.txt",
+        "frontend/scripts/clean-rebuild.sh",
+        "frontend/CLEAN_REDEPLOY.md",
+        "frontend/REGRESSION_CHECKLIST.md"
+      ]
+    },
+    {
+      "description": "Introduced/updated a 720×1600 constrained 'app-canvas' layout and related global style/theme changes not requested.",
+      "reason": "BuildRequest does not ask for layout resizing, canvas constraints, or a new neon OKLCH design system.",
+      "evidence": [
         "frontend/src/App.tsx",
-        "frontend/src/pages/Dashboard.tsx",
-        "frontend/src/pages/Study.tsx",
-        "frontend/src/pages/Goals.tsx",
-        "frontend/src/pages/Gym.tsx",
-        "frontend/src/pages/Nutrition.tsx",
-        "frontend/src/components/BottomNav.tsx"
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js",
+        "frontend-file-summaries.txt (mentions 720×1600 canvas layout)"
       ]
     },
     {
-      "description": "Added/expanded unrelated nutrition/exercise data modules and placeholder hooks not tied to the web-search nutrition feature (e.g., comprehensive exercise library, Indian nutrition module, empty useQueries placeholder, live time widget).",
-      "reason": "Not requested by REQ-1..REQ-4; scope is restaurant/menu parsing + web-search nutrition + source labeling.",
+      "description": "Modified bottom navigation structure (e.g., removing a tab) beyond the scope of onboarding/API settings changes.",
+      "reason": "BuildRequest does not ask to change navigation tabs; only to gate access until onboarding is complete.",
       "evidence": [
-        "frontend-file-summaries.txt",
-        "frontend/src/lib/mevsa.ts",
+        "frontend-file-summaries.txt (BottomNav: 'removed Log/Description tab')"
+      ]
+    },
+    {
+      "description": "Added/expanded local nutrition and exercise databases (Indian nutrition DB, Mevsa DB/exercise lists) beyond what was requested.",
+      "reason": "REQ-4 allows existing local fallbacks, but does not request adding large new datasets/modules.",
+      "evidence": [
         "frontend/src/lib/indianNutrition.ts",
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/components/LiveCalendarWidget.tsx"
+        "frontend/src/lib/mevsa.ts"
       ]
     },
     {
-      "description": "Use of DeepSeek Chat Completions endpoint for parsing free-text descriptions into structured entries within descriptionFlow.ts.",
-      "reason": "Not requested (and BuildRequest emphasizes showing the user it's not \"asking ChatGPT for everything\"; while DeepSeek was mentioned as existing fallback, implementing/expanding AI parsing for description is extra scope relative to the specified changes).",
+      "description": "Created an empty placeholder hook file (useQueries.ts) not tied to any requirement.",
+      "reason": "No requirement asks for adding placeholder hooks or restructuring query logic.",
       "evidence": [
-        "frontend/src/lib/descriptionFlow.ts"
+        "frontend-file-summaries.txt (frontend/src/hooks/useQueries.ts: 'Empty placeholder file')"
       ]
     }
   ],
-  "confidence": 0.72,
+  "confidence": 0.74,
   "changed_files": [
     "frontend-file-summaries.txt",
     "frontend/.env.example",
-    "frontend/src/lib/descriptionFlow.ts",
-    "frontend/src/lib/mealPromptParser.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/components/ApiKeySettings.tsx",
+    "frontend/src/components/CaloriesBurnedApiKeySettings.tsx",
+    "frontend/src/components/LiveCalendarWidget.tsx",
+    "frontend/src/components/OnboardingGate.tsx",
+    "frontend/src/components/OpenFoodFactsKeySettings.tsx",
+    "frontend/src/lib/apiKey.ts",
+    "frontend/src/lib/caloriesBurnedKey.ts",
+    "frontend/src/lib/indianNutrition.ts",
+    "frontend/src/lib/mevsa.ts",
     "frontend/src/lib/nutrition.ts",
-    "frontend/src/lib/portionEstimates.ts",
+    "frontend/src/lib/nutritionix.ts",
+    "frontend/src/lib/onlineNutrition.ts",
+    "frontend/src/lib/openFoodFactsKey.ts",
+    "frontend/src/lib/store.ts",
     "frontend/src/lib/webSearchNutrition.ts",
-    "frontend/src/pages/Description.tsx",
+    "frontend/src/pages/Dashboard.tsx",
+    "frontend/src/pages/Goals.tsx",
+    "frontend/src/pages/Gym.tsx",
+    "frontend/src/pages/Nutrition.tsx",
     "project_state.json"
   ]
 }

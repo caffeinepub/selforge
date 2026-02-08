@@ -1,13 +1,15 @@
 # Specification
 
 ## Summary
-**Goal:** Improve free-text restaurant/menu meal logging so multi-word items parse correctly and nutrition can be fetched via an optional web-search fallback with clear source labeling.
+**Goal:** Add a first-run onboarding flow that collects the user’s name and only the required API credentials (DeepSeek, Nutritionix, API Ninjas), then tailor the UI to use these settings and remove all other API options.
 
 **Planned changes:**
-- Update free-text meal parsing to keep full multi-word restaurant/menu item names (e.g., “kfc veg zinger burger”) as one item, and interpret leading quantities like “2” as pieces when no unit is provided.
-- Improve portion estimation defaults for burger-like items so per-piece grams are more realistic than generic small-piece estimates.
-- Add an optional Google Custom Search JSON API lookup step when Open Food Facts has no match, configured via environment variables and gracefully skipped when unconfigured or failing.
-- Extract nutrition numbers (at minimum calories; protein/sugar when available) from web-search result text using unit-aware heuristics, scale to parsed quantity/portion, and fall back to existing providers when confidence is low.
-- Update Quick Log (Description) results UI to show an English source badge distinguishing Open Food Facts vs Web Search vs AI vs local estimation, without changing gym/cardio flows.
+- Add a mandatory first-run onboarding gate (before any main navigation/pages) that collects and locally persists: Name, DeepSeek API key, Nutritionix App ID + App Key, and API Ninjas API key.
+- Add required-field validation with clear English error messages and prevent proceeding until all fields are non-empty.
+- Update the header to greet the user in English (e.g., “Hello, <Name>”) and display the name alongside the live time/date in the same header block.
+- Remove/hide all other API provider settings and UI references (e.g., Google CSE, OpenFoodFacts, and any other non-requested API options) so only DeepSeek, Nutritionix, and API Ninjas are referenced.
+- Switch nutrition lookup/logging to use Nutritionix when credentials are present, with existing local fallback behavior when credentials are missing (without exposing alternative API configuration).
+- Switch gym/exercise-related external calls to use API Ninjas when the key is present, with no other gym API providers configurable.
+- Update `frontend/.env.example` to include only DeepSeek, Nutritionix (App ID + App Key), and API Ninjas entries, removing examples for other providers.
 
-**User-visible outcome:** Users can enter free-text meals like “2 kfc veg zinger burger” and get a correctly parsed item with sensible portions, with nutrition fetched from Open Food Facts or (when needed) an optional web search fallback, and the UI clearly shows where the nutrition came from.
+**User-visible outcome:** On first launch, users must enter their name and the three supported API credentials before accessing the app; afterward, the app greets them by name next to the live time/date, and nutrition/gym features use Nutritionix and API Ninjas without showing any other API configuration options.

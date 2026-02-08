@@ -1,13 +1,8 @@
 import { useAppStore } from '../lib/store';
-import { Dumbbell, Heart, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Dumbbell, Heart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
-interface GymProps {
-  onNavigateToDescription: () => void;
-}
-
-export default function Gym({ onNavigateToDescription }: GymProps) {
+export default function Gym() {
   const { getTodayData } = useAppStore();
   const todayData = getTodayData();
 
@@ -16,17 +11,7 @@ export default function Gym({ onNavigateToDescription }: GymProps) {
 
   return (
     <div className="page-container">
-      <div className="flex items-center justify-between">
-        <h1 className="page-title">Gym</h1>
-        <Button 
-          size="sm" 
-          onClick={onNavigateToDescription}
-          className="bg-neon-green text-black hover:bg-neon-green/90 h-8"
-        >
-          <Plus className="w-3.5 h-3.5 mr-1" />
-          Add via Description
-        </Button>
-      </div>
+      <h1 className="page-title">Gym</h1>
 
       <div className="grid grid-cols-2 gap-3 mb-4">
         <Card className="bg-card-dark border-border-subtle">
@@ -49,7 +34,6 @@ export default function Gym({ onNavigateToDescription }: GymProps) {
           <Card className="bg-card-dark border-border-subtle">
             <CardContent className="pt-4 pb-4 text-center">
               <p className="text-sm text-gray-500">No activities logged yet</p>
-              <p className="text-xs text-gray-600 mt-1">Use "Add via Description" to log your workout</p>
             </CardContent>
           </Card>
         ) : (

@@ -1,106 +1,179 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Improve free-text restaurant meal parsing and optional web-search nutrition fallback",
+  "title": "First-run onboarding gate for required API credentials, simplified settings UI, and Nutritionix/API Ninjas integrations",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Improve free-text parsing to keep multi-word restaurant/menu item names intact and default to realistic per-piece portions for burger-like foods.",
+      "summary": "Add a first-run onboarding gate that requires name + DeepSeek key + Nutritionix credentials + API Ninjas key, persisted locally before showing the main app.",
       "acceptanceCriteria": [
-        "Entering \"2 kfc veg zinger burger\" results in a parsed food item whose name includes \"kfc\" and \"veg zinger burger\" (not truncated to only the first 2–3 words).",
-        "The parser treats \"2 <menu item>\" as 2 pieces (not 2g) when no explicit unit is provided.",
-        "Portion estimation for burger-like items defaults to a higher per-piece gram estimate than the generic 50g piece (so total grams for 2 burgers is plausibly >100g)."
+        "On a fresh install (empty local storage), the app shows an onboarding screen/modal instead of the main app pages.",
+        "Onboarding collects: Name, DeepSeek API key, Nutritionix App ID + Nutritionix App Key (or an equivalent explicit pair), and API Ninjas API key.",
+        "The user cannot dismiss onboarding without providing at least a non-empty name and non-empty values for all required API credentials.",
+        "After saving onboarding, the app persists these values (Zustand persisted store) and does not show onboarding again on subsequent reloads.",
+        "There is a clear validation/error message in English when required fields are missing."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/mealPromptParser.ts",
+          "path": "frontend/src/lib/store.ts",
           "operation": "modify",
-          "description": "Update parsing heuristics so number-led items can capture longer multi-word names (e.g., restaurant + menu item) without the current 3-word truncation, while still supporting multi-item inputs separated by additional quantities/conjunctions."
+          "description": "Extend the persisted Zustand store to include: user name, DeepSeek API key, Nutritionix App ID + App Key, API Ninjas API key, and an onboarding completion flag; add setters/clearers as needed to support the onboarding flow."
         },
         {
-          "path": "frontend/src/lib/portionEstimates.ts",
-          "operation": "modify",
-          "description": "Adjust portion estimation so missing-unit quantities default to pieces, and add burger-like per-piece gram overrides (e.g., burger/zinger/sandwich) to produce plausible totals for restaurant items."
+          "path": "frontend/src/components/OnboardingGate.tsx",
+          "operation": "create",
+          "description": "Create an onboarding gate component that renders a required credentials form (Name, DeepSeek API key, Nutritionix App ID, Nutritionix App Key, API Ninjas API key), performs English validation messaging, and saves values to the persisted Zustand store. Use shadcn-ui form primitives (e.g., Card, Input, Label, Button) to match the app styling. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/lib/descriptionFlow.ts",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Ensure heuristic food parsing uses the improved meal prompt parser output for single-item cases (including restaurant/menu items) and keeps the computed per-piece gram quantity for downstream nutrition scaling."
+          "description": "Wire the onboarding gate into the app shell: if onboarding is incomplete (or required fields are missing), render the onboarding UI and do not render the main pages or BottomNav; otherwise render the existing app."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Add an optional Google Custom Search-based nutrition lookup step after Open Food Facts not-found and before DeepSeek/local fallback, configured via environment variables.",
+      "summary": "Update the dashboard header to greet the stored user name in English and show it alongside the live time/date in the same header block.",
       "acceptanceCriteria": [
-        "If Open Food Facts returns not-found for a query like \"KFC veg zinger burger\", the app attempts a web-search-based lookup next.",
-        "The web-search integration is configurable via environment variables (do not hardcode keys in source).",
-        "When the search API is not configured or fails, the app continues gracefully to the existing DeepSeek/local fallback without breaking the UI.",
-        "The nutrition result includes an explicit nutritionSource value that distinguishes search-based results from 'online' (Open Food Facts), 'deepseek', and 'local'."
+        "When a name is stored, the dashboard header area shows a greeting starting with \"Hello\" and includes the stored name.",
+        "The live time/date remains visible and updates as it currently does, with the name displayed alongside it (not on a separate page).",
+        "If no name exists (before onboarding completion), the greeting/name is not shown and onboarding is shown instead (per REQ-1)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/webSearchNutrition.ts",
-          "operation": "create",
-          "description": "Implement a web-search-based nutrition provider that calls Google Custom Search JSON API when configured, returning a structured result (including a confidence indicator) derived from search results/snippets. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/lib/nutrition.ts",
+          "path": "frontend/src/pages/Dashboard.tsx",
           "operation": "modify",
-          "description": "Insert the new web-search provider into the fallback chain (after Open Food Facts not-found, before DeepSeek/local), read configuration from import.meta.env, and extend NutritionData.nutritionSource to include a distinct 'web-search' value."
+          "description": "Read the stored user name from the persisted store and render an English greeting (\"Hello, <Name>\") within the existing header block, positioned alongside the existing live time/date area (not as a separate page/section)."
         },
         {
-          "path": "frontend/src/lib/descriptionFlow.ts",
+          "path": "frontend/src/components/LiveCalendarWidget.tsx",
           "operation": "modify",
-          "description": "Update types for nutritionSource in ParsedEntry/foodItems to include 'web-search' and propagate it from fetchNutritionData into enriched results."
-        },
-        {
-          "path": "frontend/.env.example",
-          "operation": "create",
-          "description": "Document optional environment variables for the web-search lookup (e.g., VITE_GOOGLE_CSE_API_KEY and VITE_GOOGLE_CSE_CX) and note that the feature is disabled when unconfigured."
+          "description": "Adjust the widget layout/API as needed to support rendering the greeting alongside the live time/date while preserving the current live update behavior (1-second ticking) and English date/time formatting."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Extract calories (and protein/sugar when available) from web-search snippets using unit-aware heuristics and scale results to the parsed quantity, falling back when confidence is low.",
+      "summary": "Remove all other API options/settings from the UI so users are only prompted for DeepSeek, Nutritionix, and API Ninjas (via onboarding only).",
       "acceptanceCriteria": [
-        "For a search snippet containing a calories value (e.g., \"450 kcal\"), the app can parse and populate calories for the item.",
-        "If protein is present in the snippet (e.g., \"25g protein\"), the app parses and populates protein; if absent, protein can remain 0.",
-        "Parsed per-item nutrition is scaled to the final gram quantity that the parser/portion estimator computes for the entry.",
-        "If parsing yields ambiguous/low-confidence values, the app does not present them as definitive; it should fall back to the next provider (DeepSeek/local) rather than saving incorrect numbers."
+        "No page (Goals/Nutrition/Gym/Dashboard/etc.) displays API key settings for Google CSE, OpenFoodFacts, or any other non-requested API.",
+        "Any existing components/sections for OpenFoodFacts and Google CSE are removed from the rendered UI.",
+        "Any existing calories-burned API key UI is renamed/reframed to API Ninjas Gym API key (if retained) and is not shown outside onboarding.",
+        "All user-facing copy is in English and references only DeepSeek, Nutritionix, and API Ninjas."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/lib/webSearchNutrition.ts",
+          "path": "frontend/src/pages/Nutrition.tsx",
           "operation": "modify",
-          "description": "Add robust, unit-aware snippet parsing heuristics (kcal/calories, grams; optionally handle kJ→kcal) and a confidence/validity check so ambiguous values return no usable result (triggering fallback) rather than being surfaced as definitive. Verify the component's usage instructions before implementing."
+          "description": "Remove rendered API settings sections/cards (including AI key and OpenFoodFacts key settings) so the Nutrition page no longer prompts for any API configuration outside onboarding."
         },
         {
-          "path": "frontend/src/lib/nutrition.ts",
+          "path": "frontend/src/pages/Gym.tsx",
           "operation": "modify",
-          "description": "Ensure web-search-derived nutrition is only used when snippet parsing reports sufficient confidence, and scale parsed nutrition to the final gram quantity computed by the parser/portion estimator for the entry."
+          "description": "Remove the rendered calories-burned API key settings UI from the Gym page so the user is not prompted for any gym API provider configuration outside onboarding."
+        },
+        {
+          "path": "frontend/src/pages/Goals.tsx",
+          "operation": "modify",
+          "description": "Remove any rendered API key settings UI from the Goals page so no API configuration options appear outside onboarding; ensure all remaining copy stays in English."
+        },
+        {
+          "path": "frontend/src/components/OpenFoodFactsKeySettings.tsx",
+          "operation": "delete",
+          "description": "Delete the OpenFoodFacts API key settings component to ensure it is not available for rendering anywhere in the UI."
+        },
+        {
+          "path": "frontend/src/components/CaloriesBurnedApiKeySettings.tsx",
+          "operation": "delete",
+          "description": "Delete the Calories Burned API key settings component to ensure it is not available for rendering anywhere in the UI (API Ninjas key will be collected only via onboarding)."
+        },
+        {
+          "path": "frontend/src/components/ApiKeySettings.tsx",
+          "operation": "delete",
+          "description": "Delete the standalone AI API key settings component so DeepSeek configuration is only collected in onboarding (per requirements), and remove any remaining non-required provider references from UI copy by eliminating this screen."
         }
       ]
     },
     {
       "id": "REQ-4",
-      "summary": "Update Quick Log (Description) results UI to clearly label nutrition source as Web Search vs Online DB vs AI vs Estimated, in English, without affecting gym/cardio flows.",
+      "summary": "Integrate Nutritionix for nutrition lookup and make it the primary external nutrition data source with local fallback when credentials are missing.",
       "acceptanceCriteria": [
-        "For single-item and multi-item food results, the UI shows a source badge that includes a distinct label for the new search-based provider (e.g., \"Web Search\"), separate from existing badges.",
-        "All user-facing text for the new provider is in English.",
-        "The UI continues to work for gym/cardio entries unchanged."
+        "When Nutritionix credentials are present, nutrition lookup requests are made to Nutritionix (not OpenFoodFacts, not Google CSE).",
+        "If Nutritionix credentials are not present, the app falls back to an existing non-credential method (e.g., local heuristics/DB) without exposing alternative API configuration options.",
+        "OpenFoodFacts and Google CSE environment variables are no longer required for the nutrition feature to work."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Description.tsx",
-          "operation": "modify",
-          "description": "Extend the nutrition source badge mapping to include a distinct English label for 'web-search' (e.g., \"Web Search\") and keep existing badges unchanged for online/deepseek/local; ensure gym/cardio rendering remains unaffected."
+          "path": "frontend/src/lib/nutritionix.ts",
+          "operation": "create",
+          "description": "Add a Nutritionix client helper that performs food/nutrition lookup using the stored Nutritionix App ID + App Key and returns normalized calories/macros data for the existing nutrition logging/enrichment flow."
         },
         {
-          "path": "frontend/src/lib/descriptionFlow.ts",
+          "path": "frontend/src/lib/nutrition.ts",
           "operation": "modify",
-          "description": "Align any frontend-facing type unions and value wiring so the UI can reliably render the new 'web-search' nutritionSource badge for both single-item and multi-item food results."
+          "description": "Update nutrition lookup flow to use Nutritionix as the first-choice external source when credentials exist; if missing, fall back to existing non-credential methods (e.g., local DB and existing heuristics/DeepSeek without showing other provider settings). Remove any OpenFoodFacts/Google CSE usage from the active path."
+        },
+        {
+          "path": "frontend/src/lib/onlineNutrition.ts",
+          "operation": "delete",
+          "description": "Remove the Open Food Facts-based nutrition lookup module so it is no longer part of the nutrition feature."
+        },
+        {
+          "path": "frontend/src/lib/webSearchNutrition.ts",
+          "operation": "delete",
+          "description": "Remove the Google CSE web-search nutrition lookup module so it is no longer part of the nutrition feature and no longer requires Google CSE environment variables."
+        },
+        {
+          "path": "frontend/src/lib/openFoodFactsKey.ts",
+          "operation": "delete",
+          "description": "Remove the OpenFoodFacts key getter since OpenFoodFacts is no longer supported or required."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Integrate API Ninjas for gym/exercise support so gym-related external requests use API Ninjas with a single stored API key from onboarding.",
+      "acceptanceCriteria": [
+        "When an API Ninjas key is present, gym/exercise-related external requests use API Ninjas endpoints (including calories-burned calculations if applicable in the existing code).",
+        "The stored credential is a single API Ninjas API key (persisted).",
+        "No other gym API providers are exposed or configurable in the UI."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/store.ts",
+          "operation": "modify",
+          "description": "Replace/rename the existing calories-burned API key field to an API Ninjas API key field (single key) in the persisted store, and update related setters so onboarding can save it."
+        },
+        {
+          "path": "frontend/src/lib/caloriesBurnedKey.ts",
+          "operation": "modify",
+          "description": "Update the runtime key getter to read the persisted API Ninjas API key first and then (optionally) fall back to an API Ninjas env var name used by the updated .env.example."
+        },
+        {
+          "path": "frontend/src/lib/caloriesBurnedApi.ts",
+          "operation": "modify",
+          "description": "Ensure the calories-burned external request logic is explicitly framed as API Ninjas usage (base URL defaults to API Ninjas as it does now) and uses the single API Ninjas key from the persisted store getter."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Update example environment configuration to reflect only DeepSeek, Nutritionix, and API Ninjas; remove other provider entries.",
+      "acceptanceCriteria": [
+        "frontend/.env.example no longer includes Google CSE or OpenFoodFacts keys.",
+        "frontend/.env.example includes entries for DeepSeek, Nutritionix (explicitly App ID + App Key or equivalent), and API Ninjas (API key and URL if needed).",
+        "The app still runs without any .env values if the user enters keys via onboarding (persisted store)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/.env.example",
+          "operation": "modify",
+          "description": "Remove Google CSE and OpenFoodFacts entries and keep only DeepSeek, Nutritionix (App ID + App Key), and API Ninjas (API key and optional base URL) examples; ensure names align with the updated runtime getters and onboarding-first behavior."
+        },
+        {
+          "path": "frontend/src/lib/apiKey.ts",
+          "operation": "modify",
+          "description": "Keep DeepSeek runtime key resolution aligned with the onboarding-persisted store first, then optional env fallback; ensure naming/copy reflects DeepSeek only (no other AI providers referenced)."
         }
       ]
     }

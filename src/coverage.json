@@ -1,71 +1,108 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-08T01:26:36.812Z",
+  "generatedAt": "2026-02-08T19:18:17.189Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 4,
-    "implemented": 4,
+    "total": 6,
+    "implemented": 6,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "Update the free-text meal parsing so inputs like \"2 kfc veg zinger burger\" are parsed as a single food item with the full name (including multi-word restaurant/menu items) and a sensible default portion estimate for items like burgers (per piece) instead of truncating to 2–3 words or assuming unrealistic grams.",
+        "summary": "Add a first-run onboarding gate that appears before the user can access the main app, requiring the user to enter (a) their name, (b) DeepSeek API key, (c) Nutritionix credentials, and (d) API Ninjas API key; persist these values locally and do not show the main navigation/pages until onboarding is completed.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/mealPromptParser.ts",
-          "frontend/src/lib/portionEstimates.ts",
-          "frontend/src/lib/descriptionFlow.ts"
+          "frontend/src/lib/store.ts",
+          "frontend/src/components/OnboardingGate.tsx",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/lib/mealPromptParser.ts",
-          "frontend/src/lib/portionEstimates.ts",
-          "frontend/src/lib/descriptionFlow.ts"
+          "frontend/src/lib/store.ts",
+          "frontend/src/components/OnboardingGate.tsx",
+          "frontend/src/App.tsx"
         ]
       },
       {
         "id": "REQ-2",
-        "summary": "Add a new nutrition lookup step that uses a Google-like web search API (Google Custom Search JSON API) to find nutrition facts for restaurant/menu items when Open Food Facts does not return a match, and use that result before falling back to AI estimation or local defaults.",
+        "summary": "Update the app header area to greet the user in English and display the user name alongside the current time/date (same header block), e.g., \"Hello, <Name>\" with the live time/date shown next to it.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/webSearchNutrition.ts",
-          "frontend/src/lib/nutrition.ts",
-          "frontend/src/lib/descriptionFlow.ts",
-          "frontend/.env.example"
+          "frontend/src/pages/Dashboard.tsx",
+          "frontend/src/components/LiveCalendarWidget.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/lib/webSearchNutrition.ts",
-          "frontend/src/lib/nutrition.ts",
-          "frontend/src/lib/descriptionFlow.ts",
-          "frontend/.env.example"
+          "frontend/src/pages/Dashboard.tsx",
+          "frontend/src/components/LiveCalendarWidget.tsx"
         ]
       },
       {
         "id": "REQ-3",
-        "summary": "Extract usable nutrition numbers (at minimum calories; protein/sugar when available) from web-search results (e.g., result snippet text) with robust, unit-aware heuristics (kcal/calories, grams), and scale results according to the parsed quantity/portion.",
+        "summary": "Remove all other API options/settings from the UI so the only APIs the user is ever prompted to configure are: DeepSeek (AI), Nutritionix (food), and API Ninjas (gym).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/lib/webSearchNutrition.ts",
-          "frontend/src/lib/nutrition.ts"
+          "frontend/src/pages/Nutrition.tsx",
+          "frontend/src/pages/Gym.tsx",
+          "frontend/src/pages/Goals.tsx",
+          "frontend/src/components/OpenFoodFactsKeySettings.tsx",
+          "frontend/src/components/CaloriesBurnedApiKeySettings.tsx",
+          "frontend/src/components/ApiKeySettings.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/lib/webSearchNutrition.ts",
-          "frontend/src/lib/nutrition.ts"
+          "frontend/src/pages/Nutrition.tsx",
+          "frontend/src/pages/Gym.tsx",
+          "frontend/src/pages/Goals.tsx",
+          "frontend/src/components/OpenFoodFactsKeySettings.tsx",
+          "frontend/src/components/CaloriesBurnedApiKeySettings.tsx",
+          "frontend/src/components/ApiKeySettings.tsx"
         ]
       },
       {
         "id": "REQ-4",
-        "summary": "Update the Quick Log (Description) results UI to clearly indicate when nutrition came from web search vs Open Food Facts vs AI vs estimation, using English labels, so the user can see that menu items are being fetched from an external source rather than \"asking ChatGPT for everything\".",
+        "summary": "Integrate Nutritionix API for food/nutrition lookup and ensure the nutrition logging flow uses Nutritionix as the primary external nutrition data source (with existing local fallbacks only if credentials are missing).",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/Description.tsx",
-          "frontend/src/lib/descriptionFlow.ts"
+          "frontend/src/lib/nutritionix.ts",
+          "frontend/src/lib/nutrition.ts",
+          "frontend/src/lib/onlineNutrition.ts",
+          "frontend/src/lib/webSearchNutrition.ts",
+          "frontend/src/lib/openFoodFactsKey.ts"
         ],
         "matchedFiles": [
-          "frontend/src/pages/Description.tsx",
-          "frontend/src/lib/descriptionFlow.ts"
+          "frontend/src/lib/nutritionix.ts",
+          "frontend/src/lib/nutrition.ts",
+          "frontend/src/lib/onlineNutrition.ts",
+          "frontend/src/lib/webSearchNutrition.ts",
+          "frontend/src/lib/openFoodFactsKey.ts"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Integrate API Ninjas for gym/exercise support so gym-related API calls use API Ninjas (and the user provides only the API Ninjas key in onboarding).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/lib/store.ts",
+          "frontend/src/lib/caloriesBurnedKey.ts",
+          "frontend/src/lib/caloriesBurnedApi.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/lib/store.ts",
+          "frontend/src/lib/caloriesBurnedKey.ts"
+        ]
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Update the example environment configuration to reflect only the supported APIs (DeepSeek, Nutritionix, API Ninjas) and remove example entries for other API providers.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/.env.example",
+          "frontend/src/lib/apiKey.ts"
+        ],
+        "matchedFiles": [
+          "frontend/.env.example",
+          "frontend/src/lib/apiKey.ts"
         ]
       }
     ]
@@ -76,12 +113,26 @@
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/.env.example",
-    "frontend/src/lib/descriptionFlow.ts",
-    "frontend/src/lib/mealPromptParser.ts",
+    "frontend/src/App.tsx",
+    "frontend/src/components/ApiKeySettings.tsx",
+    "frontend/src/components/CaloriesBurnedApiKeySettings.tsx",
+    "frontend/src/components/LiveCalendarWidget.tsx",
+    "frontend/src/components/OnboardingGate.tsx",
+    "frontend/src/components/OpenFoodFactsKeySettings.tsx",
+    "frontend/src/lib/apiKey.ts",
+    "frontend/src/lib/caloriesBurnedKey.ts",
+    "frontend/src/lib/indianNutrition.ts",
+    "frontend/src/lib/mevsa.ts",
     "frontend/src/lib/nutrition.ts",
-    "frontend/src/lib/portionEstimates.ts",
+    "frontend/src/lib/nutritionix.ts",
+    "frontend/src/lib/onlineNutrition.ts",
+    "frontend/src/lib/openFoodFactsKey.ts",
+    "frontend/src/lib/store.ts",
     "frontend/src/lib/webSearchNutrition.ts",
-    "frontend/src/pages/Description.tsx",
+    "frontend/src/pages/Dashboard.tsx",
+    "frontend/src/pages/Goals.tsx",
+    "frontend/src/pages/Gym.tsx",
+    "frontend/src/pages/Nutrition.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

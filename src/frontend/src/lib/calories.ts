@@ -1,4 +1,12 @@
-import { calculateDeepSeekGymCalories, calculateDeepSeekCardioCalories, USER_PROFILE } from './deepseek';
+import { calculateDeepSeekGymCalories, calculateDeepSeekCardioCalories } from './deepseek';
+import { fetchCaloriesBurnedFromApi } from './caloriesBurnedApi';
+
+// User profile constants for calorie calculations
+const USER_PROFILE = {
+  age: 17,
+  height: 172, // cm
+  weight: 80, // kg
+};
 
 // MET (Metabolic Equivalent of Task) values for different activities (fallback)
 const MET_VALUES: Record<string, number> = {
@@ -14,7 +22,7 @@ const MET_VALUES: Record<string, number> = {
   Treadmill: 9.0,
 };
 
-// Calculate calories burned using DeepSeek AI with fallback
+// Calculate calories burned using external API, DeepSeek AI, or MET fallback
 export async function calculateCaloriesBurned(
   type: 'gym' | 'cardio',
   params: {
@@ -28,7 +36,18 @@ export async function calculateCaloriesBurned(
   }
 ): Promise<number> {
   if (type === 'cardio' && params.activityType && params.duration) {
-    // Try DeepSeek AI first
+    // Try external Calories Burned API first
+    const apiCalories = await fetchCaloriesBurnedFromApi(
+      params.activityType,
+      params.duration,
+      USER_PROFILE.weight
+    );
+    
+    if (apiCalories !== null) {
+      return apiCalories;
+    }
+
+    // Try DeepSeek AI second
     const deepseekCalories = await calculateDeepSeekCardioCalories(
       params.activityType,
       params.duration
@@ -45,7 +64,7 @@ export async function calculateCaloriesBurned(
   }
 
   if (type === 'gym' && params.sets && params.reps && params.weight) {
-    // Try DeepSeek AI first
+    // Try DeepSeek AI first (external API doesn't typically handle gym exercises)
     if (params.exerciseName && params.muscleGroup) {
       const deepseekCalories = await calculateDeepSeekGymCalories(
         params.exerciseName,

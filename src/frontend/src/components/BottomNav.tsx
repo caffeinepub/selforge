@@ -1,8 +1,8 @@
-import { Home, BookOpen, Dumbbell, Apple, Target, FileText } from 'lucide-react';
+import { Home, BookOpen, Dumbbell, Apple, Target } from 'lucide-react';
 
 interface BottomNavProps {
-  currentPage: 'dashboard' | 'study' | 'gym' | 'nutrition' | 'goals' | 'description';
-  onNavigate: (page: 'dashboard' | 'study' | 'gym' | 'nutrition' | 'goals' | 'description') => void;
+  currentPage: 'dashboard' | 'study' | 'gym' | 'nutrition' | 'goals';
+  onNavigate: (page: 'dashboard' | 'study' | 'gym' | 'nutrition' | 'goals') => void;
 }
 
 export default function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
@@ -11,7 +11,6 @@ export default function BottomNav({ currentPage, onNavigate }: BottomNavProps) {
     { id: 'study' as const, icon: BookOpen, label: 'Study' },
     { id: 'gym' as const, icon: Dumbbell, label: 'Gym' },
     { id: 'nutrition' as const, icon: Apple, label: 'Food' },
-    { id: 'description' as const, icon: FileText, label: 'Log' },
     { id: 'goals' as const, icon: Target, label: 'Goals' },
   ];
 

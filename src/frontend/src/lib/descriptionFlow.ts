@@ -1,6 +1,7 @@
 import { calculateCaloriesBurned } from './calories';
 import { fetchNutritionData } from './nutrition';
 import { parseMealPrompt, type ParsedFoodItem } from './mealPromptParser';
+import { getRuntimeApiKey } from './apiKey';
 
 export interface ParsedEntry {
   type: 'food' | 'gym' | 'cardio' | 'unknown';
@@ -60,9 +61,9 @@ export async function parseDescription(description: string): Promise<ParsedEntry
 
 // Parse using DeepSeek AI
 async function parseWithDeepSeek(description: string): Promise<ParsedEntry | null> {
-  const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
+  const apiKey = getRuntimeApiKey();
   
-  if (!DEEPSEEK_API_KEY) {
+  if (!apiKey) {
     return null;
   }
 
@@ -71,7 +72,7 @@ async function parseWithDeepSeek(description: string): Promise<ParsedEntry | nul
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: 'deepseek-chat',

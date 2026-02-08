@@ -58,6 +58,12 @@ interface DailyData {
 interface AppState {
   dailyData: Record<string, DailyData>;
   currentStreak: number;
+  userName: string;
+  deepseekApiKey: string;
+  nutritionixAppId: string;
+  nutritionixAppKey: string;
+  apiNinjasKey: string;
+  onboardingCompleted: boolean;
   getTodayData: () => DailyData;
   addStudyTopic: (topic: Omit<StudyTopic, 'id' | 'date'>) => void;
   updateStudyTopicStatus: (id: string, status: StudyTopic['status']) => void;
@@ -68,6 +74,13 @@ interface AppState {
   updateGoal: (goal: keyof GoalsCompleted, completed: boolean) => void;
   setWentToSchool: (went: boolean) => void;
   calculateStreak: () => void;
+  setUserName: (name: string) => void;
+  setDeepseekApiKey: (key: string) => void;
+  setNutritionixAppId: (id: string) => void;
+  setNutritionixAppKey: (key: string) => void;
+  setApiNinjasKey: (key: string) => void;
+  completeOnboarding: () => void;
+  clearAllSettings: () => void;
 }
 
 const getTodayString = () => new Date().toISOString().split('T')[0];
@@ -92,6 +105,12 @@ export const useAppStore = create<AppState>()(
     (set, get) => ({
       dailyData: {},
       currentStreak: 0,
+      userName: '',
+      deepseekApiKey: '',
+      nutritionixAppId: '',
+      nutritionixAppKey: '',
+      apiNinjasKey: '',
+      onboardingCompleted: false,
 
       getTodayData: () => {
         const today = getTodayString();
@@ -323,6 +342,41 @@ export const useAppStore = create<AppState>()(
         }
         
         set({ currentStreak: streak });
+      },
+
+      setUserName: (name) => {
+        set({ userName: name });
+      },
+
+      setDeepseekApiKey: (key) => {
+        set({ deepseekApiKey: key });
+      },
+
+      setNutritionixAppId: (id) => {
+        set({ nutritionixAppId: id });
+      },
+
+      setNutritionixAppKey: (key) => {
+        set({ nutritionixAppKey: key });
+      },
+
+      setApiNinjasKey: (key) => {
+        set({ apiNinjasKey: key });
+      },
+
+      completeOnboarding: () => {
+        set({ onboardingCompleted: true });
+      },
+
+      clearAllSettings: () => {
+        set({
+          userName: '',
+          deepseekApiKey: '',
+          nutritionixAppId: '',
+          nutritionixAppKey: '',
+          apiNinjasKey: '',
+          onboardingCompleted: false,
+        });
       },
     }),
     {

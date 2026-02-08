@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { useAppStore } from '../lib/store';
 
 export default function LiveCalendarWidget() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const { userName } = useAppStore();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -41,6 +43,15 @@ export default function LiveCalendarWidget() {
     <Card className="bg-card-dark border-border-subtle">
       <CardContent className="p-4">
         <div className="space-y-3">
+          {/* Greeting with Name */}
+          {userName && (
+            <div className="text-center">
+              <span className="text-lg font-semibold text-neon-green">
+                Hello, {userName}
+              </span>
+            </div>
+          )}
+
           {/* Time Display */}
           <div className="text-center">
             <span className="text-3xl font-bold text-neon-green glow-text tabular-nums tracking-tight">

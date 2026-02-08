@@ -1,9 +1,10 @@
 // DeepSeek AI API integration for Selforge
 // Unified smart data backend for exercise and nutrition details
 
+import { getRuntimeApiKey } from './apiKey';
+
 // DeepSeek API configuration
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
-const DEEPSEEK_API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
 
 // User profile constants for calorie calculations
 const USER_AGE = 17;
@@ -27,7 +28,9 @@ interface DeepSeekNutritionResponse {
 
 // Call DeepSeek AI API
 async function callDeepSeekAPI(prompt: string): Promise<string | null> {
-  if (!DEEPSEEK_API_KEY) {
+  const apiKey = getRuntimeApiKey();
+  
+  if (!apiKey) {
     console.warn('DeepSeek API key not configured. Using fallback calculations.');
     return null;
   }
@@ -37,7 +40,7 @@ async function callDeepSeekAPI(prompt: string): Promise<string | null> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model: 'deepseek-chat',
@@ -170,23 +173,20 @@ Return ONLY a JSON object with this exact structure:
 // Fetch nutrition data from DeepSeek AI
 export async function fetchDeepSeekNutritionData(
   foodName: string,
-  quantity: number,
-  brand?: string
+  quantityGrams: number
 ): Promise<DeepSeekNutritionResponse | null> {
-  const brandInfo = brand ? ` from brand "${brand}"` : '';
-  const prompt = `Analyze nutrition for: ${quantity}g/ml of "${foodName}"${brandInfo}.
-${brand ? 'This is an Indian brand product. Use accurate Indian brand nutrition data if available.' : ''}
+  const prompt = `Provide nutrition information for this food:
+Food: ${foodName}
+Quantity: ${quantityGrams}g
 
 Return ONLY a JSON object with this exact structure:
 {
   "food": "${foodName}",
-  ${brand ? `"brand": "${brand}",` : ''}
+  "brand": "<brand name if commonly known, otherwise omit>",
   "calories": <total calories as a number>,
   "protein": <total protein in grams as a number>,
   "sugar": <total sugar in grams as a number>
-}
-
-For Indian brands like Amul, Mother Dairy, Country Delight, Verka, Nandini, Aavin, Heritage, Milma, Dodla, use accurate brand-specific nutrition data.`;
+}`;
 
   const result = await callDeepSeekAPI(prompt);
   
@@ -201,153 +201,12 @@ For Indian brands like Amul, Mother Dairy, Country Delight, Verka, Nandini, Aavi
   return null;
 }
 
-// Get comprehensive exercise list from DeepSeek AI
-export async function getDeepSeekExerciseList(muscleGroup: string): Promise<string[]> {
-  const prompt = `List all common exercises for muscle group "${muscleGroup}".
-Include all variations: barbell, dumbbell, incline, decline, machine, cable, bodyweight.
-
-Return ONLY a JSON object with this exact structure:
-{
-  "exercises": [<array of exercise names as strings>]
-}`;
-
-  const result = await callDeepSeekAPI(prompt);
-  
-  if (result) {
-    try {
-      const data = JSON.parse(result);
-      return data.exercises || [];
-    } catch (error) {
-      console.warn('Failed to parse DeepSeek exercise list:', error);
-    }
-  }
-  
-  return [];
-}
-
-// Export user profile for external use
-export const USER_PROFILE = {
-  age: USER_AGE,
-  height: USER_HEIGHT,
-  weight: USER_WEIGHT,
-};
-
-// Comprehensive exercise categories with all variations (fallback data)
-export const EXERCISE_CATEGORIES = {
-  Chest: [
-    'Barbell Bench Press',
-    'Dumbbell Bench Press',
-    'Incline Barbell Press',
-    'Incline Dumbbell Press',
-    'Decline Barbell Press',
-    'Decline Dumbbell Press',
-    'Cable Fly',
-    'Dumbbell Fly',
-    'Incline Cable Fly',
-    'Chest Dips',
-    'Push-ups',
-    'Machine Chest Press',
-    'Pec Deck',
-  ],
-  Shoulders: [
-    'Barbell Overhead Press',
-    'Dumbbell Overhead Press',
-    'Military Press',
-    'Machine Shoulder Press',
-    'Dumbbell Lateral Raise',
-    'Cable Lateral Raise',
-    'Rear Delt Fly',
-    'Face Pulls',
-    'Barbell Upright Row',
-    'Dumbbell Upright Row',
-    'Barbell Shrugs',
-    'Dumbbell Shrugs',
-    'Front Raise',
-  ],
-  Legs: [
-    'Barbell Squat',
-    'Front Squat',
-    'Goblet Squat',
-    'Machine Squat',
-    'Leg Press',
-    'Leg Curl',
-    'Lying Leg Curl',
-    'Seated Leg Curl',
-    'Leg Extension',
-    'Walking Lunges',
-    'Dumbbell Lunges',
-    'Barbell Lunges',
-    'Bulgarian Split Squat',
-    'Standing Calf Raise',
-    'Seated Calf Raise',
-    'Romanian Deadlift',
-    'Stiff Leg Deadlift',
-  ],
-  Back: [
-    'Pull-up',
-    'Chin-up',
-    'Lat Pulldown',
-    'Wide Grip Lat Pulldown',
-    'Close Grip Lat Pulldown',
-    'Seated Row',
-    'Cable Row',
-    'Barbell Row',
-    'Dumbbell Row',
-    'One Arm Dumbbell Row',
-    'Barbell Deadlift',
-    'Sumo Deadlift',
-    'T-Bar Row',
-    'Hyperextension',
-  ],
-  Biceps: [
-    'Barbell Curl',
-    'EZ Bar Curl',
-    'Dumbbell Curl',
-    'Alternating Dumbbell Curl',
-    'Hammer Curl',
-    'Preacher Curl',
-    'EZ Bar Preacher Curl',
-    'Cable Curl',
-    'Concentration Curl',
-    'Incline Dumbbell Curl',
-    'Spider Curl',
-  ],
-  Triceps: [
-    'Tricep Dip',
-    'Bench Dips',
-    'Dumbbell Overhead Extension',
-    'EZ Bar Overhead Extension',
-    'Close Grip Bench Press',
-    'Cable Pushdown',
-    'Rope Pushdown',
-    'Diamond Push-ups',
-    'Skull Crushers',
-    'Dumbbell Kickbacks',
-  ],
-  Core: [
-    'Plank',
-    'Side Plank',
-    'Crunches',
-    'Bicycle Crunches',
-    'Russian Twist',
-    'Mountain Climbers',
-    'Leg Raises',
-    'Hanging Leg Raises',
-    'Sit-ups',
-    'Ab Wheel',
-    'Cable Crunches',
-    'Dead Bug',
-  ],
-  Cardio: [
-    'Running',
-    'Jogging',
-    'Cycling',
-    'Elliptical',
-    'Rowing',
-    'Swimming',
-    'Jump Rope',
-    'Stair Climber',
-    'Walking',
-    'Treadmill',
-  ],
+// Fallback exercise categories for when AI is unavailable
+export const FALLBACK_EXERCISES = {
+  chest: ['bench press', 'incline press', 'decline press', 'chest fly', 'push-ups'],
+  back: ['deadlift', 'lat pulldown', 'barbell row', 'dumbbell row', 'pull-ups'],
+  legs: ['squat', 'leg press', 'lunges', 'leg curl', 'leg extension'],
+  shoulders: ['shoulder press', 'lateral raise', 'front raise', 'rear delt fly'],
+  arms: ['bicep curl', 'tricep extension', 'hammer curl', 'tricep dips'],
+  core: ['crunches', 'planks', 'russian twists', 'leg raises'],
 };
