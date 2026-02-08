@@ -21,6 +21,8 @@ interface GymActivity {
   duration?: number;
   caloriesBurned: number;
   date: string;
+  description?: string;
+  summary?: string;
 }
 
 interface FoodEntry {
@@ -32,6 +34,8 @@ interface FoodEntry {
   protein: number;
   sugar: number;
   date: string;
+  description?: string;
+  summary?: string;
 }
 
 interface GoalsCompleted {

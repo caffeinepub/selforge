@@ -21,82 +21,40 @@ export default function LiveCalendarWidget() {
     });
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-    });
+  const getWeekday = (date: Date) => {
+    return date.toLocaleDateString('en-US', { weekday: 'long' });
   };
 
-  const getDaysInMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
-
-    return { daysInMonth, startingDayOfWeek };
+  const getMonth = (date: Date) => {
+    return date.toLocaleDateString('en-US', { month: 'long' });
   };
 
-  const { daysInMonth, startingDayOfWeek } = getDaysInMonth(currentTime);
-  const currentDay = currentTime.getDate();
+  const getDay = (date: Date) => {
+    return date.getDate();
+  };
 
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const emptySlots = Array.from({ length: startingDayOfWeek }, (_, i) => i);
+  const getYear = (date: Date) => {
+    return date.getFullYear();
+  };
 
   return (
     <Card className="bg-card-dark border-border-subtle">
-      <CardContent className="p-3">
-        <div className="space-y-2">
+      <CardContent className="p-4">
+        <div className="space-y-3">
           {/* Time Display */}
           <div className="text-center">
-            <span className="text-xl font-bold text-neon-green glow-text tabular-nums tracking-tight">
+            <span className="text-3xl font-bold text-neon-green glow-text tabular-nums tracking-tight">
               {formatTime(currentTime)}
             </span>
           </div>
 
-          {/* Date Display */}
-          <div className="text-center text-xs text-muted-foreground">
-            {formatDate(currentTime)}
-          </div>
-
-          {/* Mini Calendar */}
-          <div className="mt-2">
-            {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-0.5">
-              {/* Day headers */}
-              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                <div
-                  key={`header-${i}`}
-                  className="text-center text-[10px] text-muted-foreground font-medium py-0.5"
-                >
-                  {day}
-                </div>
-              ))}
-
-              {/* Empty slots for days before month starts */}
-              {emptySlots.map((slot) => (
-                <div key={`empty-${slot}`} className="aspect-square" />
-              ))}
-
-              {/* Days of the month */}
-              {days.map((day) => (
-                <div
-                  key={day}
-                  className={`
-                    aspect-square flex items-center justify-center text-[10px] rounded-sm
-                    ${
-                      day === currentDay
-                        ? 'bg-neon-green text-black font-bold shadow-[0_0_6px_oklch(var(--neon-green)/0.5)]'
-                        : 'text-foreground/70'
-                    }
-                  `}
-                >
-                  {day}
-                </div>
-              ))}
+          {/* Full Date Breakdown */}
+          <div className="text-center space-y-1">
+            <div className="text-lg font-semibold text-foreground">
+              {getWeekday(currentTime)}
+            </div>
+            <div className="text-base text-muted-foreground">
+              {getMonth(currentTime)} {getDay(currentTime)}, {getYear(currentTime)}
             </div>
           </div>
         </div>

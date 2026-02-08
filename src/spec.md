@@ -1,11 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Make the calendar widget and dashboard header more compact and cohesive, and apply a consistent stylish minimalist pass across the app while preserving the existing dark/neon aesthetic and functionality.
+**Goal:** Improve free-text meal logging so multi-item prompts are parsed with portion-aware quantities, enriched with public online nutrition data when available, and shown in a Chrome-like itemized breakdown with totals.
 
 **Planned changes:**
-- Refine the existing LiveCalendarWidget to be noticeably smaller (reduced typography size, tighter spacing, less vertical padding) while keeping local time, live updates (≥1/sec), compact month grid, and current-day highlighting.
-- Rework the Dashboard header (title + streak + calendar) into a single coherent minimalist header block with consistent alignment, spacing, and typographic hierarchy that matches the compact calendar.
-- Apply a minimalist styling pass across Dashboard, Study, Gym, Nutrition, Goals, and BottomNav to standardize typography scale, spacing, borders, and card density while keeping the current dark/neon theme and preserving BottomNav behavior and active state.
+- Update meal prompt parsing to extract multiple food items from one input and interpret portion-based units (e.g., slices, packets, tablespoons, grams) without defaulting to 100g when a different unit is implied.
+- Add an online nutrition lookup step using free/public endpoints (e.g., Open Food Facts) to fetch calories/protein/sugar before falling back to the existing local/DeepSeek enrichment logic, while tracking the source of the values.
+- Revise the Quick Log (Description) results UI to display an English, Chrome-like per-item breakdown (quantity + calories/protein/sugar when available) and show summed totals for the full meal.
+- Update enrichment/saving flow to handle enriching multiple items per prompt, produce a human-style English summary (itemized + totals), and keep saved entries consistent with the enriched values shown in the UI.
 
-**User-visible outcome:** The app looks more sleek and minimalist: the calendar is smaller but still readable and live-updating, the top header feels unified and clean, and all screens share a consistent compact dark/neon visual style.
+**User-visible outcome:** Users can type prompts like “2 maggie 2 cheese slice 10 gram mayonnaise” and see each recognized item with an interpreted quantity, nutrition values sourced from the web when possible (with fallback when not), and a clear total calories/protein (and sugar when available) summary in English.

@@ -1,89 +1,94 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Compact minimalist calendar + cohesive dark/neon UI density pass",
+  "title": "Portion-aware multi-item meal parsing with online nutrition lookup and Chrome-like breakdown UI",
   "requirements": [
     {
-      "id": "REQ-3",
-      "summary": "Make LiveCalendarWidget noticeably more compact and minimalist without changing behavior (local time, 1s updates, month grid, current-day highlight).",
+      "id": "REQ-1",
+      "summary": "Parse free-text meal prompts into multiple food items with portion-aware unit handling (slices/packets/tablespoons/grams) instead of defaulting to 100g.",
       "acceptanceCriteria": [
-        "The widget still updates the time at least once per second while visible.",
-        "The widget footprint is reduced compared to the current implementation (smaller typography, tighter spacing, less vertical padding) without reducing readability.",
-        "Current day remains visually distinct from other days.",
-        "No new features are added to the calendar (no navigation, event creation, reminders)."
+        "Given input like \"2 cheese slice\", the parsed food quantity shown in the UI is based on a slice-to-grams estimate (not 100g by default).",
+        "Given input like \"10 gram mayonnaise\", the parsed quantity remains 10g (no conversion/guessing needed).",
+        "If the prompt includes multiple food items (e.g., \"2 maggie 2 cheese slice 10 gram mayannaise\"), the parser extracts all items instead of collapsing into a single food entry."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/LiveCalendarWidget.tsx",
+          "path": "frontend/src/lib/mealPromptParser.ts",
+          "operation": "create",
+          "description": "Create a dedicated meal prompt parser that extracts multiple items by recognizing repeating quantity+unit+food-name segments, preserving both the interpreted grams and the original unit display (e.g., \"2 slices\")."
+        },
+        {
+          "path": "frontend/src/lib/portionEstimates.ts",
+          "operation": "create",
+          "description": "Add portion-to-grams estimates for common units (slice, packet, tablespoon, teaspoon, cup, serving) with food-aware overrides (e.g., cheese slice → grams, Maggi packet → grams), used only when the prompt unit is not already grams/ml."
+        },
+        {
+          "path": "frontend/src/lib/descriptionFlow.ts",
           "operation": "modify",
-          "description": "Tighten layout and typography: reduce CardContent vertical padding, reduce time/date text sizes, compress internal spacing, and tighten month grid (smaller headers, smaller cells, smaller gap) while keeping the 1s setInterval, local device time formatting, compact month grid logic, and current-day highlight styling. Continue composing existing shadcn-ui Card/CardContent primitives (do not modify files under frontend/src/components/ui). Verify the component's usage instructions before implementing."
+          "description": "Update food parsing to use the new meal prompt parser for heuristic parsing, returning a multi-item food result structure (items array + totals-ready fields) while keeping gym/cardio parsing behavior unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Add a public, keyless online nutrition lookup step (e.g., Open Food Facts search) before DeepSeek/local fallback and track nutrition source in the enriched results.",
+      "acceptanceCriteria": [
+        "When an item can be matched via a public nutrition endpoint (e.g., Open Food Facts), the app uses those values rather than the local fallback DB.",
+        "If online lookup fails or returns no match, the app continues to work and uses the existing DeepSeek/local fallback logic without crashing.",
+        "The enrichment pipeline clearly tracks whether numbers are from online lookup vs fallback (internally and/or as a small UI note)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/onlineNutrition.ts",
+          "operation": "create",
+          "description": "Implement a keyless public nutrition fetcher that tries to match a query to public sources (such as Open Food Facts) and returns normalized calories/protein/sugar plus an explicit source label (e.g., \"online\")."
+        },
+        {
+          "path": "frontend/src/lib/nutrition.ts",
+          "operation": "modify",
+          "description": "Adjust nutrition enrichment pipeline ordering to try online lookup first, then existing DeepSeek logic (when configured), and finally the local nutrition DB; extend return shape to include a nutritionSource field for UI/internal tracking."
+        },
+        {
+          "path": "frontend/src/pages/Description.tsx",
+          "operation": "modify",
+          "description": "Display a small per-item note (or badge-like text) indicating whether nutrition came from online lookup vs DeepSeek vs local fallback; ensure the note is in English and does not block saving."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Update Quick Log (Description) results UI to show a Chrome-like itemized breakdown with interpreted quantities, per-item macros, and totals.",
+      "acceptanceCriteria": [
+        "For multi-item input, the results screen shows a per-item list (e.g., Maggi x2, cheese slice x2, mayonnaise 10g) with calories and protein per item and totals at the bottom.",
+        "The totals match the sum of the displayed per-item values.",
+        "All user-facing labels and summaries are in English."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Description.tsx",
+          "operation": "modify",
+          "description": "Replace the single-food grid UI with a food-results renderer that supports both single-item and multi-item meals: show an itemized list with interpreted quantity (original unit + grams), calories/protein/sugar (when available), and a totals section whose values are computed from the displayed items."
         }
       ]
     },
     {
       "id": "REQ-4",
-      "summary": "Refactor the Dashboard header block (title + streak + calendar) into a cohesive minimalist header layout with consistent hierarchy and spacing.",
+      "summary": "Enrich multiple parsed food items in one prompt, generate an English bullet-like summary with totals, and keep saved data consistent with what the UI shows.",
       "acceptanceCriteria": [
-        "Dashboard header (title/streak/calendar) reads as a single coherent header block with consistent spacing and alignment.",
-        "The calendar remains near the top in the header area and does not disrupt existing metrics cards layout.",
-        "All user-facing text in the header remains in English."
+        "A single prompt containing multiple foods results in enrichment of each item and a combined summary string that includes itemized estimates and a total calories/protein line.",
+        "The existing Save flow still works (no runtime errors), and saved entries reflect the enriched calories/protein/sugar values used in the UI.",
+        "If only one food is entered, the UI and save behavior remain sensible and similar to current behavior (single-item display is acceptable)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/Dashboard.tsx",
+          "path": "frontend/src/lib/descriptionFlow.ts",
           "operation": "modify",
-          "description": "Rework the top-of-page header area to a single cohesive block: tighten spacing, standardize typographic scale (title/streak labels), and place LiveCalendarWidget within the header region (still near the top) without changing the metrics card ordering/layout below. Keep all header strings in English. Continue composing existing shadcn-ui Card primitives where helpful (do not modify files under frontend/src/components/ui). Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Apply a minimalist density + typography pass across Dashboard, Study, Gym, Nutrition, Goals, and BottomNav while preserving the existing dark/neon aesthetic and functionality.",
-      "acceptanceCriteria": [
-        "Across pages, headings use a consistent size scale and weight; card padding and gaps feel consistent and slightly tighter than before.",
-        "Existing dark/neon theme tokens/utilities (e.g., bg-card-dark, border-border-subtle, neon accents) are preserved; the app remains dark-themed.",
-        "Bottom navigation remains fixed and functional with clear active state."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/index.css",
-          "operation": "modify",
-          "description": "Add a small set of reusable minimalist utility/component classes (via Tailwind @layer) to standardize tighter page padding, section spacing, card padding density, and a consistent heading scale that matches the compact calendar/header while preserving existing dark/neon utilities (bg-card-dark, border-border-subtle, glow-text, etc.). Verify the component's usage instructions before implementing."
+          "description": "Update food enrichment to enrich each parsed food item, compute per-item macros and meal totals, and generate a combined English summary string (itemized lines + totals) while preserving compatibility for non-food types."
         },
         {
-          "path": "frontend/src/pages/Dashboard.tsx",
+          "path": "frontend/src/pages/Description.tsx",
           "operation": "modify",
-          "description": "Apply the new compact spacing/typography utilities to cards and section headers so the Dashboard matches the refined header/calendar density (tighter CardContent padding, consistent section title sizing, consistent gaps) without changing features/metrics. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/Study.tsx",
-          "operation": "modify",
-          "description": "Normalize Study page typography and spacing (page header, summary card, lists) to the same minimalist scale: tighter vertical rhythm, consistent card padding, consistent section title sizing; keep all existing interactions and dialogs intact while continuing to compose shadcn-ui components (no edits under frontend/src/components/ui). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/Gym.tsx",
-          "operation": "modify",
-          "description": "Normalize Gym page typography and spacing across the header, summary card, activity list, and add-exercise dialog (tighter gaps and padding, consistent title scale) while preserving all logging/calculation flows and existing dark/neon styling tokens. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/Nutrition.tsx",
-          "operation": "modify",
-          "description": "Normalize Nutrition page typography and spacing across summary cards, net calories card, list, and add-food dialog (tighter gaps and padding, consistent title scale) while keeping functionality and preserving dark/neon tokens. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/Goals.tsx",
-          "operation": "modify",
-          "description": "Normalize Goals page typography and spacing (header block, progress bar spacing, goals list cards, school toggle card, success/motivation card) to match the compact minimalist density while preserving all interactions and active/completed styling semantics. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/BottomNav.tsx",
-          "operation": "modify",
-          "description": "Refine BottomNav density (slightly reduced height/padding, consistent icon/label sizing) while keeping it fixed, fully functional, and with a clear active state consistent with the minimalist typographic scale. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Align overall app layout spacing with the refined BottomNav/header density (e.g., adjust main bottom padding to match any nav height change) without introducing new routes or features. Verify the component's usage instructions before implementing."
+          "description": "Update confirm-and-save behavior for multi-item meals to save one food entry per recognized item using the enriched values shown in the UI, while keeping single-item save behavior consistent with current flow (no runtime errors)."
         }
       ]
     }

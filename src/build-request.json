@@ -1,75 +1,103 @@
 {
   "kind": "build_request",
-  "title": "Make the calendar widget smaller and refine the app to a stylish, minimalist look",
+  "title": "Improve meal prompt parsing with portion-aware nutrition lookup and Chrome-like summary output",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-3",
-      "text": "Refine the existing LiveCalendarWidget to be noticeably more compact and minimalist while preserving the current functionality (local device date/time, live updates at least once per second, compact month grid, highlight current day).",
+      "id": "REQ-1",
+      "text": "Update the free-text meal parsing flow to support portion-aware quantities (e.g., slices, packets, tablespoons, grams) instead of defaulting foods like cheese to 100g when the user input implies a different unit (e.g., \"2 cheese slices\").",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-5"
         ],
         "quotes": [
-          "i said small calendar and make app for stylish and minilimatsit like title and all"
+          "bro i want same thing you said like grabed from chrome ... but i want that i write prompts like this and ai grabs and fetches data"
         ]
       },
       "acceptanceCriteria": [
-        "The widget still updates the time at least once per second while visible.",
-        "The widget footprint is reduced compared to the current implementation (smaller typography, tighter spacing, less vertical padding) without reducing readability.",
-        "Current day remains visually distinct from other days.",
-        "No new features are added to the calendar (no navigation, event creation, reminders)."
+        "Given input like \"2 cheese slice\", the parsed food quantity shown in the UI is based on a slice-to-grams estimate (not 100g by default).",
+        "Given input like \"10 gram mayonnaise\", the parsed quantity remains 10g (no conversion/guessing needed).",
+        "If the prompt includes multiple food items (e.g., \"2 maggie 2 cheese slice 10 gram mayannaise\"), the parser extracts all items instead of collapsing into a single food entry."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Add a web-based nutrition lookup step (no paid/keys required) to fetch calories/protein/sugar from public online sources before falling back to the local nutrition database, so results feel \"grabbed from Chrome\" rather than purely estimated.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "like grabed from chrome just add yourself or free chat gpt or another ai that willl help me but i want that i write prompts like this and ai grabs and fetches data"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When an item can be matched via a public nutrition endpoint (e.g., Open Food Facts), the app uses those values rather than the local fallback DB.",
+        "If online lookup fails or returns no match, the app continues to work and uses the existing DeepSeek/local fallback logic without crashing.",
+        "The enrichment pipeline clearly tracks whether numbers are from online lookup vs fallback (internally and/or as a small UI note)."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Change the Quick Log (Description) result UI to present a Chrome-like breakdown for multi-item meals: list each recognized food item with its interpreted quantity plus calories and protein (and sugar when available), and show totals for the full meal.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ],
+        "quotes": [
+          "i want same thing you said like grabed from chrome ... cheese ... Quantity 100g ... Calories ... Protein ... Sugar ..."
+        ]
+      },
+      "acceptanceCriteria": [
+        "For multi-item input, the results screen shows a per-item list (e.g., Maggi x2, cheese slice x2, mayonnaise 10g) with calories and protein per item and totals at the bottom.",
+        "The totals match the sum of the displayed per-item values.",
+        "All user-facing labels and summaries are in English."
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Update the Dashboard header area (app title + streak + calendar area) to follow a consistent minimalist, stylish layout: tighter spacing, clearer hierarchy, and a cohesive typographic scale that matches the compact calendar.",
+      "text": "Update the food enrichment logic so it can enrich multiple parsed food items in one prompt and generate a human-style English summary similar to the assistant’s earlier response (bullet-like breakdown + totals) while keeping the saved data consistent.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-5"
         ],
         "quotes": [
-          "make app for stylish and minilimatsit like title and all"
+          "i had 2 maggie 2 cheese slice 10 gram mayannaise for lunch calc calories and protein in it fromc chrome"
         ]
       },
       "acceptanceCriteria": [
-        "Dashboard header (title/streak/calendar) reads as a single coherent header block with consistent spacing and alignment.",
-        "The calendar remains near the top in the header area and does not disrupt existing metrics cards layout.",
-        "All user-facing text in the header remains in English."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Apply a minimalist styling pass across the app screens (Dashboard, Study, Gym, Nutrition, Goals, BottomNav) to make typography, spacing, borders, and card density feel consistent with the compact header/calendar, while keeping the existing dark/neon aesthetic.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "make app for stylish and minilimatsit like title and all"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Across pages, headings use a consistent size scale and weight; card padding and gaps feel consistent and slightly tighter than before.",
-        "Existing dark/neon theme tokens/utilities (e.g., bg-card-dark, border-border-subtle, neon accents) are preserved; the app remains dark-themed.",
-        "Bottom navigation remains fixed and functional with clear active state."
+        "A single prompt containing multiple foods results in enrichment of each item and a combined summary string that includes itemized estimates and a total calories/protein line.",
+        "The existing Save flow still works (no runtime errors), and saved entries reflect the enriched calories/protein/sugar values used in the UI.",
+        "If only one food is entered, the UI and save behavior remain sensible and similar to current behavior (single-item display is acceptable)."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (compose existing shadcn components instead).",
-    "Do not modify any files listed as immutable in SYSTEM_CONTEXT (e.g., frontend/src/main.tsx, frontend/src/hooks/useActor.ts, frontend/src/hooks/useInternetIdentity.ts).",
-    "Keep existing calendar behavior: local time, live updating, and current-day highlighting."
+    "Do not edit any files under frontend/src/components/ui or any immutable paths listed in SYSTEM_CONTEXT (compose existing UI components instead).",
+    "Backend must remain single-actor; do not introduce additional backend services.",
+    "Do not add OpenAI/Anthropic or other disallowed LLM integrations; any external fetch must be generic REST to public endpoints."
   ],
   "nonGoals": [
-    "Add reminders, events, or calendar interactions (month switching, adding notes).",
-    "Backend changes or data persistence related to the calendar widget."
+    "Implementing an actual Chrome extension or directly scraping the user’s browser/Chrome history.",
+    "Adding paid nutrition APIs that require user-provided API keys.",
+    "Implementing third-party authentication beyond Internet Identity."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

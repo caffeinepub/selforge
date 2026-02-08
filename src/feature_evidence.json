@@ -2,10 +2,52 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-refine-the-existing-livecalendarwidget-to-be-noticeably-more-compact-and-minimalist-while-preserving-the-current-functionality-local-device-date-time-live-updates-at-least-once-per-second-compact-month-grid-highlight-current-day",
-      "featureTitle": "Refine the existing LiveCalendarWidget to be noticeably more compact and minimalist while preserving the current functionality (local device date/time, live updates at least once per second, compact month grid, highlight current day).",
+      "featureId": "feature-update-the-free-text-meal-parsing-flow-to-support-portion-aware-quantities-e-g-slices-packets-tablespoons-grams-instead-of-defaulting-foods-like-cheese-to-100g-when-the-user-input-implies-a-different-unit-e-g-2-cheese-slices",
+      "featureTitle": "Update the free-text meal parsing flow to support portion-aware quantities (e.g., slices, packets, tablespoons, grams) instead of defaulting foods like cheese to 100g when the user input implies a different unit (e.g., \"2 cheese slices\").",
       "files": [
-        "frontend/src/components/LiveCalendarWidget.tsx"
+        "frontend/src/lib/descriptionFlow.ts",
+        "frontend/src/lib/mealPromptParser.ts",
+        "frontend/src/lib/portionEstimates.ts"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-web-based-nutrition-lookup-step-no-paid-keys-required-to-fetch-calories-protein-sugar-from-public-online-sources-before-falling-back-to-the-local-nutrition-database-so-results-feel-grabbed-from-chrome-rather-than-purely-estimated",
+      "featureTitle": "Add a web-based nutrition lookup step (no paid/keys required) to fetch calories/protein/sugar from public online sources before falling back to the local nutrition database, so results feel \"grabbed from Chrome\" rather than purely estimated.",
+      "files": [
+        "frontend/src/lib/nutrition.ts",
+        "frontend/src/lib/onlineNutrition.ts",
+        "frontend/src/pages/Description.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-change-the-quick-log-description-result-ui-to-present-a-chrome-like-breakdown-for-multi-item-meals-list-each-recognized-food-item-with-its-interpreted-quantity-plus-calories-and-protein-and-sugar-when-available-and-show-totals-for-the-full-meal",
+      "featureTitle": "Change the Quick Log (Description) result UI to present a Chrome-like breakdown for multi-item meals: list each recognized food item with its interpreted quantity plus calories and protein (and sugar when available), and show totals for the full meal.",
+      "files": [
+        "frontend/src/pages/Description.tsx"
       ],
       "components": [
         "http-outcalls@3.0.0",
@@ -21,10 +63,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-update-the-dashboard-header-area-app-title-streak-calendar-area-to-follow-a-consistent-minimalist-stylish-layout-tighter-spacing-clearer-hierarchy-and-a-cohesive-typographic-scale-that-matches-the-compact-calendar",
-      "featureTitle": "Update the Dashboard header area (app title + streak + calendar area) to follow a consistent minimalist, stylish layout: tighter spacing, clearer hierarchy, and a cohesive typographic scale that matches the compact calendar.",
+      "featureId": "feature-update-the-food-enrichment-logic-so-it-can-enrich-multiple-parsed-food-items-in-one-prompt-and-generate-a-human-style-english-summary-similar-to-the-assistant-s-earlier-response-bullet-like-breakdown-totals-while-keeping-the-saved-data-consistent",
+      "featureTitle": "Update the food enrichment logic so it can enrich multiple parsed food items in one prompt and generate a human-style English summary similar to the assistant’s earlier response (bullet-like breakdown + totals) while keeping the saved data consistent.",
       "files": [
-        "frontend/src/pages/Dashboard.tsx"
+        "frontend/src/lib/descriptionFlow.ts",
+        "frontend/src/pages/Description.tsx"
       ],
       "components": [
         "http-outcalls@3.0.0",
@@ -36,32 +79,6 @@
       ],
       "testIds": [
         "REQ-4"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-apply-a-minimalist-styling-pass-across-the-app-screens-dashboard-study-gym-nutrition-goals-bottomnav-to-make-typography-spacing-borders-and-card-density-feel-consistent-with-the-compact-header-calendar-while-keeping-the-existing-dark-neon-aesthetic",
-      "featureTitle": "Apply a minimalist styling pass across the app screens (Dashboard, Study, Gym, Nutrition, Goals, BottomNav) to make typography, spacing, borders, and card density feel consistent with the compact header/calendar, while keeping the existing dark/neon aesthetic.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/BottomNav.tsx",
-        "frontend/src/index.css",
-        "frontend/src/pages/Dashboard.tsx",
-        "frontend/src/pages/Goals.tsx",
-        "frontend/src/pages/Gym.tsx",
-        "frontend/src/pages/Nutrition.tsx",
-        "frontend/src/pages/Study.tsx"
-      ],
-      "components": [
-        "http-outcalls@3.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-5"
       ],
       "confidence": "high"
     }

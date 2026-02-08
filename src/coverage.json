@@ -1,60 +1,67 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-07T23:44:09.201Z",
+  "generatedAt": "2026-02-08T01:13:31.095Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 4,
+    "implemented": 4,
     "items": [
       {
-        "id": "REQ-3",
-        "summary": "Refine the existing LiveCalendarWidget to be noticeably more compact and minimalist while preserving the current functionality (local device date/time, live updates at least once per second, compact month grid, highlight current day).",
+        "id": "REQ-1",
+        "summary": "Update the free-text meal parsing flow to support portion-aware quantities (e.g., slices, packets, tablespoons, grams) instead of defaulting foods like cheese to 100g when the user input implies a different unit (e.g., \"2 cheese slices\").",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/LiveCalendarWidget.tsx"
+          "frontend/src/lib/mealPromptParser.ts",
+          "frontend/src/lib/portionEstimates.ts",
+          "frontend/src/lib/descriptionFlow.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/LiveCalendarWidget.tsx"
+          "frontend/src/lib/mealPromptParser.ts",
+          "frontend/src/lib/portionEstimates.ts",
+          "frontend/src/lib/descriptionFlow.ts"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Add a web-based nutrition lookup step (no paid/keys required) to fetch calories/protein/sugar from public online sources before falling back to the local nutrition database, so results feel \"grabbed from Chrome\" rather than purely estimated.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/lib/onlineNutrition.ts",
+          "frontend/src/lib/nutrition.ts",
+          "frontend/src/pages/Description.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/lib/onlineNutrition.ts",
+          "frontend/src/lib/nutrition.ts",
+          "frontend/src/pages/Description.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Change the Quick Log (Description) result UI to present a Chrome-like breakdown for multi-item meals: list each recognized food item with its interpreted quantity plus calories and protein (and sugar when available), and show totals for the full meal.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/Description.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/Description.tsx"
         ]
       },
       {
         "id": "REQ-4",
-        "summary": "Update the Dashboard header area (app title + streak + calendar area) to follow a consistent minimalist, stylish layout: tighter spacing, clearer hierarchy, and a cohesive typographic scale that matches the compact calendar.",
+        "summary": "Update the food enrichment logic so it can enrich multiple parsed food items in one prompt and generate a human-style English summary similar to the assistant’s earlier response (bullet-like breakdown + totals) while keeping the saved data consistent.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/Dashboard.tsx"
+          "frontend/src/lib/descriptionFlow.ts",
+          "frontend/src/pages/Description.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/Dashboard.tsx"
-        ]
-      },
-      {
-        "id": "REQ-5",
-        "summary": "Apply a minimalist styling pass across the app screens (Dashboard, Study, Gym, Nutrition, Goals, BottomNav) to make typography, spacing, borders, and card density feel consistent with the compact header/calendar, while keeping the existing dark/neon aesthetic.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/pages/Dashboard.tsx",
-          "frontend/src/pages/Study.tsx",
-          "frontend/src/pages/Gym.tsx",
-          "frontend/src/pages/Nutrition.tsx",
-          "frontend/src/pages/Goals.tsx",
-          "frontend/src/components/BottomNav.tsx",
-          "frontend/src/App.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/index.css",
-          "frontend/src/pages/Dashboard.tsx",
-          "frontend/src/pages/Study.tsx",
-          "frontend/src/pages/Gym.tsx",
-          "frontend/src/pages/Nutrition.tsx",
-          "frontend/src/pages/Goals.tsx",
-          "frontend/src/components/BottomNav.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/lib/descriptionFlow.ts",
+          "frontend/src/pages/Description.tsx"
         ]
       }
     ]
@@ -64,15 +71,12 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
-    "frontend/src/components/BottomNav.tsx",
-    "frontend/src/components/LiveCalendarWidget.tsx",
-    "frontend/src/index.css",
-    "frontend/src/pages/Dashboard.tsx",
-    "frontend/src/pages/Goals.tsx",
-    "frontend/src/pages/Gym.tsx",
-    "frontend/src/pages/Nutrition.tsx",
-    "frontend/src/pages/Study.tsx",
+    "frontend/src/lib/descriptionFlow.ts",
+    "frontend/src/lib/mealPromptParser.ts",
+    "frontend/src/lib/nutrition.ts",
+    "frontend/src/lib/onlineNutrition.ts",
+    "frontend/src/lib/portionEstimates.ts",
+    "frontend/src/pages/Description.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
