@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 0.5rem;
+        --background: 0 0 0;
+        --foreground: 1 0 0;
+        --card: 0.1 0 0;
+        --card-foreground: 1 0 0;
+        --popover: 0.15 0 0;
+        --popover-foreground: 1 0 0;
+        --primary: 0.75 0.25 145;
+        --primary-foreground: 0 0 0;
+        --secondary: 0.2 0 0;
+        --secondary-foreground: 1 0 0;
+        --muted: 0.3 0 0;
+        --muted-foreground: 0.6 0 0;
+        --accent: 0.15 0 0;
+        --accent-foreground: 1 0 0;
+        --destructive: 0.55 0.25 25;
+        --destructive-foreground: 1 0 0;
+        --border: 0.2 0 0;
+        --input: 0.2 0 0;
+        --ring: 0.75 0.25 145;
+        
+        /* Custom colors */
+        --neon-green: 0.75 0.35 145;
+        --neon-yellow: 0.95 0.25 100;
+        --card-dark: 0.08 0 0;
+        --border-subtle: 0.15 0 0;
+
+        /* OLED Mode neon colors (literal hex for canvas/shadow use) */
+        --oled-study: #7B00FF;
+        --oled-gym: #DC143C;
+        --oled-nutrition: #39FF14;
+    }
+
+    .dark {
+        --background: 0 0 0;
+        --foreground: 1 0 0;
+        --card: 0.1 0 0;
+        --card-foreground: 1 0 0;
+        --popover: 0.15 0 0;
+        --popover-foreground: 1 0 0;
+        --primary: 0.75 0.25 145;
+        --primary-foreground: 0 0 0;
+        --secondary: 0.2 0 0;
+        --secondary-foreground: 1 0 0;
+        --muted: 0.3 0 0;
+        --muted-foreground: 0.6 0 0;
+        --accent: 0.15 0 0;
+        --accent-foreground: 1 0 0;
+        --destructive: 0.55 0.25 25;
+        --destructive-foreground: 1 0 0;
+        --border: 0.2 0 0;
+        --input: 0.2 0 0;
+        --ring: 0.75 0.25 145;
+        
+        /* Custom colors */
+        --neon-green: 0.75 0.35 145;
+        --neon-yellow: 0.95 0.25 100;
+        --card-dark: 0.08 0 0;
+        --border-subtle: 0.15 0 0;
+    }
+
+    * {
+        @apply border-border;
+    }
+    
+    body {
+        @apply bg-background text-foreground;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        overflow-x: hidden;
+    }
+}
+
+@layer utilities {
+    .text-neon-green {
+        color: oklch(var(--neon-green));
+    }
+    
+    .text-neon-yellow {
+        color: oklch(var(--neon-yellow));
+    }
+    
+    .bg-neon-green {
+        background-color: oklch(var(--neon-green));
+    }
+    
+    .bg-neon-yellow {
+        background-color: oklch(var(--neon-yellow));
+    }
+    
+    .border-neon-green {
+        border-color: oklch(var(--neon-green));
+    }
+    
+    .border-neon-yellow {
+        border-color: oklch(var(--neon-yellow));
+    }
+    
+    .bg-card-dark {
+        background-color: oklch(var(--card-dark));
+    }
+    
+    .border-border-subtle {
+        border-color: oklch(var(--border-subtle));
+    }
+    
+    .glow-text {
+        text-shadow: 0 0 10px oklch(var(--neon-green) / 0.5),
+                     0 0 20px oklch(var(--neon-green) / 0.3);
+    }
+
+    .glow-text-yellow {
+        text-shadow: 0 0 10px oklch(var(--neon-yellow) / 0.5),
+                     0 0 20px oklch(var(--neon-yellow) / 0.3);
+    }
+    
+    .glow-icon {
+        filter: drop-shadow(0 0 4px oklch(var(--neon-green) / 0.6));
+    }
+
+    /* AXIOM title glow */
+    .axiom-glow-title {
+        text-shadow:
+            0 0 8px oklch(var(--neon-green) / 0.6),
+            0 0 20px oklch(var(--neon-green) / 0.35),
+            0 0 40px oklch(var(--neon-green) / 0.15);
+    }
+
+    /* Goal card glow effects */
+    .goal-glow-active {
+        box-shadow:
+            0 0 18px oklch(var(--neon-green) / 0.25),
+            0 0 40px oklch(var(--neon-green) / 0.12),
+            inset 0 0 20px oklch(var(--neon-green) / 0.06);
+        border-radius: 0.5rem;
+    }
+
+    .goal-glow-idle {
+        box-shadow:
+            0 0 8px oklch(var(--neon-green) / 0.04),
+            inset 0 0 8px oklch(var(--neon-green) / 0.02);
+        border-radius: 0.5rem;
+    }
+    
+    /* App canvas constraint for 720x1600 display */
+    .app-canvas {
+        width: min(720px, 100vw);
+        max-height: 1600px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    /* OLED Mode neon phosphor glow borders */
+    .oled-study-border {
+        border: 1px solid #7B00FF;
+        box-shadow: 0 0 8px #7B00FF60, inset 0 0 4px #7B00FF10;
+    }
+
+    .oled-gym-border {
+        border: 1px solid #DC143C;
+        box-shadow: 0 0 8px #DC143C60, inset 0 0 4px #DC143C10;
+    }
+
+    .oled-nutrition-border {
+        border: 1px solid #39FF14;
+        box-shadow: 0 0 8px #39FF1460, inset 0 0 4px #39FF1410;
+    }
+
+    /* Protocol Mode — prevent text selection during long press */
+    .protocol-no-select {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+}
+
+@layer components {
+    /* Minimalist page container */
+    .page-container {
+        @apply p-3 space-y-4;
+    }
+    
+    /* Compact card padding */
+    .card-compact {
+        @apply pt-4 pb-4;
+    }
+
+    /* ── Typography hierarchy ── */
+
+    /* Level 1: Top-level page title — neon-green, bold, large */
+    .heading-1 {
+        @apply text-2xl font-bold tracking-wide;
+        color: oklch(var(--neon-green));
+    }
+
+    /* Level 2: Section / card title — white, semibold, medium */
+    .heading-2 {
+        @apply text-base font-semibold tracking-wide;
+        color: inherit;
+    }
+
+    /* Level 3: Item / sub-label — slightly smaller, medium weight */
+    .heading-3 {
+        @apply text-sm font-medium;
+        color: inherit;
+    }
+
+    /* Legacy aliases kept for backward compat */
+    .section-title {
+        @apply heading-2;
+    }
+    
+    .page-title {
+        @apply heading-1;
+    }
+}

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "App with Protocol Mode featuring a 3-second hold-to-terminate action, onboarding that collects name/age/gender, a settings menu with streak history and profile editing, and a cleaned-up dashboard (no 'made from caffeine.ai' text).",
+  "architectural_notes": [],
+  "known_issues": [
+    "Hold-to-terminate was incorrectly set to 3 minutes instead of 3 seconds"
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-fix-the-hold-to-terminate-duration-in-protocol-mode-from-3-minutes-180-seconds-to-3-seconds-the-long-press-gesture-in-protocolmode-tsx-must-complete-and-fire-after-exactly-3-seconds-of-continuous-holding",
+      "title": "Fix the hold-to-terminate duration in Protocol Mode from 3 minutes (180 seconds) to 3 seconds. The long-press gesture in ProtocolMode.tsx must complete and fire after exactly 3 seconds of continuous holding.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-expand-the-onboarding-screen-onboardinggate-tsx-to-collect-name-age-and-gender-from-the-user-before-they-access-the-app-the-existing-name-field-must-remain-add-an-age-input-numeric-and-a-gender-selector-options-male-female-other-prefer-not-to-say-persist-all-three-values-in-the-zustand-store",
+      "title": "Expand the onboarding screen (OnboardingGate.tsx) to collect name, age, and gender from the user before they access the app. The existing name field must remain; add an age input (numeric) and a gender selector (options: Male, Female, Other, Prefer not to say). Persist all three values in the Zustand store.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-settings-page-or-accessible-settings-menu-reachable-from-the-app-e-g-a-gear-settings-icon-in-the-dashboard-header-or-bottomnav-the-settings-screen-must-include-1-profile-editing-name-age-gender-2-streak-history-a-read-only-list-timeline-of-past-streak-records-from-the-zustand-store-3-any-other-relevant-profile-preference-fields-already-tracked-in-the-store-e-g-accent-color-oled-mode-persist-all-edits-back-to-the-zustand-store",
+      "title": "Add a Settings page (or accessible settings menu) reachable from the app (e.g., a gear/settings icon in the Dashboard header or BottomNav). The settings screen must include: (1) Profile editing — name, age, gender; (2) Streak history — a read-only list/timeline of past streak records from the Zustand store; (3) Any other relevant profile/preference fields already tracked in the store (e.g., accent color, OLED mode). Persist all edits back to the Zustand store.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-any-made-from-caffeine-ai-or-similar-branding-text-from-the-dashboard-page-dashboard-tsx-and-any-other-visible-location-in-the-ui",
+      "title": "Remove any 'Made from Caffeine.ai' (or similar branding) text from the Dashboard page (Dashboard.tsx) and any other visible location in the UI.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-zustand-store-store-ts-to-add-persisted-fields-for-age-number-and-gender-string-on-the-user-profile-and-add-a-streakhistory-array-that-records-each-completed-streak-with-its-start-date-end-date-and-length-in-days",
+      "title": "Update the Zustand store (store.ts) to add persisted fields for age (number) and gender (string) on the user profile, and add a streakHistory array that records each completed streak with its start date, end date, and length in days.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Fix hold-to-terminate duration to 3 seconds (not 3 minutes) in Protocol Mode",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add settings menu with streak history, name/age/gender editing, and other profile options",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Ask for gender and age (alongside name) during onboarding/starting flow",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Remove 'made from caffeine.ai' text from dashboard",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "AXIOM",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

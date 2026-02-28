@@ -1,0 +1,101 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Fix hold-to-terminate to 3s, add settings menu, expand onboarding, clean dashboard",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Fix the hold-to-terminate duration in Protocol Mode from 3 minutes (180 seconds) to 3 seconds",
+      "acceptanceCriteria": [
+        "The useLongPress hook (or equivalent) is configured with a duration of 3000ms (3 seconds) for the terminate action in ProtocolMode.tsx",
+        "Holding the button for 3 seconds completes the circular progress and triggers session termination",
+        "Releasing before 3 seconds resets the progress indicator without terminating"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ProtocolMode.tsx",
+          "operation": "modify",
+          "description": "Change the useLongPress hook duration from 180000ms (3 minutes) to 3000ms (3 seconds) for the terminate action. Locate the useLongPress invocation for the termination gesture and update its duration parameter to 3000. Verify that the circular progress animation and the onLongPressEnd callback fire after exactly 3 seconds of continuous holding."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Expand the onboarding screen to collect name, age, and gender from the user before they access the app",
+      "acceptanceCriteria": [
+        "Onboarding screen shows name, age, and gender fields before the user can proceed",
+        "Age field accepts numeric input only",
+        "Gender field offers at least: Male, Female, Other, Prefer not to say",
+        "All three values (name, age, gender) are saved to the Zustand persisted store on completion",
+        "Onboarding is only shown once; returning users skip directly to the main app"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/OnboardingGate.tsx",
+          "operation": "modify",
+          "description": "Expand the onboarding form to collect age and gender alongside the existing name field. Add an age input (type number, min 1) and a gender selector (dropdown or radio buttons with options: Male, Female, Other, Prefer not to say). Update the form submission handler to call setAge and setGender on the Zustand store in addition to setName. Ensure validation prevents proceeding until all three fields are filled. Keep the existing onboarding gating logic (show once, then skip)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Add a Settings page with profile editing and streak history",
+      "acceptanceCriteria": [
+        "A settings entry point (icon or tab) is visible and tappable from the main app UI",
+        "Settings screen has a Profile section with editable name, age, and gender fields with a save action",
+        "Settings screen has a Streak History section showing past streaks (date range and length) in a scrollable list",
+        "Changes to profile fields are persisted in the Zustand store immediately on save",
+        "Settings screen follows the existing OLED dark theme and accent color system"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Settings.tsx",
+          "operation": "create",
+          "description": "Create a new Settings page component that includes: (1) A Profile section with editable input fields for name, age, and gender, and a save button that persists changes to the Zustand store via setName, setAge, and setGender; (2) A Streak History section that reads store.streakHistory and displays a scrollable list of past streak records, showing start date, end date, and streak length; (3) Optional sections for accent color picker and OLED mode toggle (if not already accessible elsewhere). Apply OLED dark theme styling (bg-black, neon accents) consistent with the existing pages."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add a 'Settings' page case to the navigation state and page rendering logic. Include a conditional block that renders the Settings component when currentPage === 'Settings'. Ensure the Settings page is navigable from the BottomNav or Dashboard."
+        },
+        {
+          "path": "frontend/src/components/BottomNav.tsx",
+          "operation": "modify",
+          "description": "Add a Settings tab (or a gear icon entry) to the bottom navigation bar. Wire it to set the current page to 'Settings' when tapped. Position it as a fifth or sixth tab, or replace/augment an existing slot if the user wants a fifth fixed tab. Apply the same neon-green active indicator and icon scale animation as other tabs."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Remove any 'Made from Caffeine.ai' (or similar branding) text from the Dashboard page and any other visible location in the UI",
+      "acceptanceCriteria": [
+        "No 'Made from Caffeine.ai', 'Caffeine.ai', or similar attribution text is visible anywhere on the Dashboard",
+        "No such text appears on any other page in the app"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/Dashboard.tsx",
+          "operation": "modify",
+          "description": "Locate and remove any text or JSX element containing 'Made from Caffeine.ai', 'Caffeine.ai', or similar branding/attribution. Search the entire Dashboard component tree (including header, footer, or bottom sections) and delete the offending line or div. Verify no other pages (Study, Gym, Nutrition, Goals, ProtocolMode) contain the branding text."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Update the Zustand store to add persisted fields for age, gender, and streakHistory",
+      "acceptanceCriteria": [
+        "Store state includes age and gender fields with appropriate types",
+        "Store state includes a streakHistory array with entries containing start date, end date, and streak length",
+        "setAge, setGender, and addStreakHistory (or equivalent) actions are exposed from the store",
+        "Fields are persisted via the existing localStorage/persist middleware"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/lib/store.ts",
+          "operation": "modify",
+          "description": "Add age (number) and gender (string) fields to the store state interface, alongside the existing userName field. Add a streakHistory array field with type Array<{ startDate: string; endDate: string; lengthDays: number; }>. Expose setAge, setGender, and addStreakHistory actions that update these fields. Ensure all new fields are included in the persist middleware configuration so they are saved to localStorage. Update the initial state to provide sensible defaults (age: 0, gender: '', streakHistory: [])."
+        }
+      ]
+    }
+  ]
+}

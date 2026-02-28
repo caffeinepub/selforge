@@ -1,0 +1,102 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-fix-the-hold-to-terminate-duration-in-protocol-mode-from-3-minutes-180-seconds-to-3-seconds-the-long-press-gesture-in-protocolmode-tsx-must-complete-and-fire-after-exactly-3-seconds-of-continuous-holding",
+      "featureTitle": "Fix the hold-to-terminate duration in Protocol Mode from 3 minutes (180 seconds) to 3 seconds. The long-press gesture in ProtocolMode.tsx must complete and fire after exactly 3 seconds of continuous holding.",
+      "files": [
+        "frontend/src/pages/ProtocolMode.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-expand-the-onboarding-screen-onboardinggate-tsx-to-collect-name-age-and-gender-from-the-user-before-they-access-the-app-the-existing-name-field-must-remain-add-an-age-input-numeric-and-a-gender-selector-options-male-female-other-prefer-not-to-say-persist-all-three-values-in-the-zustand-store",
+      "featureTitle": "Expand the onboarding screen (OnboardingGate.tsx) to collect name, age, and gender from the user before they access the app. The existing name field must remain; add an age input (numeric) and a gender selector (options: Male, Female, Other, Prefer not to say). Persist all three values in the Zustand store.",
+      "files": [
+        "frontend/src/components/OnboardingGate.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-settings-page-or-accessible-settings-menu-reachable-from-the-app-e-g-a-gear-settings-icon-in-the-dashboard-header-or-bottomnav-the-settings-screen-must-include-1-profile-editing-name-age-gender-2-streak-history-a-read-only-list-timeline-of-past-streak-records-from-the-zustand-store-3-any-other-relevant-profile-preference-fields-already-tracked-in-the-store-e-g-accent-color-oled-mode-persist-all-edits-back-to-the-zustand-store",
+      "featureTitle": "Add a Settings page (or accessible settings menu) reachable from the app (e.g., a gear/settings icon in the Dashboard header or BottomNav). The settings screen must include: (1) Profile editing — name, age, gender; (2) Streak history — a read-only list/timeline of past streak records from the Zustand store; (3) Any other relevant profile/preference fields already tracked in the store (e.g., accent color, OLED mode). Persist all edits back to the Zustand store.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/BottomNav.tsx",
+        "frontend/src/pages/Settings.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-remove-any-made-from-caffeine-ai-or-similar-branding-text-from-the-dashboard-page-dashboard-tsx-and-any-other-visible-location-in-the-ui",
+      "featureTitle": "Remove any 'Made from Caffeine.ai' (or similar branding) text from the Dashboard page (Dashboard.tsx) and any other visible location in the UI.",
+      "files": [
+        "frontend/src/pages/Dashboard.tsx"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-zustand-store-store-ts-to-add-persisted-fields-for-age-number-and-gender-string-on-the-user-profile-and-add-a-streakhistory-array-that-records-each-completed-streak-with-its-start-date-end-date-and-length-in-days",
+      "featureTitle": "Update the Zustand store (store.ts) to add persisted fields for age (number) and gender (string) on the user profile, and add a streakHistory array that records each completed streak with its start date, end date, and length in days.",
+      "files": [
+        "frontend/src/lib/store.ts"
+      ],
+      "components": [
+        "http-outcalls@3.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

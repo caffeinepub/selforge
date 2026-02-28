@@ -1,0 +1,94 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-28T08:20:36.133Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 5,
+    "implemented": 5,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Fix the hold-to-terminate duration in Protocol Mode from 3 minutes (180 seconds) to 3 seconds. The long-press gesture in ProtocolMode.tsx must complete and fire after exactly 3 seconds of continuous holding.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/ProtocolMode.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/ProtocolMode.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Expand the onboarding screen (OnboardingGate.tsx) to collect name, age, and gender from the user before they access the app. The existing name field must remain; add an age input (numeric) and a gender selector (options: Male, Female, Other, Prefer not to say). Persist all three values in the Zustand store.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/OnboardingGate.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/OnboardingGate.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Add a Settings page (or accessible settings menu) reachable from the app (e.g., a gear/settings icon in the Dashboard header or BottomNav). The settings screen must include: (1) Profile editing — name, age, gender; (2) Streak history — a read-only list/timeline of past streak records from the Zustand store; (3) Any other relevant profile/preference fields already tracked in the store (e.g., accent color, OLED mode). Persist all edits back to the Zustand store.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/Settings.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/BottomNav.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/Settings.tsx",
+          "frontend/src/App.tsx",
+          "frontend/src/components/BottomNav.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Remove any 'Made from Caffeine.ai' (or similar branding) text from the Dashboard page (Dashboard.tsx) and any other visible location in the UI.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/Dashboard.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/Dashboard.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Update the Zustand store (store.ts) to add persisted fields for age (number) and gender (string) on the user profile, and add a streakHistory array that records each completed streak with its start date, end date, and length in days.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/lib/store.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/lib/store.ts"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/components/BottomNav.tsx",
+    "frontend/src/components/HeaderMeasurements.tsx",
+    "frontend/src/components/OnboardingGate.tsx",
+    "frontend/src/hooks/useResultCountdowns.ts",
+    "frontend/src/lib/store.ts",
+    "frontend/src/pages/Dashboard.tsx",
+    "frontend/src/pages/ProtocolMode.tsx",
+    "frontend/src/pages/Settings.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

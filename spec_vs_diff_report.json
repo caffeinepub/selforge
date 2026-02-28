@@ -1,0 +1,32 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-28T08:20:36.129Z",
+  "summary": "All five requirements appear to be implemented in the diff. REQ-1 is fixed with TERMINATE_DURATION = 3000ms in ProtocolMode.tsx. REQ-2 is implemented with name/age/gender fields in OnboardingGate.tsx. REQ-3 is implemented with a new Settings.tsx page accessible via BottomNav. REQ-4 is addressed with no caffeine.ai text in Dashboard.tsx. REQ-5 is implemented with userAge, userGender, and streakHistory in store.ts. One minor gap exists: the Settings page does not appear to include accent color or OLED mode preference editing as required by REQ-3.",
+  "missing_requirements": [
+    {
+      "id": "REQ-3",
+      "requirement": "Settings screen must include any other relevant profile/preference fields already tracked in the store (e.g., accent color, OLED mode)",
+      "reason": "The Settings.tsx file reads oledMode for styling but does not appear to expose an editable accent color selector or OLED mode toggle. The truncated file shows Profile and Streak History sections but no accent color or OLED mode controls in the settings UI.",
+      "evidence": [
+        "frontend/src/pages/Settings.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [],
+  "confidence": 0.78,
+  "changed_files": [
+    "backend/main.mo",
+    "frontend-file-summaries.txt",
+    "frontend/src/App.tsx",
+    "frontend/src/components/BottomNav.tsx",
+    "frontend/src/components/HeaderMeasurements.tsx",
+    "frontend/src/components/OnboardingGate.tsx",
+    "frontend/src/hooks/useResultCountdowns.ts",
+    "frontend/src/lib/store.ts",
+    "frontend/src/pages/Dashboard.tsx",
+    "frontend/src/pages/ProtocolMode.tsx",
+    "frontend/src/pages/Settings.tsx",
+    "project_state.json"
+  ]
+}
